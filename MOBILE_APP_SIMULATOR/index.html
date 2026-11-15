@@ -6,16 +6,17 @@
   <title>Eco-SafeRide — Trợ Lý An Toàn Giao Thông Số</title>
   
   <!-- PWA & Mobile Web App Meta -->
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Eco-SafeRide">
   <meta name="theme-color" content="#10b981">
 
+  <!-- Stylesheet -->
   <style>
-    :root {
+:root {
       --primary: #10b981;
       --primary-dark: #059669;
       --accent: #3b82f6;
@@ -306,11 +307,10 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
     .road-icon { font-size: 20px; }
-  </style>
+</style>
 </head>
 <body>
-
-  <!-- Phone Shell Container -->
+<!-- Phone Shell Container -->
   <div class="phone-wrapper">
     
     <!-- Notch -->
@@ -427,6 +427,55 @@
         </div>
       </div>
 
+      <!-- Field Data Collector (Dành cho Đội ngũ Thu thập Dữ liệu) -->
+      <div class="card" style="border: 1px solid #8b5cf6; background: rgba(139, 92, 246, 0.08); margin-top: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div style="font-size: 13px; font-weight: 700; color: #a78bfa; display: flex; align-items: center; gap: 6px;">
+            <span>🧪</span> BỘ THU THẬP DỮ LIỆU CẢM BIẾN
+          </div>
+          <span id="rec-sample-badge" style="font-size: 10px; background: #334155; color: #94a3b8; padding: 2px 8px; border-radius: 12px; font-weight: 700;">
+            0 mẫu
+          </span>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+          <div>
+            <label style="font-size: 10px; color: #94a3b8; display: block; margin-bottom: 4px;">CHIỀU ĐẶT ĐIỆN THOẠI:</label>
+            <select id="sel-phone-orient" style="width: 100%; background: #0f172a; border: 1px solid #334155; color: #fff; padding: 6px 8px; border-radius: 6px; font-size: 11px; outline: none;">
+              <option value="tui_quan_dung">Túi quần (xuôi đứng)</option>
+              <option value="tui_quan_nguoc">Túi quần (cắm ngược)</option>
+              <option value="tui_ao_khoac">Túi áo khoác (lỏng)</option>
+              <option value="ba_lo">Ba lô sau lưng</option>
+              <option value="cam_tay">Cầm trên tay</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size: 10px; color: #94a3b8; display: block; margin-bottom: 4px;">LOẠI CHUYỂN ĐỘNG:</label>
+            <select id="sel-motion-activity" style="width: 100%; background: #0f172a; border: 1px solid #334155; color: #fff; padding: 6px 8px; border-radius: 6px; font-size: 11px; outline: none;">
+              <option value="di_bo">🚶 Đi bộ (Walking)</option>
+              <option value="chay_bo">🏃 Chạy bộ (Running)</option>
+              <option value="xe_dap_dien">🛵 Xe đạp điện êm</option>
+              <option value="lang_lach">⚡ Xe lạng lách</option>
+              <option value="phanh_gap">🛑 Phanh gấp</option>
+              <option value="o_ga">🕳️ Sụp ổ gà</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <button id="btn-record-toggle" onclick="toggleDataRecording()" style="flex: 1; background: #8b5cf6; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; transition: all 0.2s;">
+            🔴 Bắt Đầu Ghi Dữ Liệu
+          </button>
+          <button id="btn-export-csv" onclick="exportRecordedCSV()" style="background: #1e293b; color: #cbd5e1; border: 1px solid #334155; padding: 10px 14px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer;" disabled>
+            💾 Xuất CSV
+          </button>
+        </div>
+        <div id="rec-status-desc" style="font-size: 10px; color: #94a3b8; margin-top: 6px; text-align: center;">
+          Sẵn sàng thu thập dữ liệu huấn luyện TinyML
+        </div>
+      </div>
+
     </div>
 
     <!-- Screen Content: TAB 2 (HỘ CHIẾU ATGT & ĐỔI QUÀ) -->
@@ -507,13 +556,13 @@
       </div>
     </div>
 
-    <!-- Screen Content: TAB 4 (CỨU HỘ SOS & 115) -->
+    <!-- Screen Content: TAB 4 (CỨU HỘ & LIÊN HỆ NGƯỜI THÂN) -->
     <div class="screen-content" id="tab-sos" style="display: none;">
-      <div class="card" style="text-align: center; padding: 20px 10px;">
-        <div style="font-size: 40px; margin-bottom: 8px;">🆘</div>
-        <div style="font-size: 16px; font-weight: 800; color: #fff;">LIÊN HỆ KHẨN CẤP NGƯỜI THÂN (BẢN THỬ NGHIỆM)</div>
-        <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">
-          ⚠️ Bản thử nghiệm an toàn: Tuyệt đối không gọi 115 để tránh báo động giả. Hệ thống chỉ tự động liên hệ tới Số điện thoại Phụ huynh / Người thân đã lưu.
+      <div class="card" style="text-align: center; padding: 18px 12px; border: 1px solid rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.06);">
+        <div style="font-size: 36px; margin-bottom: 6px;">👨‍👩‍👦</div>
+        <div style="font-size: 15px; font-weight: 800; color: #fff;">LIÊN HỆ KHẨN CẤP NGƯỜI THÂN</div>
+        <div style="font-size: 11px; color: #94a3b8; margin-top: 4px; line-height: 1.5;">
+          ⚠️ <strong>Quy định bản thử nghiệm:</strong> Tuyệt đối không gọi cơ quan chức năng (115) để tránh báo động giả. Hệ thống chỉ tự động liên hệ tới Số điện thoại Phụ huynh / Người thân đã lưu dưới đây.
         </div>
       </div>
 
@@ -556,7 +605,7 @@
         <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0;">
           📍 Tọa độ GPS gửi kèm: <strong>Tự động đính kèm qua SMS</strong>
         </div>
-      </div></div>
+      </div>
     </div>
 
     <!-- Bottom Navigation -->
@@ -602,8 +651,9 @@
 
   </div>
 
+  <!-- Vite Entrypoint -->
   <script>
-    // State management
+// State management
     let currentMode = 'phone'; // 'phone' (0d) or 'hybrid' (150k)
     let sdiScore = 96;
     let ecoPoints = 425;
@@ -629,6 +679,47 @@
     let lastSensorSpeechTime = 0;
     let gravX = 0, gravY = 0, gravZ = 9.8;
     const ALPHA = 0.8; // Low-pass filter weight for gravity decoupling
+
+    // Background Keep-Alive & WakeLock for Mobile Screen Locking
+    let wakeLock = null;
+    let bgAudio = null;
+
+    // Field Motion Data Collection Buffer
+    let isRecordingData = false;
+    let recordedBuffer = [];
+
+    async function enableWakeLock() {
+      if ('wakeLock' in navigator) {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+        } catch (e) {
+          console.log('WakeLock error:', e);
+        }
+      }
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock) {
+        wakeLock.release();
+        wakeLock = null;
+      }
+    }
+
+    function startBgAudioKeepAlive() {
+      try {
+        if (!bgAudio) {
+          bgAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
+          bgAudio.loop = true;
+        }
+        bgAudio.play().catch(e => console.log('Audio keep-alive silent:', e));
+      } catch (e) {}
+    }
+
+    function stopBgAudioKeepAlive() {
+      if (bgAudio) {
+        bgAudio.pause();
+      }
+    }
 
     function toggleRealSensors() {
       if (!isRealSensorActive) {
@@ -657,6 +748,8 @@
       if (window.DeviceMotionEvent) {
         window.addEventListener('devicemotion', handleMotion);
         isRealSensorActive = true;
+        enableWakeLock();
+        startBgAudioKeepAlive();
         document.getElementById('btn-toggle-sensor').innerText = 'Tắt Cảm Biến';
         document.getElementById('btn-toggle-sensor').style.background = '#ef4444';
         document.getElementById('sensor-status-label').innerText = '🟢 Đang đọc trực tiếp Gyroscope & Accelerometer thật';
@@ -671,6 +764,8 @@
     function stopRealSensors() {
       window.removeEventListener('devicemotion', handleMotion);
       isRealSensorActive = false;
+      releaseWakeLock();
+      stopBgAudioKeepAlive();
       document.getElementById('btn-toggle-sensor').innerText = 'Bật Cảm Biến Thật';
       document.getElementById('btn-toggle-sensor').style.background = '#2563eb';
       document.getElementById('sensor-status-label').innerText = 'Chế độ giả lập (Bấm nút để kích hoạt Gyro/Acc thật)';
@@ -710,6 +805,30 @@
         `Ax: ${ax.toFixed(1)} | Ay: ${ay.toFixed(1)} | Az: ${az.toFixed(1)} | Gyro: ${gz.toFixed(1)}°/s`;
 
       const now = Date.now();
+
+      // Record sample if data recorder is active
+      if (isRecordingData) {
+        const orient = document.getElementById('sel-phone-orient') ? document.getElementById('sel-phone-orient').value : 'unknown';
+        const activity = document.getElementById('sel-motion-activity') ? document.getElementById('sel-motion-activity').value : 'unknown';
+        recordedBuffer.push({
+          timestamp: now,
+          ax: ax.toFixed(3),
+          ay: ay.toFixed(3),
+          az: az.toFixed(3),
+          total_acc: totalAcc.toFixed(3),
+          gyro_a: (rot.alpha || 0).toFixed(2),
+          gyro_b: (rot.beta || 0).toFixed(2),
+          gyro_g: (rot.gamma || 0).toFixed(2),
+          tilt: tiltDeg.toFixed(2),
+          orientation: orient,
+          activity: activity
+        });
+        const badge = document.getElementById('rec-sample-badge');
+        if (badge && recordedBuffer.length % 5 === 0) {
+          badge.innerText = `${recordedBuffer.length} mẫu`;
+        }
+      }
+
       const pill = document.getElementById('behavior-pill');
       const text = document.getElementById('behavior-text');
 
@@ -843,23 +962,28 @@
       document.getElementById('val-speed').innerText = '18.0';
     }
 
-    // Emergency Contact Management
+    // ==========================================
+    // Emergency Contact Management (Lưu số người thân, KHÔNG gọi 115)
+    // ==========================================
     let emergencyContactPhone = localStorage.getItem('eco_emergency_phone') || '0912.345.678';
 
     function initEmergencyContactUI() {
       const saved = localStorage.getItem('eco_emergency_phone');
       if (saved) emergencyContactPhone = saved;
+      
+      const cleanPhone = (emergencyContactPhone || '0912.345.678').replace(/[^0-9+]/g, '');
+
       const input = document.getElementById('input-emergency-phone');
       const disp1 = document.getElementById('display-saved-phone');
       const disp2 = document.getElementById('list-target-phone');
       const disp3 = document.getElementById('modal-target-phone');
+      const btnTest = document.getElementById('btn-test-call');
+      const btnModal = document.getElementById('btn-modal-call-now');
+      
       if (input && saved) input.value = saved;
       if (disp1) disp1.innerText = emergencyContactPhone;
       if (disp2) disp2.innerText = emergencyContactPhone;
       if (disp3) disp3.innerText = emergencyContactPhone;
-      const cleanPhone = (emergencyContactPhone || '0912.345.678').replace(/[^0-9+]/g, '');
-      const btnTest = document.getElementById('btn-test-call');
-      const btnModal = document.getElementById('btn-modal-call-now');
       if (btnTest) btnTest.href = 'tel:' + cleanPhone;
       if (btnModal) btnModal.href = 'tel:' + cleanPhone;
     }
@@ -874,6 +998,7 @@
       emergencyContactPhone = raw;
       localStorage.setItem('eco_emergency_phone', raw);
       initEmergencyContactUI();
+      
       const feedback = document.getElementById('phone-saved-feedback');
       if (feedback) {
         feedback.innerText = '✅ Đã lưu thành công: ' + raw;
@@ -901,8 +1026,9 @@
         if (sosSecondsLeft <= 0) {
           clearInterval(sosTimer);
           modal.style.display = 'none';
-          alert("🚨 ĐÃ TỰ ĐỘNG KẾT NỐI CUỘC GỌI CỨU HỘ TỚI NGƯỜI THÂN!\nSố điện thoại: " + targetPhone + "\nĐang mở ứng dụng điện thoại để gọi ngay...");
+          const targetPhone = emergencyContactPhone || '0912.345.678';
           const clean = targetPhone.replace(/[^0-9+]/g, '');
+          alert("🚨 ĐÃ TỰ ĐỘNG THỰC HIỆN CUỘC GỌI CỨU HỘ TỚI NGƯỜI THÂN!\nSố điện thoại: " + targetPhone + "\nĐang mở ứng dụng điện thoại để gọi ngay...");
           window.location.href = 'tel:' + clean;
           resetStatus();
         }
@@ -927,7 +1053,6 @@
     // Register PWA Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        initEmergencyContactUI();
         navigator.serviceWorker.register('./sw.js').then(() => {
           console.log('Eco-SafeRide ServiceWorker Registered');
         }).catch(err => {
@@ -935,6 +1060,121 @@
         });
       });
     }
-  </script>
+
+    // ==========================================
+    // Field Motion Data Collection Engine
+    // ==========================================
+    function toggleDataRecording() {
+      if (!isRecordingData) {
+        startDataRecording();
+      } else {
+        stopDataRecording();
+      }
+    }
+
+    function startDataRecording() {
+      if (!isRealSensorActive) {
+        startRealSensors();
+      }
+      isRecordingData = true;
+      recordedBuffer = [];
+      
+      const orient = document.getElementById('sel-phone-orient') ? document.getElementById('sel-phone-orient').value : 'tui_quan_dung';
+      const activity = document.getElementById('sel-motion-activity') ? document.getElementById('sel-motion-activity').value : 'xe_dap_dien';
+      
+      const btn = document.getElementById('btn-record-toggle');
+      if (btn) {
+        btn.innerText = '⏹️ Dừng Ghi Dữ Liệu';
+        btn.style.background = '#ef4444';
+      }
+      const exp = document.getElementById('btn-export-csv');
+      if (exp) exp.disabled = true;
+      
+      const desc = document.getElementById('rec-status-desc');
+      if (desc) {
+        desc.innerText = `🔴 Đang thu thập mẫu: ${activity} (${orient})...`;
+        desc.style.color = '#ef4444';
+      }
+      
+      updateVoice("Bắt đầu thu thập dữ liệu cảm biến. Hãy đút máy vào vị trí đã chọn!");
+    }
+
+    function stopDataRecording() {
+      isRecordingData = false;
+      const btn = document.getElementById('btn-record-toggle');
+      if (btn) {
+        btn.innerText = '🔴 Bắt Đầu Ghi Dữ Liệu';
+        btn.style.background = '#8b5cf6';
+      }
+      
+      const exp = document.getElementById('btn-export-csv');
+      const desc = document.getElementById('rec-status-desc');
+      
+      if (recordedBuffer.length > 0) {
+        if (exp) exp.disabled = false;
+        if (desc) {
+          desc.innerText = `✅ Đã ghi được ${recordedBuffer.length} mẫu. Bấm "Xuất CSV" để tải về!`;
+          desc.style.color = '#10b981';
+        }
+        updateVoice(`Đã hoàn tất thu thập ${recordedBuffer.length} mẫu dữ liệu.`);
+      } else {
+        if (desc) desc.innerText = 'Chưa ghi nhận được mẫu nào. Hãy bật cảm biến và thử lại.';
+      }
+    }
+
+    function exportRecordedCSV() {
+      if (recordedBuffer.length === 0) {
+        alert('Chưa có mẫu nào để xuất!');
+        return;
+      }
+      
+      const orient = document.getElementById('sel-phone-orient') ? document.getElementById('sel-phone-orient').value : 'unknown';
+      const activity = document.getElementById('sel-motion-activity') ? document.getElementById('sel-motion-activity').value : 'unknown';
+      
+      let csvContent = 'timestamp_ms,ax,ay,az,total_acc,gyro_alpha,gyro_beta,gyro_gamma,tilt_deg,phone_orientation,activity_label\n';
+      recordedBuffer.forEach(row => {
+        csvContent += `${row.timestamp},${row.ax},${row.ay},${row.az},${row.total_acc},${row.gyro_a},${row.gyro_b},${row.gyro_g},${row.tilt},${row.orientation},${row.activity}\n`;
+      });
+      
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const nowStr = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
+      a.href = url;
+      a.download = `eco_motion_${activity}_${orient}_${nowStr}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      alert(`✅ ĐÃ XUẤT THÀNH CÔNG TỆP CSV!\nSố lượng: ${recordedBuffer.length} mẫu cảm biến\nTên file: eco_motion_${activity}_${orient}_${nowStr}.csv`);
+    }
+
+// Expose functions to window for HTML onclick attributes
+window.toggleMode = toggleMode;
+window.switchNav = switchNav;
+window.updateVoice = updateVoice;
+window.simulateScenario = simulateScenario;
+window.resetStatus = resetStatus;
+window.triggerSOS = triggerSOS;
+window.cancelSOS = cancelSOS;
+window.claimReward = claimReward;
+window.toggleRealSensors = toggleRealSensors;
+window.startRealSensors = startRealSensors;
+window.stopRealSensors = stopRealSensors;
+window.saveEmergencyPhone = saveEmergencyPhone;
+window.initEmergencyContactUI = initEmergencyContactUI;
+window.toggleDataRecording = toggleDataRecording;
+window.startDataRecording = startDataRecording;
+window.stopDataRecording = stopDataRecording;
+window.exportRecordedCSV = exportRecordedCSV;
+
+// Initialize on DOM load
+window.addEventListener('DOMContentLoaded', () => {
+  initEmergencyContactUI();
+});
+
+
+</script>
 </body>
 </html>

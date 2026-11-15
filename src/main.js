@@ -29,6 +29,10 @@
     let wakeLock = null;
     let bgAudio = null;
 
+    // Field Motion Data Collection Buffer
+    let isRecordingData = false;
+    let recordedBuffer = [];
+
     async function enableWakeLock() {
       if ('wakeLock' in navigator) {
         try {
@@ -146,6 +150,30 @@
         `Ax: ${ax.toFixed(1)} | Ay: ${ay.toFixed(1)} | Az: ${az.toFixed(1)} | Gyro: ${gz.toFixed(1)}°/s`;
 
       const now = Date.now();
+
+      // Record sample if data recorder is active
+      if (isRecordingData) {
+        const orient = document.getElementById('sel-phone-orient') ? document.getElementById('sel-phone-orient').value : 'unknown';
+        const activity = document.getElementById('sel-motion-activity') ? document.getElementById('sel-motion-activity').value : 'unknown';
+        recordedBuffer.push({
+          timestamp: now,
+          ax: ax.toFixed(3),
+          ay: ay.toFixed(3),
+          az: az.toFixed(3),
+          total_acc: totalAcc.toFixed(3),
+          gyro_a: (rot.alpha || 0).toFixed(2),
+          gyro_b: (rot.beta || 0).toFixed(2),
+          gyro_g: (rot.gamma || 0).toFixed(2),
+          tilt: tiltDeg.toFixed(2),
+          orientation: orient,
+          activity: activity
+        });
+        const badge = document.getElementById('rec-sample-badge');
+        if (badge && recordedBuffer.length % 5 === 0) {
+          badge.innerText = `${recordedBuffer.length} mẫu`;
+        }
+      }
+
       const pill = document.getElementById('behavior-pill');
       const text = document.getElementById('behavior-text');
 
@@ -378,6 +406,95 @@
       });
     }
 
+    // ==========================================
+    // Field Motion Data Collection Engine
+    // ==========================================
+    function toggleDataRecording() {
+      if (!isRecordingData) {
+        startDataRecording();
+      } else {
+        stopDataRecording();
+      }
+    }
+
+    function startDataRecording() {
+      if (!isRealSensorActive) {
+        startRealSensors();
+      }
+      isRecordingData = true;
+      recordedBuffer = [];
+      
+      const orient = document.getElementById('sel-phone-orient') ? document.getElementById('sel-phone-orient').value : 'tui_quan_dung';
+      const activity = document.getElementById('sel-motion-activity') ? document.getElementById('sel-motion-activity').value : 'xe_dap_dien';
+      
+      const btn = document.getElementById('btn-record-toggle');
+      if (btn) {
+        btn.innerText = '⏹️ Dừng Ghi Dữ Liệu';
+        btn.style.background = '#ef4444';
+      }
+      const exp = document.getElementById('btn-export-csv');
+      if (exp) exp.disabled = true;
+      
+      const desc = document.getElementById('rec-status-desc');
+      if (desc) {
+        desc.innerText = `🔴 Đang thu thập mẫu: ${activity} (${orient})...`;
+        desc.style.color = '#ef4444';
+      }
+      
+      updateVoice("Bắt đầu thu thập dữ liệu cảm biến. Hãy đút máy vào vị trí đã chọn!");
+    }
+
+    function stopDataRecording() {
+      isRecordingData = false;
+      const btn = document.getElementById('btn-record-toggle');
+      if (btn) {
+        btn.innerText = '🔴 Bắt Đầu Ghi Dữ Liệu';
+        btn.style.background = '#8b5cf6';
+      }
+      
+      const exp = document.getElementById('btn-export-csv');
+      const desc = document.getElementById('rec-status-desc');
+      
+      if (recordedBuffer.length > 0) {
+        if (exp) exp.disabled = false;
+        if (desc) {
+          desc.innerText = `✅ Đã ghi được ${recordedBuffer.length} mẫu. Bấm "Xuất CSV" để tải về!`;
+          desc.style.color = '#10b981';
+        }
+        updateVoice(`Đã hoàn tất thu thập ${recordedBuffer.length} mẫu dữ liệu.`);
+      } else {
+        if (desc) desc.innerText = 'Chưa ghi nhận được mẫu nào. Hãy bật cảm biến và thử lại.';
+      }
+    }
+
+    function exportRecordedCSV() {
+      if (recordedBuffer.length === 0) {
+        alert('Chưa có mẫu nào để xuất!');
+        return;
+      }
+      
+      const orient = document.getElementById('sel-phone-orient') ? document.getElementById('sel-phone-orient').value : 'unknown';
+      const activity = document.getElementById('sel-motion-activity') ? document.getElementById('sel-motion-activity').value : 'unknown';
+      
+      let csvContent = 'timestamp_ms,ax,ay,az,total_acc,gyro_alpha,gyro_beta,gyro_gamma,tilt_deg,phone_orientation,activity_label\n';
+      recordedBuffer.forEach(row => {
+        csvContent += `${row.timestamp},${row.ax},${row.ay},${row.az},${row.total_acc},${row.gyro_a},${row.gyro_b},${row.gyro_g},${row.tilt},${row.orientation},${row.activity}\n`;
+      });
+      
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const nowStr = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
+      a.href = url;
+      a.download = `eco_motion_${activity}_${orient}_${nowStr}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      alert(`✅ ĐÃ XUẤT THÀNH CÔNG TỆP CSV!\nSố lượng: ${recordedBuffer.length} mẫu cảm biến\nTên file: eco_motion_${activity}_${orient}_${nowStr}.csv`);
+    }
+
 // Expose functions to window for HTML onclick attributes
 window.toggleMode = toggleMode;
 window.switchNav = switchNav;
@@ -392,6 +509,10 @@ window.startRealSensors = startRealSensors;
 window.stopRealSensors = stopRealSensors;
 window.saveEmergencyPhone = saveEmergencyPhone;
 window.initEmergencyContactUI = initEmergencyContactUI;
+window.toggleDataRecording = toggleDataRecording;
+window.startDataRecording = startDataRecording;
+window.stopDataRecording = stopDataRecording;
+window.exportRecordedCSV = exportRecordedCSV;
 
 // Initialize on DOM load
 window.addEventListener('DOMContentLoaded', () => {
