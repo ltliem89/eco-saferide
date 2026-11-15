@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Eco-SafeRide — Trợ Lý An Toàn Giao Thông Số</title>
+  
+  <!-- PWA & Mobile Web App Meta -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Eco-SafeRide">
+  <meta name="theme-color" content="#10b981">
+
+  <style>
+    :root {
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --accent: #3b82f6;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --bg-phone: #090d16;
+      --card-bg: #131d2e;
+      --card-border: #1e293b;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      background: #030712;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    /* Phone Shell Mockup */
+    .phone-wrapper {
+      width: 100%;
+      max-width: 412px;
+      height: 846px;
+      background: var(--bg-phone);
+      border-radius: 44px;
+      border: 8px solid #1f2937;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(16, 185, 129, 0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Dynamic Island / Notch */
+    .phone-notch {
+      width: 120px;
+      height: 24px;
+      background: #000;
+      border-radius: 0 0 16px 16px;
+      margin: 0 auto;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .camera-lens { width: 10px; height: 10px; background: #111827; border-radius: 50%; border: 1px solid #374151; }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 20px 4px 20px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    /* Mode Banner */
+    .mode-bar {
+      background: rgba(16, 185, 129, 0.12);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 6px 16px;
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .mode-badge {
+      background: var(--primary);
+      color: #000;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    /* Content Area */
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .screen-content::-webkit-scrollbar { display: none; }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px;
+      position: relative;
+    }
+
+    /* Score Radial / Dashboard */
+    .score-hero {
+      text-align: center;
+      padding: 16px 10px;
+      background: linear-gradient(145deg, #131d2e 0%, #0d1522 100%);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .score-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 5px solid var(--primary);
+      margin: 0 auto 10px auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+    }
+    .score-num { font-size: 38px; font-weight: 900; color: #fff; line-height: 1; font-family: monospace; }
+    .score-label { font-size: 10px; color: var(--text-sub); text-transform: uppercase; }
+    .hero-title { font-size: 14px; font-weight: 700; color: #fff; }
+    .hero-subtitle { font-size: 11px; color: var(--primary); margin-top: 2px; }
+
+    /* Live Telemetry Grid */
+    .telem-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .telem-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 10px 6px;
+      text-align: center;
+    }
+    .telem-val { font-size: 17px; font-weight: 800; color: #fff; font-family: monospace; }
+    .telem-lbl { font-size: 10px; color: var(--text-sub); margin-top: 2px; }
+
+    /* Status Pill */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-pill.danger { background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: var(--danger); animation: pulseDanger 0.8s infinite alternate; }
+    .status-pill.warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: var(--warning); }
+    @keyframes pulseDanger { from { opacity: 0.7; } to { opacity: 1; } }
+
+    /* Voice Nudge Banner */
+    .voice-box {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(16, 185, 129, 0.08) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .voice-icon { font-size: 22px; }
+    .voice-msg { font-size: 12px; line-height: 1.4; color: #e2e8f0; }
+
+    /* Interactive Simulation Controls */
+    .sim-panel {
+      background: #0f172a;
+      border: 1px dashed #334155;
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .sim-header { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .sim-btn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+    .btn-sim {
+      background: #1e293b;
+      color: #cbd5e1;
+      border: 1px solid #334155;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-sim:hover { background: #334155; color: #fff; }
+    .btn-sim.danger { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; }
+    .btn-sim.danger:hover { background: var(--danger); color: #fff; }
+
+    /* Bottom Navigation Bar */
+    .nav-bottom {
+      background: #0b1120;
+      border-top: 1px solid #1e293b;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 4px 14px 4px;
+    }
+    .nav-item {
+      background: none;
+      border: none;
+      color: #64748b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-item.active { color: var(--primary); }
+    .nav-item span.icon { font-size: 18px; }
+
+    /* SOS Modal Overlay */
+    .sos-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.95);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .sos-countdown {
+      font-size: 72px;
+      font-weight: 900;
+      color: var(--danger);
+      font-family: monospace;
+      animation: pulseDanger 0.5s infinite alternate;
+    }
+    .btn-cancel-sos {
+      background: #334155;
+      color: #fff;
+      border: 2px solid #64748b;
+      padding: 14px 28px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .btn-cancel-sos:hover { background: #475569; }
+
+    /* Passport / Rewards */
+    .reward-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .reward-info h4 { font-size: 13px; color: #fff; }
+    .reward-info p { font-size: 11px; color: var(--text-sub); }
+    .btn-claim {
+      background: var(--primary);
+      color: #000;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Road Anomaly Pin */
+    .road-pin {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .road-icon { font-size: 20px; }
+  </style>
+</head>
+<body>
+
+  <!-- Phone Shell Container -->
+  <div class="phone-wrapper">
+    
+    <!-- Notch -->
+    <div class="phone-notch">
+      <div class="camera-lens"></div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>07:15</span>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span>5G</span>
+        <span>88%</span>
+      </div>
+    </div>
+
+    <!-- Dual-Mode Switcher -->
+    <div class="mode-bar">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span id="mode-text">Chế độ: 100% Điện thoại (0đ)</span>
+      </div>
+      <button class="mode-badge" onclick="toggleMode()" id="mode-badge-btn">Đổi Chế Độ</button>
+    </div>
+
+    <!-- Screen Content: TAB 1 (HÀNH TRÌNH THỰC) -->
+    <div class="screen-content" id="tab-ride">
+      
+      <!-- Hero Score Card -->
+      <div class="card score-hero">
+        <div class="score-circle">
+          <div class="score-num" id="sdi-score">96</div>
+          <div class="score-label">Điểm SDI</div>
+        </div>
+        <div class="hero-title">Đại Sứ Lái Xe Văn Minh 🌟</div>
+        <div class="hero-subtitle">+15 Eco-Points hành trình hôm nay</div>
+      </div>
+
+      <!-- Real-time Status & Telemetry -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span style="font-size: 12px; font-weight: 700; color: #cbd5e1;">TRẠNG THÁI CHUYỂN ĐỘNG</span>
+          <div class="status-pill" id="behavior-pill">
+            <span style="width: 8px; height: 8px; background: currentColor; border-radius: 50%;"></span>
+            <span id="behavior-text">Bình Thường</span>
+          </div>
+        </div>
+
+        <div class="telem-grid">
+          <div class="telem-item">
+            <div class="telem-val" id="val-speed">18.5</div>
+            <div class="telem-lbl">Vận tốc (km/h)</div>
+          </div>
+          <div class="telem-item">
+            <div class="telem-val" id="val-tilt">4.2°</div>
+            <div class="telem-lbl">Góc nghiêng</div>
+          </div>
+          <div class="telem-item">
+            <div class="telem-val" id="val-temp">32°C</div>
+            <div class="telem-lbl">Nhiệt độ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smart Voice Nudge Banner -->
+      <div class="voice-box">
+        <div class="voice-icon">🔊</div>
+        <div class="voice-msg" id="voice-text">
+          "Hành trình đang rất an toàn. Hãy duy trì tốc độ dưới 25 km/h khi gần cổng trường nhé!"
+        </div>
+      </div>
+
+      <!-- Real Phone Gyro/Accelerometer Live Control -->
+      <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid #334155; border-radius: 16px; padding: 12px; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 13px; font-weight: 700; color: #60a5fa; display: flex; align-items: center; gap: 6px;">
+              <span>📱</span> Cảm Biến Hồi Chuyển Điện Thoại
+            </div>
+            <div id="sensor-status-label" style="font-size: 11px; color: #94a3b8; margin-top: 2px;">
+              Chế độ giả lập (Bấm nút để kích hoạt Gyro/Acc thật)
+            </div>
+          </div>
+          <button id="btn-toggle-sensor" onclick="toggleRealSensors()" style="background: #2563eb; color: #fff; border: none; padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s;">
+            Bật Cảm Biến Thật
+          </button>
+        </div>
+        <div id="sensor-raw-debug" style="display: none; margin-top: 10px; font-family: monospace; font-size: 10px; color: #38bdf8; background: #0f172a; padding: 6px 10px; border-radius: 8px;">
+          Ax: 0.00 | Ay: 0.00 | Az: 0.00 | Gyro: 0.00°/s
+        </div>
+      </div>
+
+      <!-- Interactive Scenario Testbench (Phục vụ Giám Khảo Live Demo) -->
+      <div class="sim-panel">
+        <div class="sim-header">
+          <span>🧪 KỊCH BẢN THỰC ĐỊA (GIẢM LẬP)</span>
+          <span style="color: var(--primary);">BẤM ĐỂ THỬ</span>
+        </div>
+        <div class="sim-btn-grid">
+          <button class="btn-sim" onclick="simulateScenario('swerving')">
+            <span>⚡</span> Lạng lách
+          </button>
+          <button class="btn-sim" onclick="simulateScenario('braking')">
+            <span>🛑</span> Phanh gấp
+          </button>
+          <button class="btn-sim" onclick="simulateScenario('pothole')">
+            <span>🕳️</span> Sụp ổ gà
+          </button>
+          <button class="btn-sim danger" onclick="simulateScenario('crash')">
+            <span>💥</span> Ngã xe tai nạn
+          </button>
+          <button class="btn-sim" onclick="simulateScenario('distracted')" style="grid-column: span 2; background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fcd34d;">
+            <span>👀</span> Rút máy xem tin khi lái (-5đ SDI)
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Screen Content: TAB 2 (HỘ CHIẾU ATGT & ĐỔI QUÀ) -->
+    <div class="screen-content" id="tab-passport" style="display: none;">
+      <div class="card" style="background: linear-gradient(135deg, #1e1b4b 0%, #172554 100%); border-color: #3b82f6;">
+        <div style="font-size: 11px; text-transform: uppercase; color: #93c5fd; letter-spacing: 1px;">Hộ Chiếu Văn Hóa Giao Thông</div>
+        <div style="font-size: 20px; font-weight: 800; margin: 4px 0;">Nguyễn Văn An — Lớp 10A2</div>
+        <div style="font-size: 12px; color: #bfdbfe;">Trường THPT Chuyên Lý Tự Trọng</div>
+        <div style="display: flex; gap: 14px; margin-top: 14px;">
+          <div>
+            <div style="font-size: 22px; font-weight: 900; color: #facc15;" id="eco-points">425</div>
+            <div style="font-size: 10px; color: #94a3b8;">Eco-Points Tích Lũy</div>
+          </div>
+          <div>
+            <div style="font-size: 22px; font-weight: 900; color: #4ade80;">18 Ngày</div>
+            <div style="font-size: 10px; color: #94a3b8;">Chuỗi Lái Xe Chuẩn</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 10px; color: #fff;">🎁 QUÀ TẶNG TOYOTA & DÂN TRÍ ĐỒNG HÀNH</div>
+        
+        <div class="reward-item">
+          <div class="reward-info">
+            <h4>Mũ Bảo Hiểm Toyota Đạt Chuẩn</h4>
+            <p>Đổi với 350 Eco-Points</p>
+          </div>
+          <button class="btn-claim" onclick="claimReward('Mũ Bảo Hiểm')">Đổi Quà</button>
+        </div>
+
+        <div class="reward-item">
+          <div class="reward-info">
+            <h4>Suất Học Bổng Kỹ Năng Số</h4>
+            <p>Đổi với 500 Eco-Points</p>
+          </div>
+          <button class="btn-claim" style="background: #334155; color: #94a3b8;" disabled>Cần 500đ</button>
+        </div>
+
+        <div class="reward-item">
+          <div class="reward-info">
+            <h4>Voucher Bảo Dưỡng Xe Điện Miễn Phí</h4>
+            <p>Đổi với 200 Eco-Points</p>
+          </div>
+          <button class="btn-claim" onclick="claimReward('Voucher Bảo Dưỡng')">Đổi Quà</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen Content: TAB 3 (BẢN ĐỒ Ổ GÀ ĐÔ THỊ) -->
+    <div class="screen-content" id="tab-map" style="display: none;">
+      <div class="card" style="padding: 10px;">
+        <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">🗺️ BẢN ĐỒ DỮ LIỆU ĐƯỜNG PHỐ HỌC ĐƯỜNG</div>
+        <div style="height: 180px; background: #0b1329; border-radius: 10px; border: 1px solid #1e293b; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden;">
+          <div style="position: absolute; width: 100%; height: 100%; opacity: 0.15; background: repeating-linear-gradient(0deg, #3b82f6, #3b82f6 1px, transparent 1px, transparent 20px), repeating-linear-gradient(90deg, #3b82f6, #3b82f6 1px, transparent 1px, transparent 20px);"></div>
+          <div style="color: #38bdf8; font-weight: 700; font-size: 13px; z-index: 2;">Khu Vực Phường An Khánh (Cần Thơ)</div>
+          <div style="font-size: 11px; color: #94a3b8; z-index: 2;">14 Ổ gà đã được 120 học sinh tự động đánh dấu</div>
+          <div style="margin-top: 10px; z-index: 2;" class="status-pill">Đang đồng bộ DBSCAN</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 12px; font-weight: 700; margin-bottom: 10px;">CÁC ĐIỂM NGUY HIỂM VỪA GHI NHẬN</div>
+        <div class="road-pin">
+          <div class="road-icon">🕳️</div>
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: #fca5a5;">Ổ gà lớn trước cổng Chợ Mới</div>
+            <div style="font-size: 10px; color: #94a3b8;">Xung xóc 2.8g • 6 lượt xe ghi nhận • Cách bạn 180m</div>
+          </div>
+        </div>
+        <div class="road-pin">
+          <div class="road-icon">⚠️</div>
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: #fcd34d;">Gờ giảm tốc cao trước Tiểu học An Khánh</div>
+            <div style="font-size: 10px; color: #94a3b8;">Gờ hợp chuẩn • Đã xác thực OSM • Đi chậm</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen Content: TAB 4 (CỨU HỘ SOS & 115) -->
+    <div class="screen-content" id="tab-sos" style="display: none;">
+      <div class="card" style="text-align: center; padding: 20px 10px;">
+        <div style="font-size: 40px; margin-bottom: 8px;">🆘</div>
+        <div style="font-size: 16px; font-weight: 800; color: #fff;">TRUNG TÂM CỨU HỘ TỰ ĐỘNG 115</div>
+        <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">
+          Khi phát hiện ngã xe, hệ thống tự động gọi điện thoại phát giọng đọc tới 115 và nhắn tin vị trí cho gia đình.
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">DANH BẠ KHẨN CẤP ĐÃ THIẾT LẬP</div>
+        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          📞 Bố: <strong>0912.xxx.xxx</strong> (Tự động gọi thoại)
+        </div>
+        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          📞 Cấp cứu Y tế: <strong>115</strong> (Tự động phát tọa độ)
+        </div>
+        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0;">
+          💬 Cô Chủ Nhiệm: <strong>0983.xxx.xxx</strong> (Gửi tin nhắn SMS)
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="nav-bottom">
+      <button class="nav-item active" onclick="switchNav('ride', this)">
+        <span class="icon">🛵</span>
+        <span>Hành Trình</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('passport', this)">
+        <span class="icon">🎖️</span>
+        <span>Hộ Chiếu</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('map', this)">
+        <span class="icon">🗺️</span>
+        <span>Bản Đồ</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('sos', this)">
+        <span class="icon">🆘</span>
+        <span>Cứu Hộ</span>
+      </button>
+    </div>
+
+    <!-- SOS 30s Countdown Modal -->
+    <div class="sos-overlay" id="sos-modal">
+      <div style="font-size: 14px; font-weight: 800; color: #fca5a5; text-transform: uppercase;">
+        ⚠️ PHÁT HIỆN TAI NẠN NGÃ XE!
+      </div>
+      <div style="font-size: 12px; color: #cbd5e1; margin-top: 6px;">
+        Tự động gọi thoại 115 và gửi vị trí sau:
+      </div>
+      <div class="sos-countdown" id="sos-seconds">30</div>
+      <div style="font-size: 11px; color: #94a3b8;">
+        Nếu bạn an toàn, hãy nhấn nút bên dưới để hủy báo động.
+      </div>
+      <button class="btn-cancel-sos" onclick="cancelSOS()">TÔI VẪN ỔN (HỦY BÁO ĐỘNG)</button>
+    </div>
+
+  </div>
+
+  <script>
+    // State management
+    let currentMode = 'phone'; // 'phone' (0d) or 'hybrid' (150k)
+    let sdiScore = 96;
+    let ecoPoints = 425;
+    let sosTimer = null;
+    let sosSecondsLeft = 30;
+
+    // Speech Synthesis Engine (Giọng nói tiếng Việt)
+    function speakVietnamese(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Stop prior
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'vi-VN';
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // ==========================================
+    // Real Device Sensors Integration (Gyroscope & Accelerometer)
+    // ==========================================
+    let isRealSensorActive = false;
+    let lastSensorSpeechTime = 0;
+    let gravX = 0, gravY = 0, gravZ = 9.8;
+    const ALPHA = 0.8; // Low-pass filter weight for gravity decoupling
+
+    function toggleRealSensors() {
+      if (!isRealSensorActive) {
+        startRealSensors();
+      } else {
+        stopRealSensors();
+      }
+    }
+
+    async function startRealSensors() {
+      // iOS 13+ permission request
+      if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+        try {
+          const permission = await DeviceMotionEvent.requestPermission();
+          if (permission !== 'granted') {
+            alert('Cần cấp quyền truy cập cảm biến chuyển động trên iPhone để trải nghiệm!');
+            return;
+          }
+        } catch (e) {
+          console.error(e);
+          alert('Không thể kích hoạt quyền cảm biến: ' + e);
+          return;
+        }
+      }
+
+      if (window.DeviceMotionEvent) {
+        window.addEventListener('devicemotion', handleMotion);
+        isRealSensorActive = true;
+        document.getElementById('btn-toggle-sensor').innerText = 'Tắt Cảm Biến';
+        document.getElementById('btn-toggle-sensor').style.background = '#ef4444';
+        document.getElementById('sensor-status-label').innerText = '🟢 Đang đọc trực tiếp Gyroscope & Accelerometer thật';
+        document.getElementById('sensor-status-label').style.color = '#10b981';
+        document.getElementById('sensor-raw-debug').style.display = 'block';
+        updateVoice("Đã kết nối cảm biến con quay hồi chuyển và gia tốc thật của điện thoại. Hãy thử nghiêng hoặc lắc máy!");
+      } else {
+        alert('Trình duyệt hoặc thiết bị này không hỗ trợ DeviceMotionEvent!');
+      }
+    }
+
+    function stopRealSensors() {
+      window.removeEventListener('devicemotion', handleMotion);
+      isRealSensorActive = false;
+      document.getElementById('btn-toggle-sensor').innerText = 'Bật Cảm Biến Thật';
+      document.getElementById('btn-toggle-sensor').style.background = '#2563eb';
+      document.getElementById('sensor-status-label').innerText = 'Chế độ giả lập (Bấm nút để kích hoạt Gyro/Acc thật)';
+      document.getElementById('sensor-status-label').style.color = '#94a3b8';
+      document.getElementById('sensor-raw-debug').style.display = 'none';
+      resetStatus();
+    }
+
+    function handleMotion(event) {
+      if (!isRealSensorActive) return;
+
+      const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 9.8 };
+      const rot = event.rotationRate || { alpha: 0, beta: 0, gamma: 0 };
+
+      const ax = acc.x || 0;
+      const ay = acc.y || 0;
+      const az = acc.z || 9.8;
+      const gz = rot.gamma || rot.alpha || rot.beta || 0; // Rotational rate
+
+      // Low-pass filter to decouple gravity vector
+      gravX = ALPHA * gravX + (1 - ALPHA) * ax;
+      gravY = ALPHA * gravY + (1 - ALPHA) * ay;
+      gravZ = ALPHA * gravZ + (1 - ALPHA) * az;
+
+      const totalAcc = Math.sqrt(ax * ax + ay * ay + az * az);
+      
+      // Calculate tilt angle relative to gravity plane
+      let tiltDeg = 0;
+      if (totalAcc > 0.1) {
+        const cosTilt = Math.min(1.0, Math.max(-1.0, Math.abs(az) / totalAcc));
+        tiltDeg = Math.acos(cosTilt) * (180 / Math.PI);
+      }
+
+      // Update UI Telemetry
+      document.getElementById('val-tilt').innerText = tiltDeg.toFixed(1) + '°';
+      document.getElementById('sensor-raw-debug').innerText = 
+        `Ax: ${ax.toFixed(1)} | Ay: ${ay.toFixed(1)} | Az: ${az.toFixed(1)} | Gyro: ${gz.toFixed(1)}°/s`;
+
+      const now = Date.now();
+      const pill = document.getElementById('behavior-pill');
+      const text = document.getElementById('behavior-text');
+
+      // 1. Crash Detection (Tilt > 65 deg or extreme sideways flip)
+      if (tiltDeg > 65) {
+        pill.className = 'status-pill danger';
+        text.innerText = 'Ngã Xe!';
+        triggerSOS();
+        return;
+      }
+
+      // 2. Swerving Detection (High rotational rate or lateral jerk)
+      if (Math.abs(gz) > 40 || (Math.abs(ax) > 4.5 && tiltDeg > 18)) {
+        pill.className = 'status-pill warning';
+        text.innerText = 'Lạng Lách!';
+        sdiScore = Math.max(70, sdiScore - 1);
+        document.getElementById('sdi-score').innerText = sdiScore;
+        if (now - lastSensorSpeechTime > 6000) {
+          updateVoice("Cảnh báo: Phát hiện rung lắc lạng lách bất thường! Hãy giữ vững tay lái.");
+          lastSensorSpeechTime = now;
+        }
+        return;
+      }
+
+      // 3. Pothole / Bump Detection (Vertical jerk: dynamic Z)
+      const dynZ = Math.abs(az - gravZ);
+      if (dynZ > 6.0) {
+        pill.className = 'status-pill';
+        text.innerText = 'Sụp Ổ Gà!';
+        if (now - lastSensorSpeechTime > 6000) {
+          updateVoice("Đã phát hiện chấn động mặt đường và ghi nhận ổ gà lên bản đồ.");
+          lastSensorSpeechTime = now;
+        }
+        return;
+      }
+
+      // Return to normal
+      if (pill.className !== 'status-pill') {
+        pill.className = 'status-pill';
+        text.innerText = 'Bình Thường';
+      }
+    }
+
+    // Toggle Mode
+    function toggleMode() {
+      if (currentMode === 'phone') {
+        currentMode = 'hybrid';
+        document.getElementById('mode-text').innerText = 'Chế độ: Kèm Cảm biến ESP32 (150k)';
+        document.getElementById('mode-badge-btn').innerText = 'Chế Độ 150k';
+        document.getElementById('mode-badge-btn').style.background = '#3b82f6';
+        updateVoice("Đã kết nối Bluetooth với cảm biến ghi-đông xe đạp điện.");
+      } else {
+        currentMode = 'phone';
+        document.getElementById('mode-text').innerText = 'Chế độ: 100% Điện thoại (0đ)';
+        document.getElementById('mode-badge-btn').innerText = 'Chế Độ 0đ';
+        document.getElementById('mode-badge-btn').style.background = '#10b981';
+        updateVoice("Chuyển sang cảm biến con quay hồi chuyển của điện thoại.");
+      }
+    }
+
+    // Switch Navigation Tabs
+    function switchNav(tabName, btnElem) {
+      document.querySelectorAll('.screen-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById('tab-' + tabName).style.display = 'flex';
+      btnElem.classList.add('active');
+    }
+
+    // Update Voice Banner & Speak
+    function updateVoice(message) {
+      document.getElementById('voice-text').innerText = `"${message}"`;
+      speakVietnamese(message);
+    }
+
+    // Simulate Scenarios
+    function simulateScenario(type) {
+      const pill = document.getElementById('behavior-pill');
+      const text = document.getElementById('behavior-text');
+
+      if (type === 'swerving') {
+        pill.className = 'status-pill warning';
+        text.innerText = 'Lạng Lách';
+        document.getElementById('val-tilt').innerText = '24.5°';
+        document.getElementById('val-speed').innerText = '26.0';
+        sdiScore = Math.max(70, sdiScore - 4);
+        document.getElementById('sdi-score').innerText = sdiScore;
+        updateVoice("Bạn đang lạng lách chuyển làn quá nhanh! Hãy đi chậm lại và giữ thẳng tay lái.");
+        
+        setTimeout(() => resetStatus(), 4500);
+      }
+      else if (type === 'braking') {
+        pill.className = 'status-pill warning';
+        text.innerText = 'Phanh Gấp';
+        document.getElementById('val-speed').innerText = '4.0';
+        sdiScore = Math.max(70, sdiScore - 2);
+        document.getElementById('sdi-score').innerText = sdiScore;
+        updateVoice("Chú ý: Bạn vừa phanh gấp giật cục. Hãy giữ khoảng cách an toàn với xe phía trước.");
+        
+        setTimeout(() => resetStatus(), 4500);
+      }
+      else if (type === 'pothole') {
+        pill.className = 'status-pill';
+        text.innerText = 'Sụp Ổ Gà';
+        updateVoice("Đã tự động ghi nhận ổ gà mặt đường và đánh dấu lên bản đồ cộng đồng.");
+        setTimeout(() => resetStatus(), 3500);
+      }
+      else if (type === 'crash') {
+        pill.className = 'status-pill danger';
+        text.innerText = 'Ngã Xe!';
+        document.getElementById('val-tilt').innerText = '82.0°';
+        document.getElementById('val-speed').innerText = '0.0';
+        triggerSOS();
+      }
+      else if (type === 'distracted') {
+        pill.className = 'status-pill warning';
+        text.innerText = 'Mất Tập Trung!';
+        sdiScore = Math.max(70, sdiScore - 5);
+        document.getElementById('sdi-score').innerText = sdiScore;
+        updateVoice("Cảnh báo: Phát hiện bạn vừa rút điện thoại xem khi xe đang chạy! Hãy cất máy vào túi.");
+        setTimeout(() => resetStatus(), 4500);
+      }
+    }
+
+    function resetStatus() {
+      const pill = document.getElementById('behavior-pill');
+      const text = document.getElementById('behavior-text');
+      pill.className = 'status-pill';
+      text.innerText = 'Bình Thường';
+      document.getElementById('val-tilt').innerText = '3.5°';
+      document.getElementById('val-speed').innerText = '18.0';
+    }
+
+    // Trigger SOS 30s Countdown
+    function triggerSOS() {
+      const modal = document.getElementById('sos-modal');
+      modal.style.display = 'flex';
+      sosSecondsLeft = 30;
+      document.getElementById('sos-seconds').innerText = sosSecondsLeft;
+      
+      speakVietnamese("Khẩn cấp! Phát hiện ngã xe! Đang đếm ngược 30 giây để tự động gọi cứu hộ 115.");
+
+      if (sosTimer) clearInterval(sosTimer);
+      sosTimer = setInterval(() => {
+        sosSecondsLeft--;
+        document.getElementById('sos-seconds').innerText = sosSecondsLeft;
+        if (sosSecondsLeft <= 0) {
+          clearInterval(sosTimer);
+          modal.style.display = 'none';
+          alert("🚨 ĐÃ TỰ ĐỘNG THỰC HIỆN CUỘC GỌI CỨU HỘ 115!\nNội dung thoại: 'Khẩn cấp! Học sinh gặp nạn tại tọa độ 10.7626, 106.6823...'");
+          resetStatus();
+        }
+      }, 1000);
+    }
+
+    function cancelSOS() {
+      if (sosTimer) clearInterval(sosTimer);
+      document.getElementById('sos-modal').style.display = 'none';
+      updateVoice("Đã hủy báo động khẩn cấp. Mừng vì bạn vẫn an toàn!");
+      resetStatus();
+    }
+
+    function claimReward(itemName) {
+      if (ecoPoints >= 200) {
+        ecoPoints -= 200;
+        document.getElementById('eco-points').innerText = ecoPoints;
+        alert(`🎉 Chúc mừng bạn đã đổi thành công phần quà: ${itemName} do Toyota đồng hành!`);
+      }
+    }
+
+    // Register PWA Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then(() => {
+          console.log('Eco-SafeRide ServiceWorker Registered');
+        }).catch(err => {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
