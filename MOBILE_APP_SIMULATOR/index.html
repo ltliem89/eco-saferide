@@ -517,18 +517,36 @@
         </div>
       </div>
 
-      <div class="card">
-        <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">DANH BẠ KHẨN CẤP ĐÃ THIẾT LẬP</div>
-        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-          📞 Bố: <strong>0912.xxx.xxx</strong> (Tự động gọi thoại)
+      <!-- Phone Input & Save Card -->
+      <div class="card" style="border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.08);">
+        <div style="font-size: 12px; font-weight: 700; color: #60a5fa; margin-bottom: 8px;">
+          📞 THIẾT LẬP SỐ ĐT NGƯỜI THÂN NHẬN CỨU HỘ
         </div>
-        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-          📞 Cứu hộ Người thân: <strong id="display-saved-phone" style="color: #38bdf8;">0912.345.678</strong>
+        <div style="display: flex; gap: 8px;">
+          <input type="tel" id="input-emergency-phone" placeholder="Nhập số ĐT (VD: 0912345678)" 
+                 style="flex: 1; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 13px; font-weight: 600; outline: none;">
+          <button onclick="saveEmergencyPhone()" 
+                  style="background: #10b981; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; white-space: nowrap;">
+            Lưu Số
+          </button>
         </div>
-        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0;">
-          💬 Cô Chủ Nhiệm: <strong>0983.xxx.xxx</strong> (Gửi tin nhắn SMS)
+        <div id="phone-saved-feedback" style="font-size: 11px; color: #10b981; margin-top: 8px; font-weight: 600;">
+          🟢 Số đang kích hoạt: <span id="display-saved-phone">0912.345.678</span>
         </div>
       </div>
+
+      <div class="card">
+        <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #cbd5e1;">HÀNH ĐỘNG KHI CÓ SỰ CỐ NGÃ XE</div>
+        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          🚨 Đếm ngược an toàn: <strong>30 giây</strong> (có nút hủy)
+        </div>
+        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          📞 Người nhận cuộc gọi: <strong id="list-target-phone" style="color: #38bdf8;">0912.345.678</strong>
+        </div>
+        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0;">
+          📍 Tọa độ GPS gửi kèm: <strong>Tự động đính kèm qua SMS</strong>
+        </div>
+      </div></div>
     </div>
 
     <!-- Bottom Navigation -->
@@ -809,13 +827,50 @@
       document.getElementById('val-speed').innerText = '18.0';
     }
 
-    // Trigger SOS 30s Countdown
+    // Emergency Contact Management
+    let emergencyContactPhone = localStorage.getItem('eco_emergency_phone') || '0912.345.678';
+
+    function initEmergencyContactUI() {
+      const saved = localStorage.getItem('eco_emergency_phone');
+      if (saved) emergencyContactPhone = saved;
+      const input = document.getElementById('input-emergency-phone');
+      const disp1 = document.getElementById('display-saved-phone');
+      const disp2 = document.getElementById('list-target-phone');
+      const disp3 = document.getElementById('modal-target-phone');
+      if (input && saved) input.value = saved;
+      if (disp1) disp1.innerText = emergencyContactPhone;
+      if (disp2) disp2.innerText = emergencyContactPhone;
+      if (disp3) disp3.innerText = emergencyContactPhone;
+    }
+
+    function saveEmergencyPhone() {
+      const input = document.getElementById('input-emergency-phone');
+      if (!input || !input.value.trim()) {
+        alert('Vui lòng nhập số điện thoại người thân!');
+        return;
+      }
+      const raw = input.value.trim();
+      emergencyContactPhone = raw;
+      localStorage.setItem('eco_emergency_phone', raw);
+      initEmergencyContactUI();
+      const feedback = document.getElementById('phone-saved-feedback');
+      if (feedback) {
+        feedback.innerText = '✅ Đã lưu thành công: ' + raw;
+        feedback.style.color = '#10b981';
+      }
+      speakVietnamese('Đã lưu số điện thoại người thân để sẵn sàng kết nối khi có sự cố.');
+      alert('✅ ĐÃ LƯU SỐ ĐIỆN THOẠI NGƯỜI THÂN THÀNH CÔNG!\nSố: ' + raw + '\n(Quy tắc bản thử nghiệm: Khi phát hiện ngã xe, hệ thống sẽ kết nối số này, tuyệt đối không gọi 115)');
+    }
+
+    // Trigger SOS 30s Countdown (Chỉ liên hệ người thân đã lưu, tuyệt đối không gọi 115)
     function triggerSOS() {
       const modal = document.getElementById('sos-modal');
       modal.style.display = 'flex';
       sosSecondsLeft = 30;
       document.getElementById('sos-seconds').innerText = sosSecondsLeft;
       
+      initEmergencyContactUI();
+      const targetPhone = emergencyContactPhone || '0912.345.678';
       speakVietnamese("Khẩn cấp! Phát hiện ngã xe! Đang đếm ngược 30 giây để tự động kết nối cuộc gọi tới người thân.");
 
       if (sosTimer) clearInterval(sosTimer);
@@ -825,7 +880,7 @@
         if (sosSecondsLeft <= 0) {
           clearInterval(sosTimer);
           modal.style.display = 'none';
-          alert("🚨 ĐÃ TỰ ĐỘNG THỰC HIỆN CUỘC GỌI CỨU HỘ 115!\nNội dung thoại: 'Khẩn cấp! Học sinh gặp nạn tại tọa độ 10.7626, 106.6823...'");
+          alert("🚨 ĐÃ TỰ ĐỘNG THỰC HIỆN CUỘC GỌI CỨU HỘ TỚI NGƯỜI THÂN!\nSố điện thoại: " + targetPhone + "\nNội dung: 'Khẩn cấp! Học sinh gặp nạn tại tọa độ 10.7626, 106.6823 (Gần cổng trường)...'");
           resetStatus();
         }
       }, 1000);
@@ -849,6 +904,7 @@
     // Register PWA Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
+        initEmergencyContactUI();
         navigator.serviceWorker.register('./sw.js').then(() => {
           console.log('Eco-SafeRide ServiceWorker Registered');
         }).catch(err => {
