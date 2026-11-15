@@ -24,6 +24,7 @@
     let lastSensorSpeechTime = 0;
     let gravX = 0, gravY = 0, gravZ = 9.8;
     const ALPHA = 0.8; // Low-pass filter weight for gravity decoupling
+    let pulseZCount = 0; // Bộ đếm độ rộng xung trục Z phân biệt ổ gà vs gờ giảm tốc
 
     // Background Keep-Alive & WakeLock for Mobile Screen Locking
     let wakeLock = null;
@@ -198,16 +199,29 @@
         return;
       }
 
-      // 3. Pothole / Bump Detection (Vertical jerk: dynamic Z)
+      // 3. Pothole vs Speed Bump Discrimination (Phân biệt Ổ gà vs Gờ giảm tốc)
       const dynZ = Math.abs(az - gravZ);
-      if (dynZ > 6.0) {
-        pill.className = 'status-pill';
-        text.innerText = 'Sụp Ổ Gà!';
-        if (now - lastSensorSpeechTime > 6000) {
-          updateVoice("Đã phát hiện chấn động mặt đường và ghi nhận ổ gà lên bản đồ.");
-          lastSensorSpeechTime = now;
+      if (dynZ > 6.5) {
+        pulseZCount++;
+      } else {
+        if (pulseZCount >= 1 && pulseZCount <= 3) {
+          // Xung nhọn đơn lẻ rất ngắn (<= 60ms) -> Sụp Ổ Gà thực tế!
+          pill.className = 'status-pill';
+          text.innerText = 'Sụp Ổ Gà!';
+          if (now - lastSensorSpeechTime > 6000) {
+            updateVoice("Đã tự động ghi nhận ổ gà mặt đường và đánh dấu lên bản đồ cộng đồng.");
+            lastSensorSpeechTime = now;
+          }
+          pulseZCount = 0;
+          return;
+        } else if (pulseZCount >= 4) {
+          // Xung kéo dài (> 80ms) -> Gờ giảm tốc (Speed Bump) -> Không đánh dấu ổ gà
+          pill.className = 'status-pill';
+          text.innerText = 'Gờ Giảm Tốc';
+          pulseZCount = 0;
+          return;
         }
-        return;
+        pulseZCount = 0;
       }
 
       // Return to normal
