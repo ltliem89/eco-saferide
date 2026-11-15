@@ -40,7 +40,10 @@
       <div style="display: flex; align-items: center; gap: 6px;">
         <span id="mode-text">Chế độ: 100% Điện thoại (0đ)</span>
       </div>
-      <button class="mode-badge" onclick="toggleMode()" id="mode-badge-btn">Đổi Chế Độ</button>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <button class="mode-badge" onclick="enterPocketMode()" style="background: rgba(148, 163, 184, 0.15); border: 1px solid #475569; color: #cbd5e1;">🌙 Bỏ Túi (Màn Đen)</button>
+        <button class="mode-badge" onclick="toggleMode()" id="mode-badge-btn">Đổi Chế Độ</button>
+      </div>
     </div>
 
     <!-- Screen Content: TAB 1 (HÀNH TRÌNH THỰC) -->
@@ -355,6 +358,19 @@
         Nếu bạn an toàn, hãy nhấn nút bên dưới để hủy báo động.
       </div>
       <button class="btn-cancel-sos" onclick="cancelSOS()">TÔI VẪN ỔN (HỦY BÁO ĐỘNG)</button>
+    </div>
+
+    <!-- Pocket Mode Fullscreen Black OLED Overlay -->
+    <div id="pocket-mode-overlay" style="display: none; position: absolute; inset: 0; background: #000; z-index: 99999; border-radius: 36px; flex-direction: column; justify-content: center; align-items: center; color: #475569; text-align: center; padding: 24px; user-select: none;">
+      <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;">🌙</div>
+      <div style="font-size: 14px; font-weight: 800; color: #64748b; letter-spacing: 1px; text-transform: uppercase;">CHẾ ĐỘ BỎ TÚI ĐANG BẬT</div>
+      <div style="font-size: 11px; color: #334155; margin-top: 8px; line-height: 1.6; max-width: 260px;">
+        Màn hình đen OLED tiết kiệm 95% pin và chống chạm nhầm.<br>
+        <strong style="color: #10b981;">Cảm biến & Cảnh báo giọng nói đang chạy ngầm 100%.</strong>
+      </div>
+      <button onclick="exitPocketMode()" style="margin-top: 36px; background: #0f172a; color: #94a3b8; border: 1px solid #334155; padding: 12px 24px; border-radius: 24px; font-size: 12px; font-weight: 700; cursor: pointer;">
+        👆 Chạm vào đây để Mở Màn Hình
+      </button>
     </div>
 
   </div>

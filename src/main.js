@@ -1,3 +1,5 @@
+import './style.css';
+
 // State management
     let currentMode = 'phone'; // 'phone' (0d) or 'hybrid' (150k)
     let sdiScore = 96;
@@ -509,6 +511,26 @@
       alert(`✅ ĐÃ XUẤT THÀNH CÔNG TỆP CSV!\nSố lượng: ${recordedBuffer.length} mẫu cảm biến\nTên file: eco_motion_${activity}_${orient}_${nowStr}.csv`);
     }
 
+    // ==========================================
+    // Pocket Mode Engine (Màn hình đen OLED chống chạm nhầm)
+    // ==========================================
+    async function enterPocketMode() {
+      if (!isRealSensorActive) {
+        await startRealSensors();
+      }
+      await enableWakeLock();
+      startBgAudioKeepAlive();
+      const overlay = document.getElementById('pocket-mode-overlay');
+      if (overlay) overlay.style.display = 'flex';
+      updateVoice("Đã kích hoạt chế độ bỏ túi màn hình đen. Cảm biến và âm thanh đang chạy.");
+    }
+
+    function exitPocketMode() {
+      const overlay = document.getElementById('pocket-mode-overlay');
+      if (overlay) overlay.style.display = 'none';
+      updateVoice("Đã mở lại màn hình bình thường.");
+    }
+
 // Expose functions to window for HTML onclick attributes
 window.toggleMode = toggleMode;
 window.switchNav = switchNav;
@@ -527,6 +549,8 @@ window.toggleDataRecording = toggleDataRecording;
 window.startDataRecording = startDataRecording;
 window.stopDataRecording = stopDataRecording;
 window.exportRecordedCSV = exportRecordedCSV;
+window.enterPocketMode = enterPocketMode;
+window.exitPocketMode = exitPocketMode;
 
 // Initialize on DOM load
 window.addEventListener('DOMContentLoaded', () => {
