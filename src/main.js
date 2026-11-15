@@ -25,6 +25,43 @@
     let gravX = 0, gravY = 0, gravZ = 9.8;
     const ALPHA = 0.8; // Low-pass filter weight for gravity decoupling
 
+    // Background Keep-Alive & WakeLock for Mobile Screen Locking
+    let wakeLock = null;
+    let bgAudio = null;
+
+    async function enableWakeLock() {
+      if ('wakeLock' in navigator) {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+        } catch (e) {
+          console.log('WakeLock error:', e);
+        }
+      }
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock) {
+        wakeLock.release();
+        wakeLock = null;
+      }
+    }
+
+    function startBgAudioKeepAlive() {
+      try {
+        if (!bgAudio) {
+          bgAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
+          bgAudio.loop = true;
+        }
+        bgAudio.play().catch(e => console.log('Audio keep-alive silent:', e));
+      } catch (e) {}
+    }
+
+    function stopBgAudioKeepAlive() {
+      if (bgAudio) {
+        bgAudio.pause();
+      }
+    }
+
     function toggleRealSensors() {
       if (!isRealSensorActive) {
         startRealSensors();
@@ -52,6 +89,8 @@
       if (window.DeviceMotionEvent) {
         window.addEventListener('devicemotion', handleMotion);
         isRealSensorActive = true;
+        enableWakeLock();
+        startBgAudioKeepAlive();
         document.getElementById('btn-toggle-sensor').innerText = 'Tắt Cảm Biến';
         document.getElementById('btn-toggle-sensor').style.background = '#ef4444';
         document.getElementById('sensor-status-label').innerText = '🟢 Đang đọc trực tiếp Gyroscope & Accelerometer thật';
@@ -66,6 +105,8 @@
     function stopRealSensors() {
       window.removeEventListener('devicemotion', handleMotion);
       isRealSensorActive = false;
+      releaseWakeLock();
+      stopBgAudioKeepAlive();
       document.getElementById('btn-toggle-sensor').innerText = 'Bật Cảm Biến Thật';
       document.getElementById('btn-toggle-sensor').style.background = '#2563eb';
       document.getElementById('sensor-status-label').innerText = 'Chế độ giả lập (Bấm nút để kích hoạt Gyro/Acc thật)';
