@@ -2,13 +2,281 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=MOBILE_APP_SIMULATOR/index.html" />
-  <title>Eco-SafeRide — Đang chuyển hướng...</title>
-  <script>
-    window.location.replace("MOBILE_APP_SIMULATOR/index.html");
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Eco-SafeRide — Trợ Lý An Toàn Giao Thông Số</title>
+  
+  <!-- PWA & Mobile Web App Meta -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Eco-SafeRide">
+  <meta name="theme-color" content="#10b981">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/src/style.css">
 </head>
-<body style="background: #090d16; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh;">
-  <p>Đang chuyển hướng tới <a href="MOBILE_APP_SIMULATOR/index.html" style="color: #10b981;">Eco-SafeRide Mobile App</a>...</p>
+<body>
+<!-- Phone Shell Container -->
+  <div class="phone-wrapper">
+    
+    <!-- Notch -->
+    <div class="phone-notch">
+      <div class="camera-lens"></div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>07:15</span>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <span>5G</span>
+        <span>88%</span>
+      </div>
+    </div>
+
+    <!-- Dual-Mode Switcher -->
+    <div class="mode-bar">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span id="mode-text">Chế độ: 100% Điện thoại (0đ)</span>
+      </div>
+      <button class="mode-badge" onclick="toggleMode()" id="mode-badge-btn">Đổi Chế Độ</button>
+    </div>
+
+    <!-- Screen Content: TAB 1 (HÀNH TRÌNH THỰC) -->
+    <div class="screen-content" id="tab-ride">
+      
+      <!-- Hero Score Card -->
+      <div class="card score-hero">
+        <div class="score-circle">
+          <div class="score-num" id="sdi-score">96</div>
+          <div class="score-label">Điểm SDI</div>
+        </div>
+        <div class="hero-title">Đại Sứ Lái Xe Văn Minh 🌟</div>
+        <div class="hero-subtitle">+15 Eco-Points hành trình hôm nay</div>
+      </div>
+
+      <!-- Real-time Status & Telemetry -->
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span style="font-size: 12px; font-weight: 700; color: #cbd5e1;">TRẠNG THÁI CHUYỂN ĐỘNG</span>
+          <div class="status-pill" id="behavior-pill">
+            <span style="width: 8px; height: 8px; background: currentColor; border-radius: 50%;"></span>
+            <span id="behavior-text">Bình Thường</span>
+          </div>
+        </div>
+
+        <div class="telem-grid">
+          <div class="telem-item">
+            <div class="telem-val" id="val-speed">18.5</div>
+            <div class="telem-lbl">Vận tốc (km/h)</div>
+          </div>
+          <div class="telem-item">
+            <div class="telem-val" id="val-tilt">4.2°</div>
+            <div class="telem-lbl">Góc nghiêng</div>
+          </div>
+          <div class="telem-item">
+            <div class="telem-val" id="val-temp">32°C</div>
+            <div class="telem-lbl">Nhiệt độ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smart Voice Nudge Banner -->
+      <div class="voice-box">
+        <div class="voice-icon">🔊</div>
+        <div class="voice-msg" id="voice-text">
+          "Hành trình đang rất an toàn. Hãy duy trì tốc độ dưới 25 km/h khi gần cổng trường nhé!"
+        </div>
+      </div>
+
+      <!-- Real Phone Gyro/Accelerometer Live Control -->
+      <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid #334155; border-radius: 16px; padding: 12px; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 13px; font-weight: 700; color: #60a5fa; display: flex; align-items: center; gap: 6px;">
+              <span>📱</span> Cảm Biến Hồi Chuyển Điện Thoại
+            </div>
+            <div id="sensor-status-label" style="font-size: 11px; color: #94a3b8; margin-top: 2px;">
+              Chế độ giả lập (Bấm nút để kích hoạt Gyro/Acc thật)
+            </div>
+          </div>
+          <button id="btn-toggle-sensor" onclick="toggleRealSensors()" style="background: #2563eb; color: #fff; border: none; padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s;">
+            Bật Cảm Biến Thật
+          </button>
+        </div>
+        <div id="sensor-raw-debug" style="display: none; margin-top: 10px; font-family: monospace; font-size: 10px; color: #38bdf8; background: #0f172a; padding: 6px 10px; border-radius: 8px;">
+          Ax: 0.00 | Ay: 0.00 | Az: 0.00 | Gyro: 0.00°/s
+        </div>
+      </div>
+
+      <!-- Interactive Scenario Testbench (Phục vụ Giám Khảo Live Demo) -->
+      <div class="sim-panel">
+        <div class="sim-header">
+          <span>🧪 KỊCH BẢN THỰC ĐỊA (GIẢM LẬP)</span>
+          <span style="color: var(--primary);">BẤM ĐỂ THỬ</span>
+        </div>
+        <div class="sim-btn-grid">
+          <button class="btn-sim" onclick="simulateScenario('swerving')">
+            <span>⚡</span> Lạng lách
+          </button>
+          <button class="btn-sim" onclick="simulateScenario('braking')">
+            <span>🛑</span> Phanh gấp
+          </button>
+          <button class="btn-sim" onclick="simulateScenario('pothole')">
+            <span>🕳️</span> Sụp ổ gà
+          </button>
+          <button class="btn-sim danger" onclick="simulateScenario('crash')">
+            <span>💥</span> Ngã xe tai nạn
+          </button>
+          <button class="btn-sim" onclick="simulateScenario('distracted')" style="grid-column: span 2; background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fcd34d;">
+            <span>👀</span> Rút máy xem tin khi lái (-5đ SDI)
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Screen Content: TAB 2 (HỘ CHIẾU ATGT & ĐỔI QUÀ) -->
+    <div class="screen-content" id="tab-passport" style="display: none;">
+      <div class="card" style="background: linear-gradient(135deg, #1e1b4b 0%, #172554 100%); border-color: #3b82f6;">
+        <div style="font-size: 11px; text-transform: uppercase; color: #93c5fd; letter-spacing: 1px;">Hộ Chiếu Văn Hóa Giao Thông</div>
+        <div style="font-size: 20px; font-weight: 800; margin: 4px 0;">Nguyễn Văn An — Lớp 10A2</div>
+        <div style="font-size: 12px; color: #bfdbfe;">Trường THPT Chuyên Lý Tự Trọng</div>
+        <div style="display: flex; gap: 14px; margin-top: 14px;">
+          <div>
+            <div style="font-size: 22px; font-weight: 900; color: #facc15;" id="eco-points">425</div>
+            <div style="font-size: 10px; color: #94a3b8;">Eco-Points Tích Lũy</div>
+          </div>
+          <div>
+            <div style="font-size: 22px; font-weight: 900; color: #4ade80;">18 Ngày</div>
+            <div style="font-size: 10px; color: #94a3b8;">Chuỗi Lái Xe Chuẩn</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 10px; color: #fff;">🎁 QUÀ TẶNG TOYOTA & DÂN TRÍ ĐỒNG HÀNH</div>
+        
+        <div class="reward-item">
+          <div class="reward-info">
+            <h4>Mũ Bảo Hiểm Toyota Đạt Chuẩn</h4>
+            <p>Đổi với 350 Eco-Points</p>
+          </div>
+          <button class="btn-claim" onclick="claimReward('Mũ Bảo Hiểm')">Đổi Quà</button>
+        </div>
+
+        <div class="reward-item">
+          <div class="reward-info">
+            <h4>Suất Học Bổng Kỹ Năng Số</h4>
+            <p>Đổi với 500 Eco-Points</p>
+          </div>
+          <button class="btn-claim" style="background: #334155; color: #94a3b8;" disabled>Cần 500đ</button>
+        </div>
+
+        <div class="reward-item">
+          <div class="reward-info">
+            <h4>Voucher Bảo Dưỡng Xe Điện Miễn Phí</h4>
+            <p>Đổi với 200 Eco-Points</p>
+          </div>
+          <button class="btn-claim" onclick="claimReward('Voucher Bảo Dưỡng')">Đổi Quà</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen Content: TAB 3 (BẢN ĐỒ Ổ GÀ ĐÔ THỊ) -->
+    <div class="screen-content" id="tab-map" style="display: none;">
+      <div class="card" style="padding: 10px;">
+        <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">🗺️ BẢN ĐỒ DỮ LIỆU ĐƯỜNG PHỐ HỌC ĐƯỜNG</div>
+        <div style="height: 180px; background: #0b1329; border-radius: 10px; border: 1px solid #1e293b; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden;">
+          <div style="position: absolute; width: 100%; height: 100%; opacity: 0.15; background: repeating-linear-gradient(0deg, #3b82f6, #3b82f6 1px, transparent 1px, transparent 20px), repeating-linear-gradient(90deg, #3b82f6, #3b82f6 1px, transparent 1px, transparent 20px);"></div>
+          <div style="color: #38bdf8; font-weight: 700; font-size: 13px; z-index: 2;">Khu Vực Phường An Khánh (Cần Thơ)</div>
+          <div style="font-size: 11px; color: #94a3b8; z-index: 2;">14 Ổ gà đã được 120 học sinh tự động đánh dấu</div>
+          <div style="margin-top: 10px; z-index: 2;" class="status-pill">Đang đồng bộ DBSCAN</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 12px; font-weight: 700; margin-bottom: 10px;">CÁC ĐIỂM NGUY HIỂM VỪA GHI NHẬN</div>
+        <div class="road-pin">
+          <div class="road-icon">🕳️</div>
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: #fca5a5;">Ổ gà lớn trước cổng Chợ Mới</div>
+            <div style="font-size: 10px; color: #94a3b8;">Xung xóc 2.8g • 6 lượt xe ghi nhận • Cách bạn 180m</div>
+          </div>
+        </div>
+        <div class="road-pin">
+          <div class="road-icon">⚠️</div>
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: #fcd34d;">Gờ giảm tốc cao trước Tiểu học An Khánh</div>
+            <div style="font-size: 10px; color: #94a3b8;">Gờ hợp chuẩn • Đã xác thực OSM • Đi chậm</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen Content: TAB 4 (CỨU HỘ SOS & 115) -->
+    <div class="screen-content" id="tab-sos" style="display: none;">
+      <div class="card" style="text-align: center; padding: 20px 10px;">
+        <div style="font-size: 40px; margin-bottom: 8px;">🆘</div>
+        <div style="font-size: 16px; font-weight: 800; color: #fff;">TRUNG TÂM CỨU HỘ TỰ ĐỘNG 115</div>
+        <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">
+          Khi phát hiện ngã xe, hệ thống tự động gọi điện thoại phát giọng đọc tới 115 và nhắn tin vị trí cho gia đình.
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">DANH BẠ KHẨN CẤP ĐÃ THIẾT LẬP</div>
+        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          📞 Bố: <strong>0912.xxx.xxx</strong> (Tự động gọi thoại)
+        </div>
+        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          📞 Cấp cứu Y tế: <strong>115</strong> (Tự động phát tọa độ)
+        </div>
+        <div style="font-size: 12px; color: #cbd5e1; padding: 6px 0;">
+          💬 Cô Chủ Nhiệm: <strong>0983.xxx.xxx</strong> (Gửi tin nhắn SMS)
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="nav-bottom">
+      <button class="nav-item active" onclick="switchNav('ride', this)">
+        <span class="icon">🛵</span>
+        <span>Hành Trình</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('passport', this)">
+        <span class="icon">🎖️</span>
+        <span>Hộ Chiếu</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('map', this)">
+        <span class="icon">🗺️</span>
+        <span>Bản Đồ</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('sos', this)">
+        <span class="icon">🆘</span>
+        <span>Cứu Hộ</span>
+      </button>
+    </div>
+
+    <!-- SOS 30s Countdown Modal -->
+    <div class="sos-overlay" id="sos-modal">
+      <div style="font-size: 14px; font-weight: 800; color: #fca5a5; text-transform: uppercase;">
+        ⚠️ PHÁT HIỆN TAI NẠN NGÃ XE!
+      </div>
+      <div style="font-size: 12px; color: #cbd5e1; margin-top: 6px;">
+        Tự động gọi thoại 115 và gửi vị trí sau:
+      </div>
+      <div class="sos-countdown" id="sos-seconds">30</div>
+      <div style="font-size: 11px; color: #94a3b8;">
+        Nếu bạn an toàn, hãy nhấn nút bên dưới để hủy báo động.
+      </div>
+      <button class="btn-cancel-sos" onclick="cancelSOS()">TÔI VẪN ỔN (HỦY BÁO ĐỘNG)</button>
+    </div>
+
+  </div>
+
+  <!-- Vite Entrypoint -->
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
