@@ -1,6 +1,12 @@
 # ECO-SAFERIDE — HỆ THỐNG ỨNG DỤNG DI ĐỘNG & BẢNG MÔ PHỎNG TƯƠNG TÁC
-> **Giải pháp Trợ lý Lái xe An toàn Số — Chế độ kép Độc bản (0đ Ứng dụng độc lập & 150k Cảm biến Ghi-đông ESP32)**  
+> **Giải pháp Trợ lý Lái xe An toàn Số Học đường — Chế độ 0đ (100% Thuần Phần Mềm Bỏ Túi)**  
 > *Dự án tham dự cuộc thi: "Sáng kiến An toàn Giao thông Việt Nam 2026" (Báo Dân trí - Cục CSGT - Toyota Việt Nam)*
+
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Demo-10b981?style=for-the-badge&logo=vercel)](https://eco-saferide.vercel.app)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-ltliem89%2Feco--saferide-181717?style=for-the-badge&logo=github)](https://github.com/ltliem89/eco-saferide)
+
+🌐 **Trải nghiệm trực tiếp trên điện thoại:** [https://eco-saferide.vercel.app](https://eco-saferide.vercel.app)  
+📂 **Kho lưu trữ mã nguồn GitHub:** [https://github.com/ltliem89/eco-saferide](https://github.com/ltliem89/eco-saferide)
 
 ---
 
