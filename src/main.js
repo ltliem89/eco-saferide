@@ -279,14 +279,56 @@
       document.getElementById('val-speed').innerText = '18.0';
     }
 
-    // Trigger SOS 30s Countdown
+    // ==========================================
+    // Emergency Contact Management (Lưu số người thân, KHÔNG gọi 115)
+    // ==========================================
+    let emergencyContactPhone = localStorage.getItem('eco_emergency_phone') || '0912.345.678';
+
+    function initEmergencyContactUI() {
+      const saved = localStorage.getItem('eco_emergency_phone');
+      if (saved) emergencyContactPhone = saved;
+      
+      const input = document.getElementById('input-emergency-phone');
+      const disp1 = document.getElementById('display-saved-phone');
+      const disp2 = document.getElementById('list-target-phone');
+      const disp3 = document.getElementById('modal-target-phone');
+      
+      if (input && saved) input.value = saved;
+      if (disp1) disp1.innerText = emergencyContactPhone;
+      if (disp2) disp2.innerText = emergencyContactPhone;
+      if (disp3) disp3.innerText = emergencyContactPhone;
+    }
+
+    function saveEmergencyPhone() {
+      const input = document.getElementById('input-emergency-phone');
+      if (!input || !input.value.trim()) {
+        alert('Vui lòng nhập số điện thoại người thân!');
+        return;
+      }
+      const raw = input.value.trim();
+      emergencyContactPhone = raw;
+      localStorage.setItem('eco_emergency_phone', raw);
+      initEmergencyContactUI();
+      
+      const feedback = document.getElementById('phone-saved-feedback');
+      if (feedback) {
+        feedback.innerText = '✅ Đã lưu thành công: ' + raw;
+        feedback.style.color = '#10b981';
+      }
+      speakVietnamese('Đã lưu số điện thoại người thân để sẵn sàng kết nối khi có sự cố.');
+      alert('✅ ĐÃ LƯU SỐ ĐIỆN THOẠI NGƯỜI THÂN THÀNH CÔNG!\nSố: ' + raw + '\n(Quy tắc bản thử nghiệm: Khi phát hiện ngã xe, hệ thống sẽ kết nối số này, tuyệt đối không gọi 115)');
+    }
+
+    // Trigger SOS 30s Countdown (Chỉ liên hệ người thân đã lưu, tuyệt đối không gọi 115)
     function triggerSOS() {
       const modal = document.getElementById('sos-modal');
       modal.style.display = 'flex';
       sosSecondsLeft = 30;
       document.getElementById('sos-seconds').innerText = sosSecondsLeft;
       
-      speakVietnamese("Khẩn cấp! Phát hiện ngã xe! Đang đếm ngược 30 giây để tự động gọi cứu hộ 115.");
+      initEmergencyContactUI();
+      const targetPhone = emergencyContactPhone || '0912.345.678';
+      speakVietnamese("Khẩn cấp! Phát hiện ngã xe! Đang đếm ngược 30 giây để tự động kết nối cuộc gọi tới người thân.");
 
       if (sosTimer) clearInterval(sosTimer);
       sosTimer = setInterval(() => {
@@ -295,7 +337,7 @@
         if (sosSecondsLeft <= 0) {
           clearInterval(sosTimer);
           modal.style.display = 'none';
-          alert("🚨 ĐÃ TỰ ĐỘNG THỰC HIỆN CUỘC GỌI CỨU HỘ 115!\nNội dung thoại: 'Khẩn cấp! Học sinh gặp nạn tại tọa độ 10.7626, 106.6823...'");
+          alert("🚨 ĐÃ TỰ ĐỘNG THỰC HIỆN CUỘC GỌI CỨU HỘ TỚI NGƯỜI THÂN!\nSố điện thoại: " + targetPhone + "\nNội dung: 'Khẩn cấp! Học sinh gặp nạn tại tọa độ 10.7626, 106.6823 (Gần cổng trường)...'");
           resetStatus();
         }
       }, 1000);
@@ -339,3 +381,11 @@ window.claimReward = claimReward;
 window.toggleRealSensors = toggleRealSensors;
 window.startRealSensors = startRealSensors;
 window.stopRealSensors = stopRealSensors;
+window.saveEmergencyPhone = saveEmergencyPhone;
+window.initEmergencyContactUI = initEmergencyContactUI;
+
+// Initialize on DOM load
+window.addEventListener('DOMContentLoaded', () => {
+  initEmergencyContactUI();
+});
+
