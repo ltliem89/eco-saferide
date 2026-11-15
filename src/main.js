@@ -288,15 +288,21 @@
       const saved = localStorage.getItem('eco_emergency_phone');
       if (saved) emergencyContactPhone = saved;
       
+      const cleanPhone = (emergencyContactPhone || '0912.345.678').replace(/[^0-9+]/g, '');
+
       const input = document.getElementById('input-emergency-phone');
       const disp1 = document.getElementById('display-saved-phone');
       const disp2 = document.getElementById('list-target-phone');
       const disp3 = document.getElementById('modal-target-phone');
+      const btnTest = document.getElementById('btn-test-call');
+      const btnModal = document.getElementById('btn-modal-call-now');
       
       if (input && saved) input.value = saved;
       if (disp1) disp1.innerText = emergencyContactPhone;
       if (disp2) disp2.innerText = emergencyContactPhone;
       if (disp3) disp3.innerText = emergencyContactPhone;
+      if (btnTest) btnTest.href = 'tel:' + cleanPhone;
+      if (btnModal) btnModal.href = 'tel:' + cleanPhone;
     }
 
     function saveEmergencyPhone() {
@@ -337,7 +343,10 @@
         if (sosSecondsLeft <= 0) {
           clearInterval(sosTimer);
           modal.style.display = 'none';
-          alert("🚨 ĐÃ TỰ ĐỘNG THỰC HIỆN CUỘC GỌI CỨU HỘ TỚI NGƯỜI THÂN!\nSố điện thoại: " + targetPhone + "\nNội dung: 'Khẩn cấp! Học sinh gặp nạn tại tọa độ 10.7626, 106.6823 (Gần cổng trường)...'");
+          const targetPhone = emergencyContactPhone || '0912.345.678';
+          const clean = targetPhone.replace(/[^0-9+]/g, '');
+          alert("🚨 ĐÃ TỰ ĐỘNG THỰC HIỆN CUỘC GỌI CỨU HỘ TỚI NGƯỜI THÂN!\nSố điện thoại: " + targetPhone + "\nĐang mở ứng dụng điện thoại để gọi ngay...");
+          window.location.href = 'tel:' + clean;
           resetStatus();
         }
       }, 1000);

@@ -241,6 +241,16 @@
         <div id="phone-saved-feedback" style="font-size: 11px; color: #10b981; margin-top: 8px; font-weight: 600;">
           🟢 Số đang kích hoạt: <span id="display-saved-phone">0912.345.678</span>
         </div>
+        
+        <!-- Action Call Test Button -->
+        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1);">
+          <a id="btn-test-call" href="tel:0912345678" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #60a5fa; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 12px;">
+            <span>📞</span> Bấm để Thử Gọi Điện Thoại Thật (Test Call)
+          </a>
+          <div style="font-size: 10px; color: #94a3b8; margin-top: 4px; text-align: center;">
+            Hệ thống sẽ gọi trực tiếp số trên qua ứng dụng Điện thoại của máy
+          </div>
+        </div>
       </div>
 
       <div class="card">
@@ -286,7 +296,13 @@
         Tự động liên hệ Người thân (<span id="modal-target-phone" style="color: #38bdf8; font-weight: 700;">0912.345.678</span>) sau:
       </div>
       <div class="sos-countdown" id="sos-seconds">30</div>
-      <div style="font-size: 11px; color: #94a3b8;">
+
+      <!-- Direct Call Button -->
+      <a id="btn-modal-call-now" href="tel:0912345678" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: #10b981; color: #fff; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 13px; margin-bottom: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);">
+        <span>📞</span> GỌI CHO NGƯỜI THÂN NGAY BÂY GIỜ
+      </a>
+
+      <div style="font-size: 11px; color: #94a3b8; margin-bottom: 6px;">
         Nếu bạn an toàn, hãy nhấn nút bên dưới để hủy báo động.
       </div>
       <button class="btn-cancel-sos" onclick="cancelSOS()">TÔI VẪN ỔN (HỦY BÁO ĐỘNG)</button>
