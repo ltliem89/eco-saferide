@@ -40,9 +40,9 @@ Tên viết tắt: SSSE — Eco-SafeRide
 
 ### 4.1. Hoàn cảnh ra đời và Bối cảnh thực tiễn tai nạn giao thông học đường
 
-Thống kê của Ủy ban An toàn Giao thông Quốc gia và Cục CSGT chỉ ra thực trạng nhức nhối: Mỗi năm xảy ra trên 2.000 vụ tai nạn giao thông liên quan đến học sinh, cướp đi sinh mạng gần 1.000 em và khiến hơn 1.200 em thương tật. Tai nạn giao thông hiện là nguyên nhân gây tử vong hàng đầu ở lứa tuổi 12 – 18 tại Việt Nam.
+Thống kê của Ủy ban An toàn Giao thông Quốc gia và Cục CSGT chỉ ra thực trạng nhức nhối: Hàng năm xảy ra hơn 2.000 vụ tai nạn liên quan đến học sinh, cướp đi sinh mạng gần 1.000 em và khiến 1.200 em thương tật vĩnh viễn. Tai nạn giao thông hiện là nguyên nhân tử vong hàng đầu ở lứa tuổi 12 – 18 trên cả nước.
 
-Khảo sát tại Cần Thơ (THPT Châu Văn Liêm, THPT Chuyên Lý Tự Trọng) ghi nhận 85% học sinh tự đến trường bằng xe đạp điện và xe máy điện (25 – 50 km/h). Do pháp luật không yêu cầu giấy phép lái xe, đa số học sinh tham gia giao thông khi chưa qua đào tạo kỹ năng, thiếu phản xạ phòng vệ và không nhận thức được động học va chạm.
+Khảo sát tại Cần Thơ (THPT Châu Văn Liêm, THPT Chuyên Lý Tự Trọng) ghi nhận 85% học sinh tự đến trường bằng xe đạp điện, xe máy điện (vận tốc 25 – 50 km/h). Do chưa bắt buộc giấy phép lái xe, đa số học sinh thiếu kỹ năng phòng vệ thực tế và chưa nhận thức đầy đủ về mối nguy hiểm từ động học va chạm.
 
 ### 4.2. Đặc thù nhận thức hành vi lứa tuổi học sinh (12 – 18 tuổi)
 
@@ -64,7 +64,7 @@ Khoa học thần kinh chứng minh vỏ não trước trán (Prefrontal Cortex)
 
 Các giải pháp hiện nay bộc lộ 3 rào cản chí tử:
 
-• Chi phí phần cứng đắt đỏ: Hộp đen OBD-II hay camera AI giá 1.5 – 4.5 triệu đồng, không thể trang bị cho 10 triệu học sinh;
+• Chi phí phần cứng đắt đỏ: Hộp đen OBD-II hay camera AI có giá 1.5 – 4.5 triệu đồng, khó khả thi để trang bị đại trà cho hơn 10 triệu học sinh phổ thông;
 
 • Xâm phạm quyền riêng tư: Ứng dụng định vị gia đình theo dõi GPS liên tục lên đám mây, vi phạm Nghị định 13/2023/NĐ-CP;
 
@@ -72,7 +72,7 @@ Các giải pháp hiện nay bộc lộ 3 rào cản chí tử:
 
 ### 4.5. Căn cứ pháp lý và Tính cấp thiết của Đề tài
 
-Đề tài bám sát Nghị quyết 48/NQ-CP, Chỉ thị 31/CT-TTg và Luật TTATGT đường bộ số 36/2024/QH15. Sáng kiến SSSE — Eco-SafeRide ra đời với sứ mệnh: Tận dụng smartphone sẵn có của học sinh và camera trường học để thiết lập 'Lá chắn An toàn 3 Lớp' khép kín với CHI PHÍ 0 ĐỒNG, mang lại cơ hội bảo vệ bình đẳng cho mọi học sinh Việt Nam.
+Đề tài bám sát Nghị quyết 48/NQ-CP, Chỉ thị 31/CT-TTg và Luật TTATGT đường bộ số 36/2024/QH15. Sáng kiến SSSE — Eco-SafeRide ra đời với sứ mệnh: Tận dụng smartphone sẵn có của học sinh và camera trường học nhằm thiết lập 'Lá chắn An toàn 3 Lớp' khép kín với CHI PHÍ 0 ĐỒNG, bảo vệ bình đẳng cho mọi học sinh trên toàn quốc.
 
 ---
 
@@ -90,7 +90,7 @@ Các giải pháp hiện nay bộc lộ 3 rào cản chí tử:
 
 #### 1. Dữ liệu Camera giao thông và Camera an ninh cổng trường (☑ Đã đánh dấu)
 
-Gồm hơn 10.000 khung hình video 2K từ camera an ninh sẵn có tại các cổng trường học ở Cần Thơ (THPT Châu Văn Liêm, THPT Chuyên Lý Tự Trọng). Dữ liệu được gán nhãn phục vụ huấn luyện AI biên nhận diện 4 hành vi: Không đội mũ bảo hiểm; Dàn hàng ngang từ 3 xe; Phương tiện cơ giới đi ngược chiều; và Xung đột rẽ cắt đầu xe.
+Gồm hơn 10.000 khung hình video 2K từ camera an ninh các cổng trường học Cần Thơ (THPT Châu Văn Liêm, THPT Chuyên Lý Tự Trọng). Dữ liệu được gán nhãn phục vụ huấn luyện Edge AI nhận diện 4 hành vi rủi ro: Không đội mũ bảo hiểm; Dàn hàng ngang; Đi ngược chiều; và Nguy cơ xung đột do rẽ cắt đầu xe.
 
 #### 2. Dữ liệu Camera giám sát hành trình (☑ Đã đánh dấu)
 
@@ -112,9 +112,9 @@ Hệ sinh thái SSSE — Eco-SafeRide được xây dựng theo triết lý 'Ph�
 
 • Web PWA & Native 0đ: Chạy trực tiếp trên trình duyệt di động hoặc ứng dụng nhẹ (< 15MB), không cần thiết bị ngoài;
 
-• Tự động Phân tầng Hoạt động (HAR) qua FFT: Phân tích rung động 50Hz, tự chuyển Sleep Mode khi đi bộ (tiết kiệm 99% pin) và tự kích hoạt Hộp đen khi lái xe điện;
+• Phân tầng Hoạt động HAR qua Phổ FFT: Phân tích dao động 50Hz, tự chuyển chế độ ngủ khi đi bộ (tiết kiệm 99% pin) và tự kích hoạt Hộp đen AI khi học sinh điều khiển xe điện;
 
-• Bộ lọc Tự căn chỉnh Trọng trường Động: Cho phép để điện thoại tự do trong túi quần mà vẫn tách chính xác vector trọng lực Trái Đất, đo chuẩn xác lực phanh và độ nghiêng;
+• Bộ lọc Tự Căn chỉnh Trọng trường Động: Cho phép bỏ điện thoại tự do trong túi quần mà vẫn tách chuẩn xác vector trọng lực Trái Đất, đo đạc trung thực lực phanh và góc nghiêng;
 
 • Cảnh báo Âm thanh Phản xạ: Khi phanh gấp hoặc rẽ gắt, phát âm bíp 85dB trong dưới 100ms xuyên qua túi quần giúp học sinh giữ thăng bằng tức thì;
 
@@ -122,7 +122,7 @@ Hệ sinh thái SSSE — Eco-SafeRide được xây dựng theo triết lý 'Ph�
 
 • Điểm Lái Xe An Toàn Tự Phục Hồi (SDI): Đánh giá hành vi theo thang điểm 100, tự phục hồi điểm thưởng khi lái êm ái theo Lý thuyết Hích (Nudge);
 
-• Bộ Lọc Tai Nạn 4 Cổng Hermes & SOS Tự động: Khi ngã xe thỏa 4 cổng vật lý, hệ thống đếm ngược 15 giây và tự gửi SMS tọa độ GPS cứu hộ cho phụ huynh.
+• Bộ Lọc Tai Nạn 4 Cổng Hermes & Cứu Hộ SOS: Khi ngã xe thỏa 4 cổng vật lý, hệ thống đếm ngược 15 giây và tự gửi SMS kèm tọa độ định vị GPS khẩn cấp cho phụ huynh.
 
 #### Phân hệ 2: Mô phỏng 3D WebGL Điểm mù Xe tải Trực quan (3D Interactive Blind-Spot Canvas)
 
@@ -256,9 +256,11 @@ Chỉ khi cả 4 cổng cùng kích hoạt đồng thời, chu trình đếm ng�
 
 #### 5.C.6. Động học Hàm số Điểm Lái Xe An Toàn SDI Tự Phục Hồi (Self-Healing Safe Driving Index)
 
-Hệ thống đánh giá hành vi lái xe qua hàm số động lực học SDI theo thời gian thực:
+Hệ thống đánh giá hành vi lái xe qua mô hình hàm số động học SDI theo thời gian thực:
 
-$$\text{SDI}[t] = \max\left(0, \min\left(100, \text{SDI}[t-1] - \sum_{i=1}^M w_i \cdot I_{\text{event}_i}[t] + \beta \cdot \Delta t \cdot I_{\text{safe}}[t]\right)\right)$$
+$$\text{SDI}[t] = \max\left(0, \; \min\left(100, \; \text{SDI}[t-1] - \Delta_{\text{pen}}[t] + \Delta_{\text{rew}}[t]\right)\right)$$
+
+$$\Delta_{\text{pen}}[t] = \sum_{i=1}^M w_i \cdot I_i[t], \qquad \Delta_{\text{rew}}[t] = \beta \cdot \Delta t \cdot I_{\text{safe}}[t]$$
 
 Quy tắc: Khởi tạo SDI[0] = 100 điểm; Phạt phanh gấp w = 3.0 điểm, rẽ gắt w = 4.0 điểm, quá tốc độ w = 5.0 điểm; Tốc độ phục hồi điểm thưởng beta = 0.05 điểm/giây (lái êm 3.3 phút hoàn lại 10 điểm). Cơ chế ứng dụng Lý thuyết Hích (Nudge Theory), khích lệ học sinh duy trì thói quen an toàn.
 
@@ -270,7 +272,7 @@ Quy tắc: Khởi tạo SDI[0] = 100 điểm; Phạt phanh gấp w = 3.0 điểm
 
 Các giải pháp tối ưu hóa bảo đảm hiệu năng tối đa:
 
-1. Lượng tử hóa INT8: Ánh xạ trọng số mạng nơ-ron sang số nguyên 8-bit đối xứng:
+1. Lượng tử hóa INT8: Ánh xạ trọng số mạng nơ-ron sang số nguyên 8‑bit đối xứng trên bộ nhớ:
 
 $$Q = \text{clip}\left(\text{round}\left(\frac{W}{S}\right), -128, 127\right)$$
 
@@ -304,13 +306,13 @@ Cắt giảm 75% dung lượng (16.8 MB xuống 4.2 MB), tăng tốc suy luận 
 
 • Mạng & Băng thông: Mạng 4G/5G hoặc Wi-Fi trường học. Do tính toán cảm biến và thị giác AI diễn ra tại biên (Edge AI), băng thông tiêu thụ cực thấp (< 50 KB/ngày);
 
-• Vận hành Ngoại tuyến (Offline-First): Khi mất sóng, ứng dụng vẫn hoạt động trơn tru 100%, ghi nhật ký vào IndexedDB nội bộ và đồng bộ khi có mạng trở lại.
+• Vận hành Ngoại tuyến Toàn diện: Mất sóng ứng dụng vẫn hoạt động 100%, lưu nhật ký vào cơ sở dữ liệu IndexedDB và tự động đồng bộ ngay khi thiết bị kết nối mạng trở lại;
 
 #### 5.D.4. Kiến trúc Bảo mật Quyền riêng tư Tuyệt đối (Zero-Cloud Data Privacy)
 
 Tuân thủ tuyệt đối Nghị định số 13/2023/NĐ-CP về Bảo vệ Dữ liệu Cá nhân:
 
-• Không lưu trữ Nhận diện Khuôn mặt: Camera AI chỉ phân tích mũ bảo hiểm và phương tiện trên bộ nhớ RAM tạm thời; khung hình lập tức bị xóa bỏ sau khi phân tích;
+• Bảo mật Dữ liệu Riêng tư: Camera AI phân tích mũ bảo hiểm và luồng xe trực tiếp trên RAM; khung hình lập tức bị giải phóng và xóa vĩnh viễn ngay sau khi hoàn tất phân tích;
 
 • Bảo vệ Lịch trình: Tọa độ GPS chỉ lưu cục bộ trên máy học sinh, tuyệt đối không truyền liên tục về máy chủ đám mây. Tọa độ chỉ gửi đi duy nhất khi có tai nạn nghiêm trọng để ứng cứu khẩn cấp.
 
@@ -413,7 +415,7 @@ BẢNG 3: BẢNG ĐO LƯỜNG HIỆU NĂNG TÍNH TOÁN THỜI GIAN THỰC VÀ N�
 
 *Hình 6: Đánh giá Hiệu suất Tiết kiệm Điện năng Màn hình OLED Pure Black (89.13%) và Tối ưu Hóa Chu kỳ Pin trên Thiết bị Di động.*
 
-Các chỉ số hiệu năng trên khẳng định hệ sinh thái Eco-SafeRide hoạt động ổn định, đáp ứng hoàn toàn điều kiện phần cứng phổ thông mà không đòi hỏi nâng cấp đắt đỏ.
+Các chỉ số hiệu năng thực nghiệm khẳng định hệ sinh thái Eco-SafeRide vận hành tối ưu, tương thích hoàn toàn trên smartphone bình dân mà không đòi hỏi nâng cấp phần cứng đắt đỏ.
 
 ### 6.4. So sánh Đối đầu Toàn diện với các Sản phẩm Hiện nay
 
@@ -430,7 +432,7 @@ BẢNG 4: BẢNG SO SÁNH ĐỐI ĐẦU TOÀN DIỆN VỀ QUY MÔ, CÔNG NGHỆ 
 | 7. Cơ chế hích hành vi (Gamification) | CÓ (SDI tự phục hồi, Hiệp sĩ an toàn) | KHÔNG | KHÔNG | KHÔNG |
 
 
-Eco-SafeRide là giải pháp duy nhất giải quyết đồng thời bài toán chi phí 0đ, mô phỏng điểm mù thực chứng và bảo mật dữ liệu cá nhân theo quy định pháp luật Việt Nam.
+Eco-SafeRide là sáng kiến duy nhất giải quyết trọn vẹn đồng thời bài toán chi phí 0 đồng, mô phỏng điểm mù trực quan và bảo vệ dữ liệu cá nhân theo quy định pháp luật Việt Nam.
 
 ### 6.5. Hiệu quả Kinh tế — Xã hội và Mức độ Khả thi Triển khai
 
@@ -446,7 +448,7 @@ Eco-SafeRide là giải pháp duy nhất giải quyết đồng thời bài toá
 
 Đề tài 'HỆ SINH THÁI CỔNG TRƯỜNG AN TOÀN GIAO THÔNG THÔNG MINH TOÀN DIỆN (SSSE) VÀ TRỢ LÝ AN TOÀN SỐ — HỘP ĐEN AI 0Đ (ECO-SAFERIDE)' là giải pháp khoa học — công nghệ mang tính đột phá bảo vệ học sinh:
 
-• Đột phá Chi phí 0 ĐỒNG: Tận dụng 100% cảm biến IMU smartphone sẵn có và camera an ninh trường học, xóa bỏ rào cản chi phí để bảo vệ công bằng cho mọi học sinh;
+• Đột phá Chi phí 0 ĐỒNG: Tận dụng 100% cảm biến IMU smartphone sẵn có và camera an ninh hiện hữu, xóa bỏ rào cản tài chính để mang lại cơ hội bảo vệ bình đẳng cho mọi học sinh;
 
 • Đóng góp Thuật toán Tự căn chỉnh Tọa độ Động: Bộ lọc đệ quy IIR tách vector trọng lực thời gian thực (fc ≈ 1.40 Hz) cho phép để điện thoại tự do trong túi quần mà vẫn đo chuẩn 98.0% gia tốc;
 
@@ -462,13 +464,13 @@ Lộ trình phát triển 3 giai đoạn (2026 – 2028):
 
 • Giai đoạn 2 (2027): Chuyển giao tới 500 trường ĐBSCL và TP.HCM; phát triển mạng lưới V2X cảnh báo tầm ngắn khi xe tải rẽ quanh cổng trường;
 
-• Giai đoạn 3 (2028): Tích hợp dữ liệu ẩn danh về điểm đen hạ tầng với Cục CSGT; triển khai bảo hiểm vi mô Pay-How-You-Drive cho học sinh đạt điểm SDI cao.
+• Giai đoạn 3 (2028): Tích hợp dữ liệu ẩn danh điểm đen hạ tầng với Cục CSGT; triển khai chính sách bảo hiểm vi mô khích lệ học sinh duy trì chỉ số SDI an toàn vững chắc.
 
 ### Khả năng hợp tác với các nhà đầu tư
 
 Tiềm năng hợp tác sâu rộng với các đối tác chiến lược:
 
-• Quỹ Toyota Mobility Foundation (TMF) & Toyota Việt Nam: Tài trợ thiết bị AI biên và tích hợp công nghệ điểm mù vào chương trình an toàn giao thông thường niên;
+• Quỹ Toyota Mobility Foundation (TMF) & Toyota Việt Nam: Đồng hành tài trợ thiết bị AI biên và đưa bài học điểm mù vào chuỗi tập huấn an toàn giao thông học đường;
 
 • Cục Cảnh sát Giao thông (C08) & UBATGT Quốc gia: Nhân rộng mô hình 'Cổng trường An toàn' toàn quốc; số hóa giáo trình tương tác 3D WebGL phục vụ tuyên truyền;
 
