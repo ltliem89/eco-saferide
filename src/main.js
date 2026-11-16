@@ -255,6 +255,7 @@ window.simulateScenario = function(type) {
     if (sdiEl) sdiEl.innerText = sdiScore;
     playTone(659.25, 'sine', 0.25);
     speakVietnamese('Bạn đang lái xe rất êm ái và an toàn.');
+    sendDataToDispatch('normal');
   } else if (type === 'swerving') {
     accX = 3.8;
     currentTilt = 38.5;
@@ -1371,3 +1372,60 @@ window.addEventListener('DOMContentLoaded', () => {
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   setUserViewMode(currentAppDisplayMode);
 }
+
+
+// ==========================================
+// CORE 3-STEP PIPELINE: SEND DATA TO DISPATCH
+// ==========================================
+function speakCurrentVoiceMsg() {
+  const voiceEl = document.getElementById('voice-text');
+  if (voiceEl && voiceEl.innerText) {
+    speakVietnamese(voiceEl.innerText);
+  }
+}
+window.speakCurrentVoiceMsg = speakCurrentVoiceMsg;
+
+function sendDataToDispatch(triggerType = 'manual') {
+  playTone(880, 'sine', 0.1);
+  setTimeout(() => playTone(1318.5, 'sine', 0.15), 100);
+
+  const now = new Date();
+  const timeStr = now.toTimeString().split(' ')[0];
+  const speed = document.getElementById('val-speed')?.innerText || '18.5';
+  const tilt = document.getElementById('val-tilt')?.innerText || '4.2°';
+  const behavior = document.getElementById('behavior-text')?.innerText || 'Bình Thường';
+  const isEmergency = triggerType === 'crash' || behavior.includes('Tai Nạn') || behavior.includes('Ngã Xe');
+
+  // Show Toast
+  const toast = document.getElementById('dispatch-toast');
+  const toastText = document.getElementById('dispatch-toast-text');
+  if (toast && toastText) {
+    if (isEmergency) {
+      toast.style.background = '#7f1d1d';
+      toast.style.borderColor = '#ef4444';
+      toastText.innerText = '🚨 ĐÃ GỬI BÁO ĐỘNG CỨU HỘ KHẨN CẤP & VỊ TRÍ GPS VỀ TỔNG ĐÀI!';
+    } else {
+      toast.style.background = '#064e3b';
+      toast.style.borderColor = '#10b981';
+      toastText.innerText = `📡 Đã gửi gói tin (Vận tốc: ${speed} km/h, GPS: 10.0337, 105.7798) về Tổng Đài lúc ${timeStr}!`;
+    }
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 4000);
+  }
+
+  // Append to Dispatch live feed in View 4
+  const feed = document.getElementById('dispatch-live-feed');
+  if (feed) {
+    const item = document.createElement('div');
+    if (isEmergency) {
+      item.style.color = '#ef4444';
+      item.style.fontWeight = 'bold';
+      item.innerHTML = `<span>[${timeStr}] 🚨 BÁO ĐỘNG TAI NẠN: Học sinh ngã xe | Vận tốc: ${speed} km/h | Vị trí: 10.0337, 105.7798 | Đang kích hoạt 115 & người thân!</span>`;
+    } else {
+      item.style.color = '#4ade80';
+      item.innerHTML = `<span>[${timeStr}] 🟢 TRUYỀN DỮ LIỆU: Học sinh Nguyễn Văn An | Vận tốc: ${speed} km/h, Nghiêng: ${tilt} | Vị trí: 10.0337, 105.7798 | ${behavior}</span>`;
+    }
+    feed.insertBefore(item, feed.firstChild);
+  }
+}
+window.sendDataToDispatch = sendDataToDispatch;

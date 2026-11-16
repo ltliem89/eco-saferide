@@ -132,27 +132,16 @@
             </div>
           </div>
 
-          <!-- TAB 1: HÀNH TRÌNH THỰC (RIDE) -->
+                    <!-- TAB 1: 3 CHỨC NĂNG CỐT LÕI (CẢM BIẾN - CẢNH BÁO - TỔNG ĐÀI) -->
           <div class="screen-content" id="tab-ride">
-            <div class="card score-hero">
-              <div class="score-circle">
-                <div class="score-num" id="sdi-score">96</div>
-                <div class="score-label">Điểm SDI</div>
+            
+            <!-- TRỤ CỘT 1: CẢM BIẾN TÍCH HỢP -->
+            <div class="card core-pillar sensor-pillar">
+              <div class="pillar-header">
+                <span class="pillar-badge blue">BƯỚC 1: CẢM BIẾN TÍCH HỢP</span>
+                <span class="sensor-active-tag" id="sensor-live-indicator">● IMU 6-DOF Active</span>
               </div>
-              <div class="hero-title">Đại Sứ Lái Xe Văn Minh 🌟</div>
-              <div class="hero-subtitle">+15 Eco-Points hành trình hôm nay</div>
-            </div>
-
-            <div class="card">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-size: 11px; font-weight: 700; color: #cbd5e1;">TRẠNG THÁI CHUYỂN ĐỘNG AI</span>
-                <div class="status-pill" id="behavior-pill">
-                  <span style="width: 8px; height: 8px; background: currentColor; border-radius: 50%;"></span>
-                  <span id="behavior-text">Bình Thường</span>
-                </div>
-              </div>
-
-              <div class="telem-grid">
+              <div class="telem-grid" style="margin-top: 8px;">
                 <div class="telem-item">
                   <div class="telem-val" id="val-speed">18.5</div>
                   <div class="telem-lbl">Vận tốc (km/h)</div>
@@ -162,77 +151,76 @@
                   <div class="telem-lbl">Góc nghiêng</div>
                 </div>
                 <div class="telem-item">
-                  <div class="telem-val" id="val-temp">32°C</div>
-                  <div class="telem-lbl">Nhiệt độ</div>
+                  <div class="telem-val" id="val-shock">0.12g</div>
+                  <div class="telem-lbl">Lực rung chấn</div>
                 </div>
               </div>
-            </div>
-
-            <div class="voice-box">
-              <div class="voice-icon">🔊</div>
-              <div class="voice-msg" id="voice-text">
-                "Hành trình đang rất an toàn. Hãy duy trì tốc độ dưới 25 km/h khi gần cổng trường nhé!"
+              <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <button class="btn-ctrl active" onclick="toggleRealSensors()" id="btn-mobile-sensor" style="flex: 1; justify-content: center; font-size: 11px; padding: 6px 8px;">
+                  <span>📱</span> <span>Bật Cảm Biến Thật Của Máy</span>
+                </button>
               </div>
             </div>
 
-            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid #1e293b; border-radius: 14px; padding: 10px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span style="font-size: 11px; font-weight: 800; color: #a78bfa;">🧠 AI TỰ HIỆU CHUẨN TÚI QUẦN</span>
-                <span id="user-context-pill" style="font-size: 9px; background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #2563eb; padding: 2px 6px; border-radius: 10px;">
-                  🏍️ Đang Lái Xe
-                </span>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 6px 10px; border-radius: 8px;">
-                <div>
-                  <div style="font-size: 11px; color: #cbd5e1; font-weight: 600;">Góc Bù Đùi: <strong id="pocket-calib-val" style="color: #a78bfa;">+14.2°</strong></div>
-                  <div style="font-size: 9px; color: #64748b;">Tự triệt tiêu sai số xoay trục 3D</div>
+            <!-- TRỤ CỘT 2: CẢNH BÁO TỨC THỜI TẠI CHỖ -->
+            <div class="card core-pillar alert-pillar">
+              <div class="pillar-header">
+                <span class="pillar-badge amber">BƯỚC 2: CẢNH BÁO TỨC THỜI</span>
+                <div class="status-pill" id="behavior-pill">
+                  <span style="width: 8px; height: 8px; background: currentColor; border-radius: 50%;"></span>
+                  <span id="behavior-text">Bình Thường</span>
                 </div>
-                <button id="btn-auto-calib" onclick="startAutoCalibration()" style="background: #7c3aed; color: #fff; border: none; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer;">
-                  🎯 Tự Căn Chỉnh
+              </div>
+              <div class="voice-box" style="margin-top: 8px;">
+                <div class="voice-icon">🔊</div>
+                <div class="voice-msg" id="voice-text">
+                  "Hành trình an toàn. Tốc độ ổn định dưới 25 km/h khi gần cổng trường."
+                </div>
+              </div>
+              <div style="display: flex; gap: 6px; margin-top: 6px; justify-content: flex-end;">
+                <button onclick="speakCurrentVoiceMsg()" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; border-radius: 6px; padding: 4px 10px; font-size: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                  <span>🔊</span> Nghe Cảnh Báo
                 </button>
               </div>
             </div>
 
-            <!-- MOBILE LIVE SENSOR & OSCILLOSCOPE TOGGLE -->
-            <div style="display: flex; gap: 8px; margin-top: 10px;">
-              <button class="btn-ctrl" id="btn-toggle-inline-osc" onclick="toggleInlineOscilloscope()" style="flex: 1; justify-content: center; font-size: 11px; padding: 8px 10px;">
-                <span>📈</span> <span id="text-inline-osc">Xem Sóng IMU 50Hz</span>
-              </button>
-              <button class="btn-ctrl active" onclick="toggleRealSensors()" id="btn-mobile-sensor" style="flex: 1; justify-content: center; font-size: 11px; padding: 8px 10px;">
-                <span>📱</span> <span>Bật Cảm Biến Thật</span>
-              </button>
-            </div>
-            <div id="inline-osc-container" style="display: none; margin-top: 10px; background: #090e1a; border-radius: 12px; border: 1px solid #1e293b; padding: 10px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <div style="font-size: 11px; font-weight: 700; color: #4ade80;">● SÓNG DAO ĐỘNG IMU 50Hz LIVE</div>
-                <div style="font-size: 10px; color: #38bdf8;">Tách trọng lực IIR α=0.85</div>
+            <!-- TRỤ CỘT 3: GỬI DỮ LIỆU VỀ TỔNG ĐÀI & CỨU HỘ -->
+            <div class="card core-pillar dispatch-pillar">
+              <div class="pillar-header">
+                <span class="pillar-badge green">BƯỚC 3: GỬI DỮ LIỆU VỀ TỔNG ĐÀI</span>
+                <span style="font-size: 10px; color: #4ade80; font-weight: 700;">🟢 ĐÃ KẾT NỐI</span>
               </div>
-              <canvas id="mobileWaveformCanvas" width="340" height="110" style="width: 100%; height: 110px; border-radius: 8px; background: #040711; display: block;"></canvas>
+              <div class="dispatch-info-box">
+                <div class="d-row">
+                  <span>📡 Tổng Đài Tiếp Nhận:</span>
+                  <strong>Trung Tâm ATGT Cổng Trường & CSGT</strong>
+                </div>
+                <div class="d-row">
+                  <span>📍 Tọa Độ GPS Xe:</span>
+                  <strong style="color: #38bdf8;">10.0337° N, 105.7798° E (Cần Thơ)</strong>
+                </div>
+                <div class="d-row">
+                  <span>📞 Cứu Nạn Người Thân:</span>
+                  <strong id="display-saved-phone-ride" style="color: #facc15;">0912.345.678</strong>
+                </div>
+              </div>
+
+              <!-- Push data button -->
+              <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button onclick="sendDataToDispatch('manual')" style="flex: 1; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                  <span>📡</span> Gửi Dữ Liệu Về Tổng Đài Ngay
+                </button>
+                <button onclick="switchView('dashboard')" style="background: #1e293b; color: #38bdf8; border: 1px solid #334155; padding: 8px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer;">
+                  <span>👀</span> Xem Tổng Đài
+                </button>
+              </div>
             </div>
 
-            <div class="sim-panel">
-              <div class="sim-header">
-                <span>🧪 KỊCH BẢN THỰC ĐỊA (TESTBENCH)</span>
-                <span style="color: var(--primary);">BẤM ĐỂ THỬ</span>
-              </div>
-              <div class="sim-btn-grid">
-                <button class="btn-sim" onclick="simulateScenario('swerving')">
-                  <span>⚡</span> Lạng lách
-                </button>
-                <button class="btn-sim" onclick="simulateScenario('braking')">
-                  <span>🛑</span> Phanh gấp
-                </button>
-                <button class="btn-sim" onclick="simulateScenario('pothole')">
-                  <span>🕳️</span> Sụp ổ gà
-                </button>
-                <button class="btn-sim danger" onclick="simulateScenario('crash')">
-                  <span>💥</span> Ngã xe tai nạn
-                </button>
-                <button class="btn-sim" onclick="simulateScenario('distracted')" style="grid-column: span 2; background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #fca5a5;">
-                  <span>👀</span> Rút máy xem tin khi lái (-5đ SDI)
-                </button>
-              </div>
+            <!-- Toast Dispatch Notification Container -->
+            <div id="dispatch-toast" style="display: none; background: #064e3b; border: 1px solid #10b981; border-radius: 8px; padding: 8px 12px; margin-top: 10px; font-size: 11px; color: #a7f3d0; text-align: center; animation: fadeInToast 0.3s ease;">
+              <span>✅</span> <span id="dispatch-toast-text">Đã truyền gói tin vị trí & trạng thái về Tổng Đài Điều Hành!</span>
             </div>
+
           </div>
 
           <!-- TAB 2: HỘ CHIẾU & LỊCH SỬ (PASSPORT) -->
@@ -492,80 +480,81 @@
           </div>
 
         </div>
-        <!-- QUICK ACTION DOCK (SHOWN IN USER MODE) -->
+                <!-- BẢNG ĐIỀU KHIỂN: 3 BƯỚC HOẠT ĐỘNG CỐT LÕI -->
         <div id="quick-user-dock" class="quick-user-dock">
           <div class="dock-card">
             <div class="dock-header">
               <div class="dock-title">
-                <span>🎮</span> BẢNG ĐIỀU KHIỂN TRẢI NGHIỆM TÌNH HUỐNG
+                <span>🎯</span> MÔ HÌNH HOẠT ĐỘNG CỐT LÕI: CẢM BIẾN ➔ CẢNH BÁO ➔ GỬI TỔNG ĐÀI
               </div>
-              <div class="dock-sub">Bấm một chạm để kiểm chứng phản xạ AI thông minh trên xe</div>
+              <div class="dock-sub">Không rườm rà — Tự động nhận diện nguy cơ và bảo vệ an toàn học sinh</div>
             </div>
 
-            <div class="dock-btn-grid">
+            <div class="core-flow-banner">
+              <div class="flow-step">
+                <span class="f-num">1</span>
+                <div>
+                  <strong>Cảm Biến Tích Hợp</strong>
+                  <small>Đo rung chấn, góc nghiêng, tốc độ</small>
+                </div>
+              </div>
+              <span class="f-arrow">➔</span>
+              <div class="flow-step">
+                <span class="f-num">2</span>
+                <div>
+                  <strong>Cảnh Báo Tại Chỗ</strong>
+                  <small>Âm thanh & Giọng nói tiếng Việt</small>
+                </div>
+              </div>
+              <span class="f-arrow">➔</span>
+              <div class="flow-step">
+                <span class="f-num">3</span>
+                <div>
+                  <strong>Gửi Dữ Liệu Tổng Đài</strong>
+                  <small>Truyền GPS & Cứu nạn khẩn cấp</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="dock-btn-grid" style="margin-top: 16px;">
               <button class="dock-btn ride" onclick="simulateScenario('normal')">
                 <div class="d-icon">🛵</div>
                 <div class="d-content">
-                  <strong>1. Lái xe êm ái</strong>
-                  <small>Vận tốc 18-25 km/h • Thưởng +15 EcoPts</small>
-                </div>
-              </button>
-
-              <button class="dock-btn pothole" onclick="simulateScenario('pothole')">
-                <div class="d-icon">🕳️</div>
-                <div class="d-content">
-                  <strong>2. Vượt gờ & Sụp ổ gà</strong>
-                  <small>Lọc sốc thích ứng • Zero False Alarm</small>
+                  <strong>1. Xe Chạy An Toàn (Bình thường)</strong>
+                  <small>Cảm biến đo 20 km/h ➔ Cảnh báo: "An toàn" ➔ Gửi dữ liệu về Tổng đài</small>
                 </div>
               </button>
 
               <button class="dock-btn swerve" onclick="simulateScenario('swerving')">
-                <div class="d-icon">⚡</div>
+                <div class="d-icon">⚠️</div>
                 <div class="d-content">
-                  <strong>3. Đánh võng lạng lách</strong>
-                  <small>Nhắc nhở hạ tốc độ & bo cua thăng bằng</small>
-                </div>
-              </button>
-
-              <button class="dock-btn brake" onclick="simulateScenario('braking')">
-                <div class="d-icon">🛑</div>
-                <div class="d-content">
-                  <strong>4. Phanh gấp dừng xe</strong>
-                  <small>Cảnh báo giữ cự ly an toàn 5m</small>
+                  <strong>2. Cảnh Báo Nguy Hiểm (Lạng lách / Phanh gấp)</strong>
+                  <small>Cảm biến đo góc nghiêng 38° ➔ Loa cảnh báo: "Giảm tốc độ!" ➔ Gửi cảnh báo về Tổng đài</small>
                 </div>
               </button>
 
               <button class="dock-btn crash danger" onclick="simulateScenario('crash')">
-                <div class="d-icon">💥</div>
+                <div class="d-icon">🚨</div>
                 <div class="d-content">
-                  <strong>5. Mô phỏng ngã xe thực tế</strong>
-                  <small>Còi hú báo động & đếm ngược cứu hộ 30s</small>
-                </div>
-              </button>
-
-              <button class="dock-btn pocket" onclick="enterPocketMode()">
-                <div class="d-icon">🌙</div>
-                <div class="d-content">
-                  <strong>6. Màn hình đen bỏ túi (OLED)</strong>
-                  <small>Giảm 89% pin • Khóa chạm nhầm trong túi</small>
+                  <strong>3. Tai Nạn Ngã Xe: Kích Hoạt Cứu Hộ</strong>
+                  <small>Cảm biến va đập 4.5g ➔ Còi hú ➔ Tự động gửi GPS về Tổng đài & Gọi người thân sau 30s</small>
                 </div>
               </button>
             </div>
 
             <div class="dock-actions-bottom">
-              <button class="dock-pill-action" onclick="toggleRealSensors()" id="btn-dock-sensor">
-                <span>📱</span> <span>Bật Cảm Biến Thật Của Máy</span>
+              <button class="dock-pill-action" onclick="sendDataToDispatch('manual')">
+                <span>📡</span> <span>Thử Gửi Tín Hiệu Về Tổng Đài Ngay</span>
+              </button>
+              <button class="dock-pill-action" onclick="switchView('dashboard')">
+                <span>📊</span> <span>Mở Màn Hình Tổng Đài Giám Sát</span>
               </button>
               <button class="dock-pill-action bot" onclick="openPersonaBotModal()">
                 <span>🤖</span> <span>10 Bot Đánh Giá Độc Lập</span>
               </button>
-              <button class="dock-pill-action lab" onclick="setUserViewMode('lab')">
-                <span>🔬</span> <span>Mở Sóng Dao Động Kỹ Thuật (Lab 50Hz)</span>
-              </button>
             </div>
           </div>
         </div>
-
 
         <!-- RIGHT PANE: TELEMETRY & SCIENCE LAB -->
         <div class="lab-pane-wrapper">
@@ -794,6 +783,27 @@
           <button class="btn-ctrl" style="background: #10b981; color: #fff; border-color: #059669;" onclick="openReportModal()">
             <span>📥</span> Xuất Báo Cáo Định Kỳ Gửi CSGT & Ban ATGT
           </button>
+        </div>
+      </div>
+
+      
+      <!-- LIVE INCOMING SIGNALS FROM STUDENT TELEMATICS -->
+      <div class="card" style="margin-bottom: 20px; border: 1px solid rgba(56, 189, 248, 0.3); background: rgba(15, 23, 42, 0.85);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <div style="font-size: 14px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 8px;">
+            <span class="live-dot"></span> TỔNG ĐÀI TIẾP NHẬN DỮ LIỆU CẢM BIẾN THỜI GIAN THỰC (LIVE DISPATCH FEED)
+          </div>
+          <span style="font-size: 11px; color: #4ade80;">● Trực tuyến 24/7 • Kết nối Trực tiếp Cảm biến Học sinh</span>
+        </div>
+        <div id="dispatch-live-feed" style="display: flex; flex-direction: column; gap: 8px; font-family: monospace; font-size: 11px; max-height: 200px; overflow-y: auto; background: #040711; padding: 12px; border-radius: 10px; border: 1px solid #1e293b;">
+          <div style="color: #4ade80; display: flex; justify-content: space-between;">
+            <span>[07:15:10] 🟢 KẾT NỐI: Học sinh Nguyễn Văn An | Tốc độ: 18.5 km/h | Vị trí: 10.0337, 105.7798 | An toàn</span>
+            <span style="color: #64748b;">Trực tiếp từ túi quần</span>
+          </div>
+          <div style="color: #38bdf8; display: flex; justify-content: space-between;">
+            <span>[07:15:02] 🟢 KẾT NỐI: Học sinh Lê Mai Anh | Tốc độ: 14.0 km/h | Vị trí: 10.0345, 105.7812 | An toàn</span>
+            <span style="color: #64748b;">Trực tiếp từ túi quần</span>
+          </div>
         </div>
       </div>
 
