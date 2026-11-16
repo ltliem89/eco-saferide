@@ -243,7 +243,19 @@ window.simulateScenario = function(type) {
   const speedEl = document.getElementById('val-speed');
   const sdiEl = document.getElementById('sdi-score');
 
-  if (type === 'swerving') {
+    if (type === 'normal' || type === 'safe') {
+    accX = 0.2; accY = 0.4; accZ = 9.81;
+    currentSpeed = 20.0;
+    currentTilt = 3.2;
+    if (pill) { pill.className = 'status-pill'; text.innerText = 'Lái Xe Êm Ái'; }
+    if (speedEl) speedEl.innerText = '20.0';
+    if (tiltEl) tiltEl.innerText = '3.2°';
+    if (voice) voice.innerText = '"Hành trình rất êm ái và đúng tốc độ học đường. Tiếp tục phát huy nhé!"';
+    sdiScore = Math.min(100, sdiScore + 1);
+    if (sdiEl) sdiEl.innerText = sdiScore;
+    playTone(659.25, 'sine', 0.25);
+    speakVietnamese('Bạn đang lái xe rất êm ái và an toàn.');
+  } else if (type === 'swerving') {
     accX = 3.8;
     currentTilt = 38.5;
     if (pill) { pill.className = 'status-pill warning'; text.innerText = 'Lạng Lách'; }
@@ -1312,3 +1324,50 @@ function checkStandaloneMode() {
   }
 }
 checkStandaloneMode();
+
+
+// ==========================================
+// USER-FRIENDLY DISPLAY MODE CONTROLLER
+// ==========================================
+let currentAppDisplayMode = localStorage.getItem('eco_display_mode') || 'user'; // 'user' or 'lab'
+
+function setUserViewMode(mode) {
+  currentAppDisplayMode = mode;
+  try { localStorage.setItem('eco_display_mode', mode); } catch (e) {}
+  
+  const btnUser = document.getElementById('btn-mode-user');
+  const btnLab = document.getElementById('btn-mode-lab');
+  const labGrid = document.querySelector('.mobile-lab-grid');
+  const labPane = document.querySelector('.lab-pane-wrapper');
+  const quickDock = document.getElementById('quick-user-dock');
+
+  if (mode === 'user') {
+    if (btnUser) btnUser.classList.add('active');
+    if (btnLab) btnLab.classList.remove('active');
+    if (labGrid) {
+      labGrid.classList.add('user-mode-layout');
+      labGrid.classList.remove('lab-mode-layout');
+    }
+    if (labPane) labPane.style.display = 'none';
+    if (quickDock) quickDock.style.display = 'flex';
+  } else {
+    if (btnUser) btnUser.classList.remove('active');
+    if (btnLab) btnLab.classList.add('active');
+    if (labGrid) {
+      labGrid.classList.remove('user-mode-layout');
+      labGrid.classList.add('lab-mode-layout');
+    }
+    if (labPane) labPane.style.display = 'flex';
+    if (quickDock) quickDock.style.display = 'none';
+  }
+}
+window.setUserViewMode = setUserViewMode;
+
+// Initialize on DOM load
+window.addEventListener('DOMContentLoaded', () => {
+  setUserViewMode(currentAppDisplayMode);
+});
+// Trigger immediately in case DOM is already ready
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setUserViewMode(currentAppDisplayMode);
+}

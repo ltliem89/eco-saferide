@@ -27,25 +27,23 @@
 </head>
 <body>
 
-  <!-- MASTER HEADER -->
+    <!-- MASTER HEADER (SLIM & CLEAN) -->
   <header class="master-header">
     <div class="brand-wrapper">
       <div class="brand-logo-badge">
         <span>🛡️</span> ECO-SAFERIDE
       </div>
       <div class="brand-info">
-        <h1>HỆ SINH THÁI GIAO THÔNG HỌC ĐƯỜNG AN TOÀN (SSSE)</h1>
-        <p>Giải pháp Toàn diện Giảm thiểu Tai nạn Cổng trường & Nâng cao Kỹ năng Lái xe Học sinh</p>
+        <h1>ECO-SAFERIDE — AN TOÀN GIAO THÔNG HỌC ĐƯỜNG</h1>
+        <p>Lá chắn số 0 đồng bảo vệ học sinh trên mọi nẻo đường đến trường</p>
       </div>
     </div>
     <div class="contest-pill-tags">
-      <span class="c-tag green">🏆 Cuộc thi Sáng kiến ATGT Việt Nam 2026</span>
-      <span class="c-tag red">📚 Chủ đề 3: Học đường — Học từ đường</span>
-      <span class="c-tag">🏛️ Dân Trí • Cục CSGT • Toyota</span>
+      <span class="c-tag green">🏆 SKATGT 2026 • Dân Trí — Cục CSGT — Toyota</span>
     </div>
     <div class="master-header-actions" style="display: flex; gap: 8px; align-items: center; margin-left: auto;">
-      <button class="btn-header-bot-pill" id="btn-header-bot" onclick="openPersonaBotModal()" title="Hội đồng Bot Trải nghiệm & Đánh giá Độc lập 10 Nhân vật">
-        <span>🤖</span> <span>Bot Đánh Giá</span>
+      <button class="btn-header-bot-pill" id="btn-header-bot" onclick="openPersonaBotModal()" title="Hội đồng 10 Bot Trải nghiệm & Đánh giá">
+        <span>🤖</span> <span>10 Bot Đánh Giá</span>
       </button>
       <button class="btn-pwa-install-badge" id="btn-pwa-install" onclick="openPwaInstallModal()" title="Cài đặt ứng dụng vào điện thoại để chạy độc lập">
         <span>📲</span> <span class="install-text">Cài App</span>
@@ -56,31 +54,31 @@
     </div>
   </header>
 
-  <!-- MASTER ECOSYSTEM NAVIGATION BAR -->
+    <!-- MASTER ECOSYSTEM NAVIGATION BAR (STREAMLINED) -->
   <nav class="master-nav-tabs">
     <div class="nav-pill-group">
       <button class="nav-pill-btn active" id="btn-view-mobile" onclick="switchView('mobile')">
-        <span>📱</span> Phân Hệ 1: Hộp Đen AI Bỏ Túi (Mobile App)
+        <span>📱</span> Ứng Dụng Di Động
       </button>
       <button class="nav-pill-btn" id="btn-view-vision" onclick="switchView('vision')">
-        <span>🏫</span> Phân Hệ 2: Camera Cổng Trường Edge AI (Vision & TTC)
+        <span>🏫</span> Camera Cổng Trường
       </button>
       <button class="nav-pill-btn" id="btn-view-3d" onclick="switchView('3d')">
-        <span>🚚</span> Phân Hệ 3: Mô Phỏng 3D Điểm Mù (WebGL 3D)
+        <span>🚚</span> 3D Điểm Mù Xe Tải
       </button>
       <button class="nav-pill-btn" id="btn-view-dashboard" onclick="switchView('dashboard')">
-        <span>📊</span> Phân Hệ 4: Trung Tâm Điều Hành Giám Sát (Command Center)
+        <span>📊</span> Trung Tâm Giám Sát
+      </button>
+      <button class="nav-pill-btn" onclick="openPersonaBotModal()" style="border: 1px dashed rgba(56, 189, 248, 0.4); color: #38bdf8;">
+        <span>🤖</span> 10 Bot Đánh Giá
       </button>
     </div>
     <div class="nav-actions">
-      <button class="btn-header-action bot-accent" onclick="openPersonaBotModal()">
-        <span>🤖</span> Bot Đánh Giá Độc Lập
-      </button>
       <button class="btn-header-action primary" onclick="openDossierModal('don-du-thi')">
-        <span>📄</span> Bộ Hồ Sơ Dự Thi 2026
+        <span>📄</span> Bộ Hồ Sơ Dự Thi
       </button>
       <button class="btn-header-action" onclick="openReportModal()">
-        <span>📥</span> Xuất Báo Cáo CSGT
+        <span>📥</span> Báo Cáo CSGT
       </button>
     </div>
   </nav>
@@ -92,6 +90,22 @@
          VIEW 1: PHÂN HỆ 1 — HỘP ĐEN AI BỎ TÚI & SENSOR LAB
          ======================================================= -->
     <div class="view-pane active" id="view-mobile">
+      <!-- USER-FRIENDLY VIEW MODE TOOLBAR -->
+      <div class="user-mode-toolbar">
+        <div class="mode-toggle-pills">
+          <button class="mode-pill active" id="btn-mode-user" onclick="setUserViewMode('user')">
+            <span>✨</span> <strong>Chế Độ Trải Nghiệm (Tối Giản)</strong>
+          </button>
+          <button class="mode-pill" id="btn-mode-lab" onclick="setUserViewMode('lab')">
+            <span>🔬</span> <strong>Chế Độ Kỹ Thuật (Lab 50Hz)</strong>
+          </button>
+        </div>
+        <div class="mode-tagline">
+          <span class="live-dot"></span>
+          <span>Hệ thống Telematics 0đ đang hoạt động bảo vệ học sinh</span>
+        </div>
+      </div>
+
       <div class="mobile-lab-grid">
 
         <!-- PHONE MOCKUP -->
@@ -478,6 +492,80 @@
           </div>
 
         </div>
+        <!-- QUICK ACTION DOCK (SHOWN IN USER MODE) -->
+        <div id="quick-user-dock" class="quick-user-dock">
+          <div class="dock-card">
+            <div class="dock-header">
+              <div class="dock-title">
+                <span>🎮</span> BẢNG ĐIỀU KHIỂN TRẢI NGHIỆM TÌNH HUỐNG
+              </div>
+              <div class="dock-sub">Bấm một chạm để kiểm chứng phản xạ AI thông minh trên xe</div>
+            </div>
+
+            <div class="dock-btn-grid">
+              <button class="dock-btn ride" onclick="simulateScenario('normal')">
+                <div class="d-icon">🛵</div>
+                <div class="d-content">
+                  <strong>1. Lái xe êm ái</strong>
+                  <small>Vận tốc 18-25 km/h • Thưởng +15 EcoPts</small>
+                </div>
+              </button>
+
+              <button class="dock-btn pothole" onclick="simulateScenario('pothole')">
+                <div class="d-icon">🕳️</div>
+                <div class="d-content">
+                  <strong>2. Vượt gờ & Sụp ổ gà</strong>
+                  <small>Lọc sốc thích ứng • Zero False Alarm</small>
+                </div>
+              </button>
+
+              <button class="dock-btn swerve" onclick="simulateScenario('swerving')">
+                <div class="d-icon">⚡</div>
+                <div class="d-content">
+                  <strong>3. Đánh võng lạng lách</strong>
+                  <small>Nhắc nhở hạ tốc độ & bo cua thăng bằng</small>
+                </div>
+              </button>
+
+              <button class="dock-btn brake" onclick="simulateScenario('braking')">
+                <div class="d-icon">🛑</div>
+                <div class="d-content">
+                  <strong>4. Phanh gấp dừng xe</strong>
+                  <small>Cảnh báo giữ cự ly an toàn 5m</small>
+                </div>
+              </button>
+
+              <button class="dock-btn crash danger" onclick="simulateScenario('crash')">
+                <div class="d-icon">💥</div>
+                <div class="d-content">
+                  <strong>5. Mô phỏng ngã xe thực tế</strong>
+                  <small>Còi hú báo động & đếm ngược cứu hộ 30s</small>
+                </div>
+              </button>
+
+              <button class="dock-btn pocket" onclick="enterPocketMode()">
+                <div class="d-icon">🌙</div>
+                <div class="d-content">
+                  <strong>6. Màn hình đen bỏ túi (OLED)</strong>
+                  <small>Giảm 89% pin • Khóa chạm nhầm trong túi</small>
+                </div>
+              </button>
+            </div>
+
+            <div class="dock-actions-bottom">
+              <button class="dock-pill-action" onclick="toggleRealSensors()" id="btn-dock-sensor">
+                <span>📱</span> <span>Bật Cảm Biến Thật Của Máy</span>
+              </button>
+              <button class="dock-pill-action bot" onclick="openPersonaBotModal()">
+                <span>🤖</span> <span>10 Bot Đánh Giá Độc Lập</span>
+              </button>
+              <button class="dock-pill-action lab" onclick="setUserViewMode('lab')">
+                <span>🔬</span> <span>Mở Sóng Dao Động Kỹ Thuật (Lab 50Hz)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
 
         <!-- RIGHT PANE: TELEMETRY & SCIENCE LAB -->
         <div class="lab-pane-wrapper">
