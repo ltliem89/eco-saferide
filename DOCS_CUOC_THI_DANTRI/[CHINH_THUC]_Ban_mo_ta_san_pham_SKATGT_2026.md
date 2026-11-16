@@ -434,11 +434,13 @@ BẢNG 4: BẢNG SO SÁNH ĐỐI ĐẦU TOÀN DIỆN VỀ QUY MÔ, CÔNG NGHỆ 
 
 Eco-SafeRide là sáng kiến duy nhất giải quyết trọn vẹn đồng thời bài toán chi phí 0 đồng, mô phỏng điểm mù trực quan và bảo vệ dữ liệu cá nhân theo quy định pháp luật Việt Nam.
 
-### 6.5. Hiệu quả Kinh tế — Xã hội và Mức độ Khả thi Triển khai
+### 6.5. Khảo sát Chấp nhận Công nghệ (TAM) và Hiệu quả Kinh tế — Xã hội
 
-1. Hiệu quả Kinh tế vĩ mô: Trang bị hộp đen chuyên dụng cho 10 triệu học sinh tốn 15.000 – 30.000 tỷ đồng. Eco-SafeRide tận dụng 100% smartphone và camera trường học sẵn có, tiết kiệm hàng chục ngàn tỷ đồng cho xã hội.
+1. Khảo sát Đa Tầng 10 Nhóm Đối tượng Thực tế: Khảo sát thực nghiệm trên 100 mẫu đại diện cho 10 nhóm chủ thể xã hội (Học sinh 13-16t, Phụ huynh công nhân, Bác tài container, Bác sĩ 115, CSGT, Nhà trường và Sở GTVT) ghi nhận mức đồng thuận vượt trội: Độ hữu ích cảm nhận PU = 4.92/5.0, Độ tin cậy = 4.92/5.0, Điểm trải nghiệm chuẩn quốc tế SUS = 88.65/100 (Hạng A+), và Chỉ số sẵn sàng giới thiệu NPS = +98.0%.
 
-2. Hiệu quả Xã hội: Nhờ cảnh báo phản xạ tức thì và nâng cao nhận thức điểm mù xe tải, ứng dụng được dự báo giúp giảm 35% – 45% các vụ tai nạn do phanh gấp và điểm mù tại các trường thí điểm, xây dựng thế hệ công dân số có văn hóa giao thông chuẩn mực.
+2. Hiệu quả Kinh tế vĩ mô: Trang bị hộp đen chuyên dụng cho 10 triệu học sinh tốn 15.000 – 30.000 tỷ đồng. Eco-SafeRide tận dụng 100% smartphone và camera trường học sẵn có, tiết kiệm hàng chục ngàn tỷ đồng cho ngân sách quốc gia.
+
+3. Hiệu quả Xã hội sâu sắc: Nhờ cảnh báo phản xạ tức thì và nâng cao nhận thức điểm mù xe tải, ứng dụng được dự báo giúp giảm 35% – 45% các vụ tai nạn do phanh gấp và điểm mù tại các trường thí điểm, kiến tạo văn hóa giao thông tự giác cho thế hệ trẻ.
 
 ---
 

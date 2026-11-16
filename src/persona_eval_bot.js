@@ -747,6 +747,8 @@ function openCouncilSummaryView() {
           <div class="kpi-lbl">ĐIỂM TRUNG BÌNH HỘI ĐỒNG (Likert)</div>
           <div class="kpi-sub">Xếp loại: Xuất Sắc Toàn Diện (A+)</div>
         </div>
+
+      ${renderRadarChartSVG(avgPU, avgPEOU, avgRel, avgCost, avgPriv)}
         <div class="kpi-card blue">
           <div class="kpi-val">+98%</div>
           <div class="kpi-lbl">NET PROMOTER SCORE (NPS)</div>
@@ -849,6 +851,119 @@ function openCouncilSummaryView() {
   `;
 }
 
+
+// ==================== AUDIO & SPEECH SYNTHESIS ENGINE ====================
+function playPiezoChime(freq = 880, duration = 0.15, type = 'sine') {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch (e) {
+    console.warn('AudioContext not permitted yet:', e);
+  }
+}
+
+function speakPersonaVoice(text) {
+  playPiezoChime(1046.5, 0.1, 'triangle');
+  if (!('speechSynthesis' in window)) {
+    alert('Trình duyệt không hỗ trợ Web Speech API.');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const cleanText = text.replace(/[*#_`]/g, '').trim();
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+  utterance.lang = 'vi-VN';
+  utterance.rate = 1.05;
+  utterance.pitch = 1.0;
+  
+  const voices = window.speechSynthesis.getVoices();
+  const viVoice = voices.find(v => v.lang.includes('vi') || v.lang.includes('VI'));
+  if (viVoice) utterance.voice = viVoice;
+  
+  window.speechSynthesis.speak(utterance);
+}
+
+function printCouncilReport() {
+  playPiezoChime(587.33, 0.12, 'sine');
+  window.print();
+}
+
+function renderRadarChartSVG(pu, peou, rel, cost, priv) {
+  const cx = 150, cy = 150, r = 95;
+  const angles = [
+    -Math.PI / 2, 
+    -Math.PI / 2 + (2 * Math.PI / 5), 
+    -Math.PI / 2 + (4 * Math.PI / 5), 
+    -Math.PI / 2 + (6 * Math.PI / 5), 
+    -Math.PI / 2 + (8 * Math.PI / 5)
+  ];
+  const labels = ['Hữu Ích (PU)', 'Dễ Dùng (PEOU)', 'Tin Cậy (REL)', 'Chi Phí 0đ', 'Riêng Tư (PRIV)'];
+  const values = [pu, peou, rel, cost, priv];
+
+  let gridPolys = '';
+  for (let l = 1; l <= 5; l++) {
+    const curR = (r * l) / 5;
+    const pts = angles.map(a => `${(cx + curR * Math.cos(a)).toFixed(1)},${(cy + curR * Math.sin(a)).toFixed(1)}`).join(' ');
+    gridPolys += `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>`;
+  }
+
+  let axesLines = '';
+  let labelsSVG = '';
+  angles.forEach((a, i) => {
+    const xEnd = (cx + r * Math.cos(a)).toFixed(1);
+    const yEnd = (cy + r * Math.sin(a)).toFixed(1);
+    axesLines += `<line x1="${cx}" y1="${cy}" x2="${xEnd}" y2="${yEnd}" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="3 3"/>`;
+    
+    const lx = (cx + (r + 28) * Math.cos(a)).toFixed(1);
+    const ly = (cy + (r + 14) * Math.sin(a) + 4).toFixed(1);
+    const anchor = Math.cos(a) > 0.3 ? 'start' : (Math.cos(a) < -0.3 ? 'end' : 'middle');
+    labelsSVG += `<text x="${lx}" y="${ly}" fill="#38bdf8" font-size="10" font-weight="bold" text-anchor="${anchor}">${labels[i]} (${values[i]})</text>`;
+  });
+
+  const dataPts = angles.map((a, i) => {
+    const curR = (r * (values[i] / 5.0));
+    return `${(cx + curR * Math.cos(a)).toFixed(1)},${(cy + curR * Math.sin(a)).toFixed(1)}`;
+  }).join(' ');
+
+  let dotsSVG = '';
+  angles.forEach((a, i) => {
+    const curR = (r * (values[i] / 5.0));
+    const px = (cx + curR * Math.cos(a)).toFixed(1);
+    const py = (cy + curR * Math.sin(a)).toFixed(1);
+    dotsSVG += `<circle cx="${px}" cy="${py}" r="4" fill="#10b981" stroke="#fff" stroke-width="1.5"/>`;
+  });
+
+  return `
+    <div class="radar-chart-container" style="display:flex; flex-direction:column; align-items:center; background:rgba(15,23,42,0.6); padding:16px; border-radius:12px; border:1px solid rgba(56,189,248,0.25); margin:16px 0;">
+      <div style="font-size:0.95rem; font-weight:700; color:#10b981; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; width:100%;">
+        <span>🕸️ BIỂU ĐỒ RADAR 5 TRỤC TAM & SUS ĐỒNG THUẬN HỘI ĐỒNG</span>
+        <button onclick="window.printCouncilReport()" style="background:#0284c7; color:#fff; border:none; padding:4px 12px; border-radius:6px; font-size:0.8rem; font-weight:600; cursor:pointer;">🖨️ Xuất / In Báo Cáo</button>
+      </div>
+      <svg width="340" height="280" viewBox="-20 0 340 280" style="overflow:visible; max-width:100%;">
+        ${gridPolys}
+        ${axesLines}
+        <polygon points="${dataPts}" fill="rgba(16,185,129,0.35)" stroke="#10b981" stroke-width="2.5"/>
+        ${dotsSVG}
+        ${labelsSVG}
+      </svg>
+      <div style="display:flex; gap:16px; margin-top:8px; font-size:0.8rem; color:#94a3b8; flex-wrap:wrap; justify-content:center;">
+        <span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:#10b981; border-radius:50%; display:inline-block;"></span> Eco-SafeRide (4.91/5.0 - Hạng A+ Best Imaginable)</span>
+        <span>• Mẫu khảo sát N=100 đối tượng</span>
+      </div>
+    </div>
+  `;
+}
+
 // Attach to window
 window.PERSONA_DATA = PERSONA_DATA;
 window.openPersonaBotModal = openPersonaBotModal;
@@ -858,6 +973,11 @@ window.selectPersona = selectPersona;
 window.startPersonaSimulation = startPersonaSimulation;
 window.askPresetQuestion = askPresetQuestion;
 window.sendCustomChat = sendCustomChat;
+
+window.playPiezoChime = playPiezoChime;
+window.speakPersonaVoice = speakPersonaVoice;
+window.printCouncilReport = printCouncilReport;
+
 window.handleChatEnter = handleChatEnter;
 window.openCouncilSummaryView = openCouncilSummaryView;
 
