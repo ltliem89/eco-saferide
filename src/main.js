@@ -118,6 +118,9 @@ window.switchNav = function(tabName, el) {
   if (activePane) activePane.style.display = 'flex';
   if (el) el.classList.add('active');
 
+  // Smooth scroll to top when changing tab on mobile
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
   if (tabName === 'map') {
     initLeafletMap();
   }

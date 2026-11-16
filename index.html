@@ -216,6 +216,39 @@
               </div>
             </div>
 
+            <!-- KHỐI MÔ PHỎNG TÌNH HUỐNG THỰC TẾ (QUICK SCENARIOS) -->
+            <div class="card core-pillar scenario-pillar">
+              <div class="pillar-header">
+                <span class="pillar-badge purple">🧪 4. THỬ NGHIỆM TÌNH HUỐNG</span>
+                <span style="font-size: 10px; color: #c084fc; font-weight: 700;">CHẠM ĐỂ TEST</span>
+              </div>
+              <div class="quick-scenario-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                <button class="btn-scenario-action safe" onclick="simulateScenario('normal')">
+                  <span class="sc-badge-icon">🛵</span>
+                  <div class="sc-desc">
+                    <div class="sc-title">1. Xe Chạy An Toàn (20 km/h)</div>
+                    <div class="sc-sub">Vận tốc ổn định ➔ Cảnh báo: "An toàn" ➔ Gửi dữ liệu về Tổng đài</div>
+                  </div>
+                </button>
+
+                <button class="btn-scenario-action warning" onclick="simulateScenario('swerving')">
+                  <span class="sc-badge-icon">⚠️</span>
+                  <div class="sc-desc">
+                    <div class="sc-title">2. Cảnh Báo Lạng Lách (38°)</div>
+                    <div class="sc-sub">Góc nghiêng lớn ➔ Loa phát: "Cảnh báo lạng lách!" ➔ Gửi tín hiệu</div>
+                  </div>
+                </button>
+
+                <button class="btn-scenario-action danger" onclick="simulateScenario('crash')">
+                  <span class="sc-badge-icon">🚨</span>
+                  <div class="sc-desc">
+                    <div class="sc-title">3. Tai Nạn Ngã Xe (4.5g Va Đập)</div>
+                    <div class="sc-sub">Va đập mạnh ➔ Kích hoạt còi hú & đếm ngược 30s gọi cứu hộ eCall</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
             <!-- Toast Dispatch Notification Container -->
             <div id="dispatch-toast" style="display: none; background: #064e3b; border: 1px solid #10b981; border-radius: 8px; padding: 8px 12px; margin-top: 8px; font-size: 11px; color: #a7f3d0; text-align: center; animation: fadeInToast 0.3s ease;">
               <span>✅</span> <span id="dispatch-toast-text">Đã truyền gói tin vị trí & trạng thái về Tổng Đài Điều Hành!</span>
