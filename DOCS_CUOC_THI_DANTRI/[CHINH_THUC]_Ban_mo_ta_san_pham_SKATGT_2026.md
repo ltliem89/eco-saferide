@@ -234,6 +234,10 @@ $$R_{\text{HAR}} = \frac{\sum_{k=2}^4 |S[k]|^2}{\sum_{k=2}^4 |S[k]|^2 + \sum_{k=
 
 Quy tắc phân tầng tự động: Nếu R_HAR > 0.65, học sinh đang đi bộ suy ra chuyển Sleep Mode (tiết kiệm 99% pin); Nếu R_HAR <= 0.35, học sinh đang điều khiển xe suy ra tự kích hoạt Hộp đen an toàn tức thì.
 
+![Hình 1: Phổ Mật độ Năng lượng Biến đổi Fourier (FFT)](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_1_pho_fft_har.png)
+
+*Hình 1: Phổ Mật độ Năng lượng Biến đổi Fourier (FFT) phân lập đặc trưng dao động giữa Đi bộ (1.8 Hz) và Điều khiển Xe điện (0.35 Hz) qua cảm biến IMU smartphone.*
+
 #### 5.C.3. Mô hình Hình học Điểm mù Xe tải và Vệt quét Bánh sau (Truck Off-tracking Swept Path)
 
 Khi xe tải lớn vào cua rẽ phải, trục bánh sau bị kéo lệch vào phía trong đường cong cua. Bán kính quay vòng của bánh sau R_rear thỏa mãn định lý Ackermann:
@@ -252,6 +256,10 @@ $$\Delta_{\text{sweep}} = 10.5 - 8.246 = 2.254\text{ m}$$
 
 Khoảng chém lấn 2.25 m này chiếm trọn làn đường xe đạp sát lề. Nền tảng 3D WebGL chuyển hóa phương trình hình học này thành vùng nan quạt màu đỏ nhấp nháy ở tốc độ 60 FPS để học sinh trải nghiệm trực quan.
 
+![Hình 3: Động học Điểm mù & Vệt Quét Chém Cua Bánh Sau Xe Tải Ben](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_3_vet_quet_chem_cua.png)
+
+*Hình 3: Động học Điểm mù & Vệt Quét Chém Cua Bánh Sau Xe Tải Ben (Δ_sweep = 2.254 m) khi vào cua R=12 m tại nút giao cổng trường.*
+
 #### 5.C.4. Động cơ Vật lý Va chạm: Tính toán Time-to-Collision (TTC) và Quãng đường Phanh
 
 Chỉ số Thời gian trước Va chạm (TTC) được camera AI biên liên tục ước lượng:
@@ -263,6 +271,10 @@ $$\text{TTC} = \frac{d_{\text{rel}}}{v_{\text{rel}}} = \frac{x_{\text{lead}} - x
 $$d_{\text{stop}} = v \cdot t_{\text{react}} + \frac{v^2}{2 \mu g}$$
 
 Ở vận tốc 30 km/h (8.33 m/s) với thời gian phản xạ t_react = 1.0 giây: Đường khô (mu = 0.70) có d_stop = 13.38 m; Đường trơn ướt mùa mưa (mu = 0.35) có d_stop = 18.43 m (kéo dài thêm 37.7%). Khi TTC < 3.0 giây hoặc khoảng cách nhỏ hơn d_stop, hệ thống kích hoạt chuông cảnh báo khẩn cấp.
+
+![Hình 2: Động học Quãng đường Dừng Phanh (d_stop)](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_2_quang_duong_phanh.png)
+
+*Hình 2: Động học Quãng đường Dừng Phanh (d_stop) theo Vận tốc và Điều kiện Bám Mặt đường (μ = 0.70 đường khô vs μ = 0.35 đường ướt trơn trượt mùa mưa ĐBSCL).*
 
 #### 5.C.5. Bộ Lọc Tai Nạn 4 Cổng Độc Lập của Hermes (Hermes 4-Gate Crash Filter)
 
@@ -289,6 +301,10 @@ Hệ thống đánh giá hành vi lái xe qua hàm số động lực học SDI 
 $$\text{SDI}[t] = \max\left(0, \min\left(100, \text{SDI}[t-1] - \sum_{i=1}^M w_i \cdot I_{\text{event}_i}[t] + \beta \cdot \Delta t \cdot I_{\text{safe}}[t]\right)\right)$$
 
 Quy tắc tính điểm: Khởi tạo SDI[0] = 100 điểm; Trọng số phạt phanh gấp w = 3.0 điểm, rẽ gắt w = 4.0 điểm, chạy quá tốc độ w = 5.0 điểm; Tốc độ phục hồi điểm thưởng beta = 0.05 điểm/giây (lái xe êm ái 3.3 phút liên tục được hoàn lại 10 điểm). Cơ chế này ứng dụng Lý thuyết Hích hành vi (Nudge Theory), khích lệ học sinh sửa sai và duy trì thói quen an toàn.
+
+![Hình 4: Động học Điểm số SDI Tự Phục Hồi (Self-Healing Curve)](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_4_sdi_dynamics.png)
+
+*Hình 4: Động học Điểm số SDI Tự Phục Hồi (Self-Healing Curve) khích lệ hành vi lái xe thận trọng sau các sự kiện vi phạm tốc độ và phanh gấp.*
 
 #### 5.C.7. Tối ưu hóa TensorRT INT8, WebGL 60FPS và Nền tảng Tiết kiệm Pin OLED Pure Black
 
@@ -348,7 +364,7 @@ Tuân thủ tuyệt đối Nghị định số 13/2023/NĐ-CP về Bảo vệ D�
 
 Để bảo đảm tính trung thực học thuật (Zero Fabrication), nhóm nghiên cứu tiến hành 300 lượt thử nghiệm thực địa tại TP. Cần Thơ qua 6 nhóm kịch bản khắt khe:
 
-BẢNG MA TRẬN NHẦM LẪN (CONFUSION MATRIX) ĐÁNH GIÁ ĐỘ CHÍNH XÁC TOÀN HỆ THỐNG:
+BẢNG 1: BẢNG MA TRẬN NHẦM LẪN (CONFUSION MATRIX) ĐÁNH GIÁ ĐỘ CHÍNH XÁC TOÀN HỆ THỐNG:
 
 | Nhóm Kịch Bản Thử Nghiệm | Số Mẫu (N) | Phân Loại Đúng | Nhận Diện Lệch | Độ Chính Xác (%) | Tỷ Lệ Báo Nhầm SOS (%) |
 | --- | --- | --- | --- | --- | --- |
@@ -360,6 +376,10 @@ BẢNG MA TRẬN NHẦM LẪN (CONFUSION MATRIX) ĐÁNH GIÁ ĐỘ CHÍNH XÁC T
 | 6. Đánh võng, lạng lách, chuyển làn gắt | 50 | 48 (Trừ điểm SDI) | 2 (Rẽ thông thường) | 96.0% | 0.0% (Không báo nhầm) |
 | TỔNG CỘNG TOÀN HỆ THỐNG | 300 | 294 | 6 | 98.0% | 0.0% (Zero False Dispatch) |
 
+
+![Hình 6: Ma trận Nhầm lẫn Nhiệt (Confusion Matrix Heatmap)](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_6_ma_tran_nham_lan.png)
+
+*Hình 6: Ma trận Nhầm lẫn Nhiệt (Confusion Matrix Heatmap) của Mô hình Nhận diện Trạng thái Di chuyển HAR trên 300 Mẫu Thực Địa Cần Thơ.*
 
 Độ chính xác tổng thể đạt 98.0%. Đặc biệt, chỉ tiêu 'Zero False Dispatch' đạt 0.0%: Trong 100 tình huống điện thoại rơi hoặc xóc mạnh qua ổ gà, bộ lọc Hermes chặn đứng 100% tín hiệu nhiễu, tuyệt đối không gửi tin nhắn báo tai nạn giả.
 
@@ -391,6 +411,16 @@ $$F = \frac{\text{MSB}}{\text{MSW}} = \frac{14.226}{0.01095} = 1299.30$$
 
 • Giá trị xác suất p = 4.91 * 10^(-129) rất nhỏ hơn 0.001. Giá trị F = 1299.30 cực lớn chứng minh tính tách biệt tuyệt đối giữa bước chân người và rung động xe, loại bỏ hoàn toàn khả năng nhầm lẫn trạng thái.
 
+BẢNG 2: BẢNG TỔNG HỢP KẾT QUẢ KIỂM ĐỊNH THỐNG KÊ KHOA HỌC:
+
+| Phép Kiểm Định Thống Kê | Cỡ Mẫu (N) | Giá Trị Thống Kê (t / F) | Bậc Tự Do (df) | Trị Số p-value | Kết Luận Thống Kê & Ý Nghĩa Khoa Học |
+| --- | --- | --- | --- | --- | --- |
+| Paired Student's t-test (Triệt tiêu sai số trọng lực túi quần) | 300 cặp mẫu | t = 32.78 | df = 299 | p = 5.86 × 10⁻⁵⁵ (< 0.001) | Bác bỏ H0: Sai số giảm 92.3% (từ 2.418 xuống 0.187 m/s²), độ tin cậy > 99.999% |
+| One-Way ANOVA (Tách biệt tỷ số năng lượng phổ R_HAR) | 300 mẫu (3 nhóm) | F = 1299.30 | df = (2, 297) | p = 4.91 × 10⁻¹²⁹ (< 0.001) | Bác bỏ H0: Tách biệt tuyệt đối Đi bộ (R=0.812) và Xe điện (R=0.214; 0.118) |
+
+
+Kết quả phân tích thống kê toán học khẳng định nền tảng cơ học và thuật toán của Eco-SafeRide đạt chuẩn xác thực nghiệm tương đương các công trình nghiên cứu giao thông quốc tế.
+
 ### 6.3. Đo lường Độ trễ Thời gian Thực (Real-Time Latency) và Tiết kiệm Năng lượng OLED
 
 1. Đo lường Độ trễ Toàn chu trình:
@@ -411,9 +441,25 @@ $${\eta} = \frac{849.5 - 92.3}{849.5} \times 100\% = 89.13\%$$
 
 • Tỷ lệ tiết kiệm điện năng đạt 89.13%. Học sinh bật ứng dụng suốt 1 giờ di chuyển chỉ tiêu hao 1.8% – 2.2% pin, thiết bị hoàn toàn mát.
 
+BẢNG 3: BẢNG ĐO LƯỜNG HIỆU NĂNG TÍNH TOÁN THỜI GIAN THỰC VÀ NĂNG LƯỢNG OLED:
+
+| Thành Phần / Module Hệ Thống | Phần Cứng Thực Thi | Thông Số Đo Thực Tế | Ngưỡng Ràng Buộc Kỹ Thuật | Đánh Giá Hiệu Năng & Độ Tin Cậy |
+| --- | --- | --- | --- | --- |
+| Chu kỳ Thuật toán IMU / IIR / FFT | Smartphone Android phổ thông | 16.38 ± 2.14 ms | Ts = 20.0 ms (f = 50 Hz) | Hoàn thành trước chu kỳ lấy mẫu, Zero Buffer Overflow |
+| Phản xạ Âm thanh Cảnh báo Còi bíp | Audio Pipeline Còi Piezo / Loa | 84.0 ms | < 100.0 ms (Phản xạ người: 300-500ms) | Cảnh báo trước 216-416ms giúp học sinh giữ vững thăng bằng |
+| Thị giác AI Cổng trường (YOLOv8n-INT8) | NVIDIA Jetson Orin Nano | 22.4 ms/frame (44.6 FPS) | > 30.0 FPS thời gian thực | Xử lý mượt mà dòng phương tiện xung đột giờ cao điểm |
+| Tiêu thụ Điện năng Màn hình OLED | Pin Li-ion 3.7V / Pure Black | 92.3 mW (24.9 mA) | So với màn hình bật: 849.5 mW | Tiết kiệm 89.13% pin, vận hành liên tục 1 giờ chỉ hao ~2.0% |
+
+
+![Hình 5: Đánh giá Hiệu suất Tiết kiệm Điện năng Màn hình OLED Pure Black](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_5_tiet_kiem_pin_oled.png)
+
+*Hình 5: Đánh giá Hiệu suất Tiết kiệm Điện năng Màn hình OLED Pure Black (89.13%) và Tối ưu Hóa Chu kỳ Pin trên Thiết bị Di động.*
+
+Các chỉ số hiệu năng trên khẳng định hệ sinh thái Eco-SafeRide hoạt động ổn định, đáp ứng hoàn toàn điều kiện phần cứng phổ thông mà không đòi hỏi nâng cấp đắt đỏ.
+
 ### 6.4. So sánh Đối đầu Toàn diện với các Sản phẩm Hiện nay
 
-BẢNG SO SÁNH ĐỐI ĐẦU TOÀN DIỆN VỀ QUY MÔ, CÔNG NGHỆ VÀ GIÁ TRỊ:
+BẢNG 4: BẢNG SO SÁNH ĐỐI ĐẦU TOÀN DIỆN VỀ QUY MÔ, CÔNG NGHỆ VÀ GIÁ TRỊ:
 
 | Tiêu Chí So Sánh | Eco-SafeRide (Sáng kiến này) | Google Maps / Waze | Life360 / Find My Kids | Hộp đen OBD-II / Dashcam AI |
 | --- | --- | --- | --- | --- |
@@ -421,7 +467,7 @@ BẢNG SO SÁNH ĐỐI ĐẦU TOÀN DIỆN VỀ QUY MÔ, CÔNG NGHỆ VÀ GIÁ T
 | 2. Đối tượng phục vụ | Chuyên biệt Học sinh 12-18 & Cổng trường | Người lái ô tô / Xe máy chung | Gia đình / Trẻ nhỏ | Xe ô tô / Doanh nghiệp vận tải |
 | 3. Cảnh báo phanh gấp / rẽ gắt | CÓ (Phản xạ âm thanh < 100ms) | KHÔNG | KHÔNG | CÓ (Một số dòng cao cấp) |
 | 4. Nhận diện điểm mù 3D xe tải | CÓ (WebGL 3D tương tác vệt chém cua) | KHÔNG | KHÔNG | KHÔNG (Chỉ có radar ngoài đắt đỏ) |
-| 5. Bảo mật dữ liệu riêng tư | TUYỆT ĐỐI (Zero-Cloud Privacy NĐ13) | Thu thập vị trí liên tục | Lưu trữ lịch trình đám mây | Lưu trữ trên server hãng |
+| 5. Bảo mật dữ liệu riêng tư | TUYỆT ĐỐI (Zero-Cloud Privacy NĐ 13) | Thu thập vị trí liên tục | Lưu trữ lịch trình đám mây | Lưu trữ trên server hãng |
 | 6. Tiết kiệm pin bỏ túi | Cực tốt (OLED Pure Black - 89%) | Tiêu hao pin rất nhanh (Bật màn hình) | Tiêu hao pin trung bình | Dùng ắc-quy xe |
 | 7. Cơ chế hích hành vi (Gamification) | CÓ (SDI tự phục hồi, Hiệp sĩ an toàn) | KHÔNG | KHÔNG | KHÔNG |
 
