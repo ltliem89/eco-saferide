@@ -1,4 +1,5 @@
 import './style.css';
+import './persona_eval_bot.js';
 
 // ==========================================================
 // ECO-SAFERIDE — MASTER ECOSYSTEM JAVASCRIPT CONTROLLER
