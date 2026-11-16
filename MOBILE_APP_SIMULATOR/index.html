@@ -1011,6 +1011,431 @@ body {
   border-bottom-color: var(--primary);
 }
 
+
+/* ==========================================================
+   PWA & SMART INSTALL BANNER STYLES
+   ========================================================== */
+.btn-pwa-install-badge {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.35);
+  animation: pwaPulse 2.5s infinite;
+  transition: all 0.2s ease;
+}
+
+.btn-pwa-install-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.55);
+}
+
+@keyframes pwaPulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.pwa-install-box {
+  max-width: 480px;
+}
+
+.pwa-benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #090e1a;
+  border: 1px solid #1e293b;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.pwa-benefit-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.pwa-b-icon {
+  font-size: 20px;
+  background: rgba(16, 185, 129, 0.12);
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pwa-benefit-item strong {
+  font-size: 13px;
+  color: #f1f5f9;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.pwa-benefit-item p {
+  font-size: 11.5px;
+  color: #94a3b8;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.btn-install-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+  transition: all 0.2s;
+}
+
+.btn-install-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+}
+
+.ios-step-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 12.5px;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.step-badge {
+  background: #38bdf8;
+  color: #0b1120;
+  font-weight: 900;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Ecosystem Switcher Cards */
+.eco-nav-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.eco-nav-card {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.eco-nav-card:hover, .eco-nav-card.active {
+  background: #17233f;
+  border-color: #3b82f6;
+  transform: translateX(3px);
+}
+
+.eco-nav-card.active {
+  border-color: #10b981;
+}
+
+.eco-nav-icon {
+  font-size: 26px;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.eco-nav-info strong {
+  font-size: 13px;
+  color: #f8fafc;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.eco-nav-info p {
+  font-size: 11px;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.eco-badge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid #10b981;
+  color: #6ee7b7;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+/* ==========================================================
+   MOBILE SCREEN FIRST (<= 768px) & STANDALONE PWA
+   ========================================================== */
+@media (max-width: 768px), (display-mode: standalone) {
+  html, body {
+    height: 100% !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+  }
+
+  .master-header {
+    padding: 8px 12px !important;
+    gap: 8px !important;
+    position: relative;
+    top: 0;
+    z-index: 999;
+  }
+
+  .brand-logo-badge {
+    padding: 6px 10px !important;
+    font-size: 13px !important;
+  }
+
+  .brand-info h1 {
+    font-size: 13px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+  }
+
+  .brand-info p {
+    display: none !important;
+  }
+
+  .contest-pill-tags {
+    display: none !important;
+  }
+
+  /* Compact Mobile Nav Header Bar */
+  .master-nav-tabs {
+    display: none !important; /* Replaced by bottom nav & mobile ecosystem drawer */
+  }
+
+  .main-content-area {
+    height: calc(100dvh - 56px) !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+
+  .view-pane {
+    height: 100% !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 !important;
+  }
+
+  .view-pane#view-mobile {
+    overflow: hidden !important;
+    display: none;
+    flex-direction: column;
+    height: 100% !important;
+  }
+
+  .view-pane#view-mobile.active {
+    display: flex !important;
+  }
+
+  .mobile-lab-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* PURE FULL-BLEED NATIVE PHONE APP ON REAL DEVICE */
+  .phone-wrapper {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: var(--bg-phone) !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  /* HIDE FAKE NOTCH & STATIC STATUS BAR ON REAL PHONES */
+  .phone-notch {
+    display: none !important;
+  }
+
+  .status-bar {
+    padding: calc(env(safe-area-inset-top, 4px) + 4px) 14px 4px !important;
+    height: auto !important;
+    background: #090d16;
+  }
+
+  .mode-bar {
+    padding: 6px 12px !important;
+    background: rgba(17, 26, 46, 0.95);
+    backdrop-filter: blur(8px);
+  }
+
+  .screen-content {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 10px 12px 84px !important; /* Generous bottom padding for bottom nav */
+  }
+
+  /* NATIVE THUMB-FRIENDLY BOTTOM NAVIGATION BAR */
+  .bottom-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 60px !important;
+    padding-top: 6px !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 10px) + 4px) !important;
+    background: rgba(9, 13, 22, 0.97) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-top: 1px solid #1e293b !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.7) !important;
+    z-index: 1000 !important;
+  }
+
+  .nav-item {
+    min-height: 48px !important;
+    touch-action: manipulation;
+  }
+
+  .nav-item span:first-child {
+    font-size: 19px !important;
+  }
+
+  .nav-item span:last-child {
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Card padding and responsive font sizes */
+  .card {
+    padding: 12px !important;
+    border-radius: 14px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .score-hero {
+    padding: 16px 12px !important;
+  }
+
+  .score-circle {
+    width: 84px !important;
+    height: 84px !important;
+  }
+
+  .score-num {
+    font-size: 32px !important;
+  }
+
+  .hero-title {
+    font-size: 14px !important;
+  }
+
+  /* Mobile Telemetry Grid */
+  .telem-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .telem-item {
+    padding: 8px !important;
+  }
+
+  .telem-val {
+    font-size: 18px !important;
+  }
+
+  /* Other Panes (Vision, 3D, Dashboard) on Mobile */
+  .view-pane#view-vision,
+  .view-pane#view-3d,
+  .view-pane#view-dashboard {
+    padding: 12px 12px 84px !important;
+    display: none;
+  }
+
+  .view-pane#view-vision.active,
+  .view-pane#view-3d.active,
+  .view-pane#view-dashboard.active {
+    display: block !important;
+  }
+
+  .three-canvas-container {
+    height: 300px !important;
+  }
+
+  .camera-stream-box {
+    height: 220px !important;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .kpi-val {
+    font-size: 22px !important;
+  }
+}
+
+/* STANDALONE PWA TWEAKS */
+body.is-standalone .status-bar {
+  padding-top: calc(env(safe-area-inset-top, 8px) + 2px) !important;
+}
+
+body.is-standalone .master-header {
+  padding-top: calc(env(safe-area-inset-top, 8px) + 4px) !important;
+}
+
   </style>
 </head>
 <body>
@@ -1030,6 +1455,14 @@ body {
       <span class="c-tag green">🏆 Cuộc thi Sáng kiến ATGT Việt Nam 2026</span>
       <span class="c-tag red">📚 Chủ đề 3: Học đường — Học từ đường</span>
       <span class="c-tag">🏛️ Dân Trí • Cục CSGT • Toyota</span>
+    </div>
+    <div class="master-header-actions" style="display: flex; gap: 8px; align-items: center; margin-left: auto;">
+      <button class="btn-pwa-install-badge" id="btn-pwa-install" onclick="openPwaInstallModal()" title="Cài đặt ứng dụng vào điện thoại để chạy độc lập">
+        <span>📲</span> <span class="install-text">Cài App</span>
+      </button>
+      <button class="btn-ctrl" id="btn-mobile-eco-menu" onclick="openEcosystemModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 12px; background: #1e293b; color: #38bdf8; border: 1px solid #334155; border-radius: 20px;">
+        <span>⚡</span> <span>Phân Hệ</span>
+      </button>
     </div>
   </header>
 
@@ -1151,6 +1584,23 @@ body {
                   🎯 Tự Căn Chỉnh
                 </button>
               </div>
+            </div>
+
+            <!-- MOBILE LIVE SENSOR & OSCILLOSCOPE TOGGLE -->
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+              <button class="btn-ctrl" id="btn-toggle-inline-osc" onclick="toggleInlineOscilloscope()" style="flex: 1; justify-content: center; font-size: 11px; padding: 8px 10px;">
+                <span>📈</span> <span id="text-inline-osc">Xem Sóng IMU 50Hz</span>
+              </button>
+              <button class="btn-ctrl active" onclick="toggleRealSensors()" id="btn-mobile-sensor" style="flex: 1; justify-content: center; font-size: 11px; padding: 8px 10px;">
+                <span>📱</span> <span>Bật Cảm Biến Thật</span>
+              </button>
+            </div>
+            <div id="inline-osc-container" style="display: none; margin-top: 10px; background: #090e1a; border-radius: 12px; border: 1px solid #1e293b; padding: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <div style="font-size: 11px; font-weight: 700; color: #4ade80;">● SÓNG DAO ĐỘNG IMU 50Hz LIVE</div>
+                <div style="font-size: 10px; color: #38bdf8;">Tách trọng lực IIR α=0.85</div>
+              </div>
+              <canvas id="mobileWaveformCanvas" width="340" height="110" style="width: 100%; height: 110px; border-radius: 8px; background: #040711; display: block;"></canvas>
             </div>
 
             <div class="sim-panel">
@@ -1832,6 +2282,136 @@ body {
     </div>
   </div>
 
+  <!-- SMART PWA INSTALL MODAL (ADD TO HOME SCREEN) -->
+  <div class="modal-backdrop" id="pwa-install-modal">
+    <div class="modal-box pwa-install-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <img src="icon-192.png" alt="Logo" style="width: 28px; height: 28px; border-radius: 6px;">
+          <span>Cài Đặt Ứng Dụng Eco-SafeRide</span>
+        </div>
+        <button class="modal-close-btn" onclick="closePwaInstallModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 18px;">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <img src="icon-192.png" alt="Logo" style="width: 64px; height: 64px; border-radius: 16px; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4); margin-bottom: 10px;">
+          <h3 style="color: #fff; font-size: 16px; font-weight: 800;">Eco-SafeRide — Trợ Lý An Toàn Số</h3>
+          <p style="color: #94a3b8; font-size: 12px; margin-top: 4px;">Sáng kiến An toàn Giao thông Việt Nam 2026</p>
+        </div>
+
+        <div class="pwa-benefits-list">
+          <div class="pwa-benefit-item">
+            <span class="pwa-b-icon">🚀</span>
+            <div>
+              <strong>Mở ngay từ Màn hình chính (Home Screen)</strong>
+              <p>Khởi động toàn màn hình tức thì như ứng dụng gốc, không cần qua trình duyệt.</p>
+            </div>
+          </div>
+          <div class="pwa-benefit-item">
+            <span class="pwa-b-icon">⚡</span>
+            <div>
+              <strong>Tối ưu Cảm biến Túi quần & Màn hình OLED</strong>
+              <p>Tiết kiệm 89.13% pin, thuật toán AI chạy liên tục ngay cả khi khóa màn hình bỏ túi.</p>
+            </div>
+          </div>
+          <div class="pwa-benefit-item">
+            <span class="pwa-b-icon">📶</span>
+            <div>
+              <strong>Hoạt động Offline 100% (Không cần mạng 4G)</strong>
+              <p>Tự động lưu trữ ngoại tuyến, tính điểm SDI và kích hoạt còi cảnh báo không độ trễ.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANDROID / CHROME INSTALL VIEW -->
+        <div id="pwa-android-guide" style="margin-top: 18px;">
+          <button class="btn-install-primary" onclick="triggerPwaInstall()">
+            <span>📲</span> CÀI ĐẶT ỨNG DỤNG VÀO ĐIỆN THOẠI
+          </button>
+          <div style="text-align: center; margin-top: 8px; font-size: 11px; color: #64748b;">
+            Tương thích Android (Chrome, Edge, Samsung Internet) & Máy tính
+          </div>
+        </div>
+
+        <!-- IOS SAFARI INSTALL GUIDE -->
+        <div id="pwa-ios-guide" style="display: none; margin-top: 18px; background: #090e1a; border: 1px solid #1e293b; border-radius: 12px; padding: 14px;">
+          <div style="color: #38bdf8; font-weight: 800; font-size: 13px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+            <span>🍎</span> Hướng dẫn Cài đặt trên iPhone / iPad (Safari):
+          </div>
+          <div class="ios-step-row">
+            <div class="step-badge">1</div>
+            <div>Bấm nút <strong>Chia sẻ (Share) <span style="color:#38bdf8; font-size: 16px;">⎋</span></strong> ở thanh dưới cùng của Safari.</div>
+          </div>
+          <div class="ios-step-row" style="margin-top: 10px;">
+            <div class="step-badge">2</div>
+            <div>Cuộn xuống và chọn <strong>"Thêm vào MH chính" (Add to Home Screen ⊞)</strong>.</div>
+          </div>
+          <div class="ios-step-row" style="margin-top: 10px;">
+            <div class="step-badge">3</div>
+            <div>Nhấn <strong>"Thêm" (Add)</strong> ở góc phải trên để hoàn tất. Biểu tượng Eco-SafeRide sẽ xuất hiện trên màn hình chính!</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE ECOSYSTEM SWITCHER MODAL -->
+  <div class="modal-backdrop" id="ecosystem-menu-modal">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>⚡</span> Chuyển Đổi Phân Hệ Hệ Sinh Thái
+        </div>
+        <button class="modal-close-btn" onclick="closeEcosystemModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 14px;">
+        <div class="eco-nav-cards">
+          <div class="eco-nav-card active" id="eco-card-mobile" onclick="switchViewFromModal('mobile')">
+            <div class="eco-nav-icon">📱</div>
+            <div class="eco-nav-info">
+              <strong>Phân Hệ 1: Hộp Đen AI Bỏ Túi</strong>
+              <p>Ứng dụng di động lái xe an toàn 0đ, đo dao động 50Hz, cứu hộ 115.</p>
+            </div>
+            <span class="eco-badge">Đang mở</span>
+          </div>
+
+          <div class="eco-nav-card" id="eco-card-vision" onclick="switchViewFromModal('vision')">
+            <div class="eco-nav-icon">🏫</div>
+            <div class="eco-nav-info">
+              <strong>Phân Hệ 2: Camera Cổng Trường Edge AI</strong>
+              <p>Giám sát dòng xe, phát hiện xe tải rẽ cắt mặt học sinh, tính toán TTC va chạm.</p>
+            </div>
+          </div>
+
+          <div class="eco-nav-card" id="eco-card-3d" onclick="switchViewFromModal('3d')">
+            <div class="eco-nav-icon">🚚</div>
+            <div class="eco-nav-info">
+              <strong>Phân Hệ 3: Mô Phỏng 3D Điểm Mù (WebGL)</strong>
+              <p>Trực quan hóa 3D vệt quét chém cua bánh sau xe tải (Δ = 2.25m), góc chết tài xế.</p>
+            </div>
+          </div>
+
+          <div class="eco-nav-card" id="eco-card-dashboard" onclick="switchViewFromModal('dashboard')">
+            <div class="eco-nav-icon">📊</div>
+            <div class="eco-nav-info">
+              <strong>Phân Hệ 4: Trung Tâm Giám Sát Cổng Trường</strong>
+              <p>Bản đồ nhiệt GIS, thống kê chỉ số an toàn học sinh, dữ liệu kiến nghị CSGT.</p>
+            </div>
+          </div>
+
+          <div class="eco-nav-card" onclick="openDossierModalFromEco('don-du-thi')">
+            <div class="eco-nav-icon">📄</div>
+            <div class="eco-nav-info">
+              <strong>Bộ Hồ Sơ Nộp Thi Chính Thức 2026</strong>
+              <p>Đơn đăng ký, Thuyết minh 15 trang chuẩn NĐ 30, Báo cáo AMEF-2026.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Vite Entrypoint Script -->
   <script>
 // Styles inlined in head
@@ -2142,9 +2722,11 @@ window.simulateScenario = function(type) {
 // Real Device Sensors Hook
 window.toggleRealSensors = function() {
   const btn = document.getElementById('btn-toggle-sensor');
+  const btnMob = document.getElementById('btn-mobile-sensor');
   if (isRealSensorActive) {
     isRealSensorActive = false;
-    if (btn) btn.innerText = '📱 Bật Cảm Biến Thật';
+    if (btn) btn.innerHTML = '📱 Bật Cảm Biến Thật';
+    if (btnMob) btnMob.innerHTML = '<span>📱</span> <span>Bật Cảm Biến Thật</span>';
     speakVietnamese('Đã tắt cảm biến thật, chuyển về chế độ mô phỏng.');
     return;
   }
@@ -2165,7 +2747,9 @@ window.toggleRealSensors = function() {
 function bindMotionListeners() {
   isRealSensorActive = true;
   const btn = document.getElementById('btn-toggle-sensor');
-  if (btn) btn.innerText = '🟢 Cảm Biến Thật Đang Bật';
+  const btnMob = document.getElementById('btn-mobile-sensor');
+  if (btn) btn.innerHTML = '🟢 Cảm Biến Thật Đang Bật';
+  if (btnMob) btnMob.innerHTML = '<span>🟢</span> <span>Cảm Biến Thật BẬT</span>';
   speakVietnamese('Cảm biến gia tốc và hồi chuyển điện thoại đã được kích hoạt trực tiếp.');
 
   window.addEventListener('devicemotion', (event) => {
@@ -2936,6 +3520,213 @@ document.addEventListener('DOMContentLoaded', () => {
     initHeatmap();
   }, 500);
 });
+
+
+// ==========================================================
+// PWA STANDALONE & MOBILE CONTROLLER FUNCTIONS
+// ==========================================================
+let deferredPrompt = null;
+let isInlineOscOpen = false;
+
+window.openPwaInstallModal = function() {
+  const modal = document.getElementById('pwa-install-modal');
+  if (!modal) return;
+  modal.classList.add('active');
+
+  const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const iosGuide = document.getElementById('pwa-ios-guide');
+  const androidGuide = document.getElementById('pwa-android-guide');
+
+  if (isIos) {
+    if (iosGuide) iosGuide.style.display = 'block';
+    if (androidGuide) androidGuide.style.display = 'none';
+  } else {
+    if (iosGuide) iosGuide.style.display = 'none';
+    if (androidGuide) androidGuide.style.display = 'block';
+  }
+};
+
+window.closePwaInstallModal = function() {
+  const modal = document.getElementById('pwa-install-modal');
+  if (modal) modal.classList.remove('active');
+  try { localStorage.setItem('pwa_dismissed', 'true'); } catch (e) {}
+};
+
+window.triggerPwaInstall = async function() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log('PWA install prompt result:', outcome);
+    if (outcome === 'accepted') {
+      try { localStorage.setItem('pwa_installed', 'true'); } catch (e) {}
+    }
+    deferredPrompt = null;
+    closePwaInstallModal();
+  } else {
+    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIos) {
+      alert('Trên iPhone / iPad (Safari): Hãy nhấn nút Chia sẻ ⎋ rồi chọn "Thêm vào Màn hình chính" ⊞');
+    } else {
+      alert('Để cài đặt ứng dụng: Hãy mở menu trình duyệt (biểu tượng 3 chấm ⋮ ở góc trên bên phải) và chọn "Cài đặt ứng dụng" hoặc "Thêm vào Màn hình chính"!');
+    }
+  }
+};
+
+window.openEcosystemModal = function() {
+  const modal = document.getElementById('ecosystem-menu-modal');
+  if (modal) {
+    modal.classList.add('active');
+    // Highlight currently active card
+    document.querySelectorAll('.eco-nav-card').forEach(c => c.classList.remove('active'));
+    const curCard = document.getElementById('eco-card-' + currentView);
+    if (curCard) curCard.classList.add('active');
+  }
+};
+
+window.closeEcosystemModal = function() {
+  const modal = document.getElementById('ecosystem-menu-modal');
+  if (modal) modal.classList.remove('active');
+};
+
+window.switchViewFromModal = function(viewName) {
+  closeEcosystemModal();
+  switchView(viewName);
+};
+
+window.openDossierModalFromEco = function(tabKey) {
+  closeEcosystemModal();
+  openDossierModal(tabKey);
+};
+
+window.toggleInlineOscilloscope = function() {
+  const container = document.getElementById('inline-osc-container');
+  const btn = document.getElementById('btn-toggle-inline-osc');
+  const text = document.getElementById('text-inline-osc');
+  if (!container) return;
+
+  isInlineOscOpen = !isInlineOscOpen;
+  if (isInlineOscOpen) {
+    container.style.display = 'block';
+    if (btn) btn.classList.add('active');
+    if (text) text.innerText = 'Ẩn Sóng IMU';
+  } else {
+    container.style.display = 'none';
+    if (btn) btn.classList.remove('active');
+    if (text) text.innerText = 'Xem Sóng IMU 50Hz';
+  }
+};
+
+// Render Waveform to Mobile Canvas if open
+function renderMobileOscilloscope() {
+  if (!isInlineOscOpen) return;
+  const canvas = document.getElementById('mobileWaveformCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#040711';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height / 2);
+  ctx.lineTo(canvas.width, canvas.height / 2);
+  ctx.stroke();
+
+  if (oscBuffer.length < 2) return;
+
+  // Draw Vert Vibe (cyan)
+  ctx.strokeStyle = '#06b6d4';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  const step = canvas.width / BUFFER_SIZE;
+  const midY = canvas.height / 2;
+
+  for (let i = 0; i < oscBuffer.length; i++) {
+    const x = i * step;
+    const y = midY - oscBuffer[i].v * 14;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Draw G-Est (yellow)
+  ctx.strokeStyle = '#facc15';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  for (let i = 0; i < oscBuffer.length; i++) {
+    const x = i * step;
+    const y = midY - (oscBuffer[i].g - 9.81) * 14;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+}
+
+// Hook mobile oscilloscope rendering into requestAnimationFrame
+setInterval(() => {
+  if (isInlineOscOpen) {
+    renderMobileOscilloscope();
+  }
+}, 40); // 25 FPS update for mobile canvas to save battery
+
+// Register Service Worker & Listen for PWA Install Prompt
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => {
+        console.log('Eco-SafeRide PWA ServiceWorker active in scope:', reg.scope);
+      })
+      .catch(err => {
+        console.warn('PWA ServiceWorker registration error:', err);
+      });
+  });
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  console.log('PWA beforeinstallprompt captured.');
+  const btn = document.getElementById('btn-pwa-install');
+  if (btn) btn.style.display = 'inline-flex';
+
+  // Smart prompt for first-time mobile visitors
+  try {
+    if (!localStorage.getItem('pwa_installed') && !localStorage.getItem('pwa_dismissed')) {
+      setTimeout(() => {
+        if (window.innerWidth <= 768) {
+          openPwaInstallModal();
+        }
+      }, 3500);
+    }
+  } catch (err) {}
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('Eco-SafeRide was successfully installed as PWA');
+  try { localStorage.setItem('pwa_installed', 'true'); } catch (err) {}
+  deferredPrompt = null;
+  closePwaInstallModal();
+  const btn = document.getElementById('btn-pwa-install');
+  if (btn) {
+    btn.innerHTML = '<span>✓</span> <span>App Mode</span>';
+    btn.style.animation = 'none';
+  }
+});
+
+// Check Standalone Mode
+function checkStandaloneMode() {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                       window.navigator.standalone === true || 
+                       document.referrer.includes('android-app://');
+  if (isStandalone) {
+    document.body.classList.add('is-standalone');
+    const btn = document.getElementById('btn-pwa-install');
+    if (btn) btn.style.display = 'none';
+    console.log('Running in Native Standalone PWA mode.');
+  }
+}
+checkStandaloneMode();
 
   </script>
 </body>

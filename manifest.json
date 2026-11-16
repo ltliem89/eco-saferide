@@ -1,0 +1,43 @@
+{
+  "name": "Eco-SafeRide — Trợ Lý An Toàn Giao Thông Số",
+  "short_name": "Eco-SafeRide",
+  "description": "Trợ lý Lái xe An toàn Số Học đường 0 đồng — Tự động nhận diện lạng lách, phanh gấp, ngã xe và cứu hộ khẩn cấp 115",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#070b14",
+  "theme_color": "#10b981",
+  "id": "eco-saferide-ssse-2026",
+  "categories": ["education", "utilities", "travel"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Bắt Đầu Lái Xe",
+      "short_name": "Lái Xe",
+      "description": "Kích hoạt giám sát hành trình lái xe an toàn",
+      "url": "./index.html?tab=ride",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Cứu Hộ Khẩn Cấp 115",
+      "short_name": "Cứu Hộ",
+      "description": "Báo động khẩn cấp và gọi người thân 115",
+      "url": "./index.html?tab=sos",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

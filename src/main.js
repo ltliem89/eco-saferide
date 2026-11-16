@@ -306,9 +306,11 @@ window.simulateScenario = function(type) {
 // Real Device Sensors Hook
 window.toggleRealSensors = function() {
   const btn = document.getElementById('btn-toggle-sensor');
+  const btnMob = document.getElementById('btn-mobile-sensor');
   if (isRealSensorActive) {
     isRealSensorActive = false;
-    if (btn) btn.innerText = '📱 Bật Cảm Biến Thật';
+    if (btn) btn.innerHTML = '📱 Bật Cảm Biến Thật';
+    if (btnMob) btnMob.innerHTML = '<span>📱</span> <span>Bật Cảm Biến Thật</span>';
     speakVietnamese('Đã tắt cảm biến thật, chuyển về chế độ mô phỏng.');
     return;
   }
@@ -329,7 +331,9 @@ window.toggleRealSensors = function() {
 function bindMotionListeners() {
   isRealSensorActive = true;
   const btn = document.getElementById('btn-toggle-sensor');
-  if (btn) btn.innerText = '🟢 Cảm Biến Thật Đang Bật';
+  const btnMob = document.getElementById('btn-mobile-sensor');
+  if (btn) btn.innerHTML = '🟢 Cảm Biến Thật Đang Bật';
+  if (btnMob) btnMob.innerHTML = '<span>🟢</span> <span>Cảm Biến Thật BẬT</span>';
   speakVietnamese('Cảm biến gia tốc và hồi chuyển điện thoại đã được kích hoạt trực tiếp.');
 
   window.addEventListener('devicemotion', (event) => {
@@ -1100,3 +1104,210 @@ document.addEventListener('DOMContentLoaded', () => {
     initHeatmap();
   }, 500);
 });
+
+
+// ==========================================================
+// PWA STANDALONE & MOBILE CONTROLLER FUNCTIONS
+// ==========================================================
+let deferredPrompt = null;
+let isInlineOscOpen = false;
+
+window.openPwaInstallModal = function() {
+  const modal = document.getElementById('pwa-install-modal');
+  if (!modal) return;
+  modal.classList.add('active');
+
+  const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const iosGuide = document.getElementById('pwa-ios-guide');
+  const androidGuide = document.getElementById('pwa-android-guide');
+
+  if (isIos) {
+    if (iosGuide) iosGuide.style.display = 'block';
+    if (androidGuide) androidGuide.style.display = 'none';
+  } else {
+    if (iosGuide) iosGuide.style.display = 'none';
+    if (androidGuide) androidGuide.style.display = 'block';
+  }
+};
+
+window.closePwaInstallModal = function() {
+  const modal = document.getElementById('pwa-install-modal');
+  if (modal) modal.classList.remove('active');
+  try { localStorage.setItem('pwa_dismissed', 'true'); } catch (e) {}
+};
+
+window.triggerPwaInstall = async function() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log('PWA install prompt result:', outcome);
+    if (outcome === 'accepted') {
+      try { localStorage.setItem('pwa_installed', 'true'); } catch (e) {}
+    }
+    deferredPrompt = null;
+    closePwaInstallModal();
+  } else {
+    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (isIos) {
+      alert('Trên iPhone / iPad (Safari): Hãy nhấn nút Chia sẻ ⎋ rồi chọn "Thêm vào Màn hình chính" ⊞');
+    } else {
+      alert('Để cài đặt ứng dụng: Hãy mở menu trình duyệt (biểu tượng 3 chấm ⋮ ở góc trên bên phải) và chọn "Cài đặt ứng dụng" hoặc "Thêm vào Màn hình chính"!');
+    }
+  }
+};
+
+window.openEcosystemModal = function() {
+  const modal = document.getElementById('ecosystem-menu-modal');
+  if (modal) {
+    modal.classList.add('active');
+    // Highlight currently active card
+    document.querySelectorAll('.eco-nav-card').forEach(c => c.classList.remove('active'));
+    const curCard = document.getElementById('eco-card-' + currentView);
+    if (curCard) curCard.classList.add('active');
+  }
+};
+
+window.closeEcosystemModal = function() {
+  const modal = document.getElementById('ecosystem-menu-modal');
+  if (modal) modal.classList.remove('active');
+};
+
+window.switchViewFromModal = function(viewName) {
+  closeEcosystemModal();
+  switchView(viewName);
+};
+
+window.openDossierModalFromEco = function(tabKey) {
+  closeEcosystemModal();
+  openDossierModal(tabKey);
+};
+
+window.toggleInlineOscilloscope = function() {
+  const container = document.getElementById('inline-osc-container');
+  const btn = document.getElementById('btn-toggle-inline-osc');
+  const text = document.getElementById('text-inline-osc');
+  if (!container) return;
+
+  isInlineOscOpen = !isInlineOscOpen;
+  if (isInlineOscOpen) {
+    container.style.display = 'block';
+    if (btn) btn.classList.add('active');
+    if (text) text.innerText = 'Ẩn Sóng IMU';
+  } else {
+    container.style.display = 'none';
+    if (btn) btn.classList.remove('active');
+    if (text) text.innerText = 'Xem Sóng IMU 50Hz';
+  }
+};
+
+// Render Waveform to Mobile Canvas if open
+function renderMobileOscilloscope() {
+  if (!isInlineOscOpen) return;
+  const canvas = document.getElementById('mobileWaveformCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#040711';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height / 2);
+  ctx.lineTo(canvas.width, canvas.height / 2);
+  ctx.stroke();
+
+  if (oscBuffer.length < 2) return;
+
+  // Draw Vert Vibe (cyan)
+  ctx.strokeStyle = '#06b6d4';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  const step = canvas.width / BUFFER_SIZE;
+  const midY = canvas.height / 2;
+
+  for (let i = 0; i < oscBuffer.length; i++) {
+    const x = i * step;
+    const y = midY - oscBuffer[i].v * 14;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Draw G-Est (yellow)
+  ctx.strokeStyle = '#facc15';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  for (let i = 0; i < oscBuffer.length; i++) {
+    const x = i * step;
+    const y = midY - (oscBuffer[i].g - 9.81) * 14;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+}
+
+// Hook mobile oscilloscope rendering into requestAnimationFrame
+setInterval(() => {
+  if (isInlineOscOpen) {
+    renderMobileOscilloscope();
+  }
+}, 40); // 25 FPS update for mobile canvas to save battery
+
+// Register Service Worker & Listen for PWA Install Prompt
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => {
+        console.log('Eco-SafeRide PWA ServiceWorker active in scope:', reg.scope);
+      })
+      .catch(err => {
+        console.warn('PWA ServiceWorker registration error:', err);
+      });
+  });
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  console.log('PWA beforeinstallprompt captured.');
+  const btn = document.getElementById('btn-pwa-install');
+  if (btn) btn.style.display = 'inline-flex';
+
+  // Smart prompt for first-time mobile visitors
+  try {
+    if (!localStorage.getItem('pwa_installed') && !localStorage.getItem('pwa_dismissed')) {
+      setTimeout(() => {
+        if (window.innerWidth <= 768) {
+          openPwaInstallModal();
+        }
+      }, 3500);
+    }
+  } catch (err) {}
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('Eco-SafeRide was successfully installed as PWA');
+  try { localStorage.setItem('pwa_installed', 'true'); } catch (err) {}
+  deferredPrompt = null;
+  closePwaInstallModal();
+  const btn = document.getElementById('btn-pwa-install');
+  if (btn) {
+    btn.innerHTML = '<span>✓</span> <span>App Mode</span>';
+    btn.style.animation = 'none';
+  }
+});
+
+// Check Standalone Mode
+function checkStandaloneMode() {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                       window.navigator.standalone === true || 
+                       document.referrer.includes('android-app://');
+  if (isStandalone) {
+    document.body.classList.add('is-standalone');
+    const btn = document.getElementById('btn-pwa-install');
+    if (btn) btn.style.display = 'none';
+    console.log('Running in Native Standalone PWA mode.');
+  }
+}
+checkStandaloneMode();

@@ -43,6 +43,14 @@
       <span class="c-tag red">📚 Chủ đề 3: Học đường — Học từ đường</span>
       <span class="c-tag">🏛️ Dân Trí • Cục CSGT • Toyota</span>
     </div>
+    <div class="master-header-actions" style="display: flex; gap: 8px; align-items: center; margin-left: auto;">
+      <button class="btn-pwa-install-badge" id="btn-pwa-install" onclick="openPwaInstallModal()" title="Cài đặt ứng dụng vào điện thoại để chạy độc lập">
+        <span>📲</span> <span class="install-text">Cài App</span>
+      </button>
+      <button class="btn-ctrl" id="btn-mobile-eco-menu" onclick="openEcosystemModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 12px; background: #1e293b; color: #38bdf8; border: 1px solid #334155; border-radius: 20px;">
+        <span>⚡</span> <span>Phân Hệ</span>
+      </button>
+    </div>
   </header>
 
   <!-- MASTER ECOSYSTEM NAVIGATION BAR -->
@@ -163,6 +171,23 @@
                   🎯 Tự Căn Chỉnh
                 </button>
               </div>
+            </div>
+
+            <!-- MOBILE LIVE SENSOR & OSCILLOSCOPE TOGGLE -->
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+              <button class="btn-ctrl" id="btn-toggle-inline-osc" onclick="toggleInlineOscilloscope()" style="flex: 1; justify-content: center; font-size: 11px; padding: 8px 10px;">
+                <span>📈</span> <span id="text-inline-osc">Xem Sóng IMU 50Hz</span>
+              </button>
+              <button class="btn-ctrl active" onclick="toggleRealSensors()" id="btn-mobile-sensor" style="flex: 1; justify-content: center; font-size: 11px; padding: 8px 10px;">
+                <span>📱</span> <span>Bật Cảm Biến Thật</span>
+              </button>
+            </div>
+            <div id="inline-osc-container" style="display: none; margin-top: 10px; background: #090e1a; border-radius: 12px; border: 1px solid #1e293b; padding: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <div style="font-size: 11px; font-weight: 700; color: #4ade80;">● SÓNG DAO ĐỘNG IMU 50Hz LIVE</div>
+                <div style="font-size: 10px; color: #38bdf8;">Tách trọng lực IIR α=0.85</div>
+              </div>
+              <canvas id="mobileWaveformCanvas" width="340" height="110" style="width: 100%; height: 110px; border-radius: 8px; background: #040711; display: block;"></canvas>
             </div>
 
             <div class="sim-panel">
@@ -839,6 +864,136 @@
           <button onclick="window.print()" class="btn-ctrl" style="background: #2563eb; color: #fff;">
             <span>🖨️</span> In / Lưu PDF Báo Cáo
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SMART PWA INSTALL MODAL (ADD TO HOME SCREEN) -->
+  <div class="modal-backdrop" id="pwa-install-modal">
+    <div class="modal-box pwa-install-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <img src="icon-192.png" alt="Logo" style="width: 28px; height: 28px; border-radius: 6px;">
+          <span>Cài Đặt Ứng Dụng Eco-SafeRide</span>
+        </div>
+        <button class="modal-close-btn" onclick="closePwaInstallModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 18px;">
+        <div style="text-align: center; margin-bottom: 16px;">
+          <img src="icon-192.png" alt="Logo" style="width: 64px; height: 64px; border-radius: 16px; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4); margin-bottom: 10px;">
+          <h3 style="color: #fff; font-size: 16px; font-weight: 800;">Eco-SafeRide — Trợ Lý An Toàn Số</h3>
+          <p style="color: #94a3b8; font-size: 12px; margin-top: 4px;">Sáng kiến An toàn Giao thông Việt Nam 2026</p>
+        </div>
+
+        <div class="pwa-benefits-list">
+          <div class="pwa-benefit-item">
+            <span class="pwa-b-icon">🚀</span>
+            <div>
+              <strong>Mở ngay từ Màn hình chính (Home Screen)</strong>
+              <p>Khởi động toàn màn hình tức thì như ứng dụng gốc, không cần qua trình duyệt.</p>
+            </div>
+          </div>
+          <div class="pwa-benefit-item">
+            <span class="pwa-b-icon">⚡</span>
+            <div>
+              <strong>Tối ưu Cảm biến Túi quần & Màn hình OLED</strong>
+              <p>Tiết kiệm 89.13% pin, thuật toán AI chạy liên tục ngay cả khi khóa màn hình bỏ túi.</p>
+            </div>
+          </div>
+          <div class="pwa-benefit-item">
+            <span class="pwa-b-icon">📶</span>
+            <div>
+              <strong>Hoạt động Offline 100% (Không cần mạng 4G)</strong>
+              <p>Tự động lưu trữ ngoại tuyến, tính điểm SDI và kích hoạt còi cảnh báo không độ trễ.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANDROID / CHROME INSTALL VIEW -->
+        <div id="pwa-android-guide" style="margin-top: 18px;">
+          <button class="btn-install-primary" onclick="triggerPwaInstall()">
+            <span>📲</span> CÀI ĐẶT ỨNG DỤNG VÀO ĐIỆN THOẠI
+          </button>
+          <div style="text-align: center; margin-top: 8px; font-size: 11px; color: #64748b;">
+            Tương thích Android (Chrome, Edge, Samsung Internet) & Máy tính
+          </div>
+        </div>
+
+        <!-- IOS SAFARI INSTALL GUIDE -->
+        <div id="pwa-ios-guide" style="display: none; margin-top: 18px; background: #090e1a; border: 1px solid #1e293b; border-radius: 12px; padding: 14px;">
+          <div style="color: #38bdf8; font-weight: 800; font-size: 13px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+            <span>🍎</span> Hướng dẫn Cài đặt trên iPhone / iPad (Safari):
+          </div>
+          <div class="ios-step-row">
+            <div class="step-badge">1</div>
+            <div>Bấm nút <strong>Chia sẻ (Share) <span style="color:#38bdf8; font-size: 16px;">⎋</span></strong> ở thanh dưới cùng của Safari.</div>
+          </div>
+          <div class="ios-step-row" style="margin-top: 10px;">
+            <div class="step-badge">2</div>
+            <div>Cuộn xuống và chọn <strong>"Thêm vào MH chính" (Add to Home Screen ⊞)</strong>.</div>
+          </div>
+          <div class="ios-step-row" style="margin-top: 10px;">
+            <div class="step-badge">3</div>
+            <div>Nhấn <strong>"Thêm" (Add)</strong> ở góc phải trên để hoàn tất. Biểu tượng Eco-SafeRide sẽ xuất hiện trên màn hình chính!</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE ECOSYSTEM SWITCHER MODAL -->
+  <div class="modal-backdrop" id="ecosystem-menu-modal">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>⚡</span> Chuyển Đổi Phân Hệ Hệ Sinh Thái
+        </div>
+        <button class="modal-close-btn" onclick="closeEcosystemModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 14px;">
+        <div class="eco-nav-cards">
+          <div class="eco-nav-card active" id="eco-card-mobile" onclick="switchViewFromModal('mobile')">
+            <div class="eco-nav-icon">📱</div>
+            <div class="eco-nav-info">
+              <strong>Phân Hệ 1: Hộp Đen AI Bỏ Túi</strong>
+              <p>Ứng dụng di động lái xe an toàn 0đ, đo dao động 50Hz, cứu hộ 115.</p>
+            </div>
+            <span class="eco-badge">Đang mở</span>
+          </div>
+
+          <div class="eco-nav-card" id="eco-card-vision" onclick="switchViewFromModal('vision')">
+            <div class="eco-nav-icon">🏫</div>
+            <div class="eco-nav-info">
+              <strong>Phân Hệ 2: Camera Cổng Trường Edge AI</strong>
+              <p>Giám sát dòng xe, phát hiện xe tải rẽ cắt mặt học sinh, tính toán TTC va chạm.</p>
+            </div>
+          </div>
+
+          <div class="eco-nav-card" id="eco-card-3d" onclick="switchViewFromModal('3d')">
+            <div class="eco-nav-icon">🚚</div>
+            <div class="eco-nav-info">
+              <strong>Phân Hệ 3: Mô Phỏng 3D Điểm Mù (WebGL)</strong>
+              <p>Trực quan hóa 3D vệt quét chém cua bánh sau xe tải (Δ = 2.25m), góc chết tài xế.</p>
+            </div>
+          </div>
+
+          <div class="eco-nav-card" id="eco-card-dashboard" onclick="switchViewFromModal('dashboard')">
+            <div class="eco-nav-icon">📊</div>
+            <div class="eco-nav-info">
+              <strong>Phân Hệ 4: Trung Tâm Giám Sát Cổng Trường</strong>
+              <p>Bản đồ nhiệt GIS, thống kê chỉ số an toàn học sinh, dữ liệu kiến nghị CSGT.</p>
+            </div>
+          </div>
+
+          <div class="eco-nav-card" onclick="openDossierModalFromEco('don-du-thi')">
+            <div class="eco-nav-icon">📄</div>
+            <div class="eco-nav-info">
+              <strong>Bộ Hồ Sơ Nộp Thi Chính Thức 2026</strong>
+              <p>Đơn đăng ký, Thuyết minh 15 trang chuẩn NĐ 30, Báo cáo AMEF-2026.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
