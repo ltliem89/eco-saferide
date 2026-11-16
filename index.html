@@ -44,6 +44,9 @@
       <span class="c-tag">🏛️ Dân Trí • Cục CSGT • Toyota</span>
     </div>
     <div class="master-header-actions" style="display: flex; gap: 8px; align-items: center; margin-left: auto;">
+      <button class="btn-header-bot-pill" id="btn-header-bot" onclick="openPersonaBotModal()" title="Hội đồng Bot Trải nghiệm & Đánh giá Độc lập 10 Nhân vật">
+        <span>🤖</span> <span>Bot Đánh Giá</span>
+      </button>
       <button class="btn-pwa-install-badge" id="btn-pwa-install" onclick="openPwaInstallModal()" title="Cài đặt ứng dụng vào điện thoại để chạy độc lập">
         <span>📲</span> <span class="install-text">Cài App</span>
       </button>
@@ -70,6 +73,9 @@
       </button>
     </div>
     <div class="nav-actions">
+      <button class="btn-header-action bot-accent" onclick="openPersonaBotModal()">
+        <span>🤖</span> Bot Đánh Giá Độc Lập
+      </button>
       <button class="btn-header-action primary" onclick="openDossierModal('don-du-thi')">
         <span>📄</span> Bộ Hồ Sơ Dự Thi 2026
       </button>
@@ -987,6 +993,15 @@
             </div>
           </div>
 
+          <div class="eco-nav-card" onclick="openPersonaBotFromEco()">
+            <div class="eco-nav-icon">🤖</div>
+            <div class="eco-nav-info">
+              <strong>Hội Đồng Bot Đánh Giá Độc Lập (10 Persona)</strong>
+              <p>Khảo sát thực chứng đa ngành: Học sinh, Phụ huynh, Tài xế container, CSGT, Bác sĩ 115.</p>
+            </div>
+            <span class="eco-badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981;">Độc Lập</span>
+          </div>
+
           <div class="eco-nav-card" onclick="openDossierModalFromEco('don-du-thi')">
             <div class="eco-nav-icon">📄</div>
             <div class="eco-nav-info">
@@ -998,6 +1013,56 @@
       </div>
     </div>
   </div>
+
+  <!-- MULTI-PERSONA AUTONOMOUS EVALUATION BOT MODAL -->
+  <div class="modal-backdrop" id="modal-persona-bot" style="display: none;">
+    <div class="modal-box persona-modal-container">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🤖</span>
+          <div>
+            <strong>HỘI ĐỒNG BOT TRẢI NGHIỆM & ĐÁNH GIÁ ĐỘC LẬP</strong>
+            <span class="modal-subtitle">10 Persona đại diện đa thế hệ (13 – 54 tuổi) & đa ngành nghề thực nghiệm đa chiều</span>
+          </div>
+        </div>
+        <div class="modal-header-btns">
+          <button class="btn-summary-toggle" onclick="openCouncilSummaryView()">
+            <span>🏛️</span> Bảng Tổng Hợp Hội Đồng
+          </button>
+          <button class="modal-close-btn" onclick="closePersonaBotModal()">&times;</button>
+        </div>
+      </div>
+      
+      <!-- PERSONA FILTER TABS -->
+      <div class="persona-filter-bar">
+        <span class="filter-title">Lọc nhóm:</span>
+        <button class="persona-filter-pill active" onclick="filterPersonaCategory('all')">Tất cả (10)</button>
+        <button class="persona-filter-pill" onclick="filterPersonaCategory('student')">🎒 Học sinh (2)</button>
+        <button class="persona-filter-pill" onclick="filterPersonaCategory('parent')">👩‍👧 Phụ huynh (1)</button>
+        <button class="persona-filter-pill" onclick="filterPersonaCategory('school')">🏫 Nhà trường (2)</button>
+        <button class="persona-filter-pill" onclick="filterPersonaCategory('driver')">🚛 Bác tài Container (1)</button>
+        <button class="persona-filter-pill" onclick="filterPersonaCategory('medical')">🚑 Bác sĩ 115 (1)</button>
+        <button class="persona-filter-pill" onclick="filterPersonaCategory('authority')">👮 CSGT & Quản lý (2)</button>
+        <button class="persona-filter-pill" onclick="filterPersonaCategory('tech')">💻 Kỹ sư IoT (1)</button>
+      </div>
+
+      <!-- PERSONA MAIN WORKSPACE: SIDEBAR + DETAIL VIEW -->
+      <div class="persona-modal-body">
+        <!-- LEFT: PERSONA LIST CARDS -->
+        <aside class="persona-sidebar" id="persona-cards-list">
+          <!-- Dynamically populated by renderPersonaSidebar() -->
+        </aside>
+
+        <!-- RIGHT: SELECTED PERSONA DETAIL / INTERACTION -->
+        <main class="persona-detail-area" id="persona-detail-content">
+          <!-- Dynamically rendered by renderPersonaDetail() -->
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- Persona Bot Logic Script -->
+  <script src="/src/persona_eval_bot.js"></script>
 
   <!-- Vite Entrypoint Script -->
   <script type="module" src="/src/main.js"></script>
