@@ -132,13 +132,13 @@
             </div>
           </div>
 
-                    <!-- TAB 1: 3 CHỨC NĂNG CỐT LÕI (CẢM BIẾN - CẢNH BÁO - TỔNG ĐÀI) -->
+                              <!-- TAB 1: 3 CHỨC NĂNG CỐT LÕI (CẢM BIẾN - CẢNH BÁO - TỔNG ĐÀI) -->
           <div class="screen-content" id="tab-ride">
             
             <!-- TRỤ CỘT 1: CẢM BIẾN TÍCH HỢP -->
             <div class="card core-pillar sensor-pillar">
               <div class="pillar-header">
-                <span class="pillar-badge blue">BƯỚC 1: CẢM BIẾN TÍCH HỢP</span>
+                <span class="pillar-badge blue">🧭 1. CẢM BIẾN TÍCH HỢP</span>
                 <span class="sensor-active-tag" id="sensor-live-indicator">● IMU 6-DOF Active</span>
               </div>
               <div class="telem-grid" style="margin-top: 8px;">
@@ -155,9 +155,9 @@
                   <div class="telem-lbl">Lực rung chấn</div>
                 </div>
               </div>
-              <div style="display: flex; gap: 8px; margin-top: 8px;">
-                <button class="btn-ctrl active" onclick="toggleRealSensors()" id="btn-mobile-sensor" style="flex: 1; justify-content: center; font-size: 11px; padding: 6px 8px;">
-                  <span>📱</span> <span>Bật Cảm Biến Thật Của Máy</span>
+              <div style="margin-top: 8px;">
+                <button class="btn-ctrl active" onclick="toggleRealSensors()" id="btn-mobile-sensor" style="width: 100%; justify-content: center; font-size: 11px; padding: 7px 10px; border-radius: 8px;">
+                  <span>📱</span> <span>Bật Cảm Biến Thật Của Điện Thoại</span>
                 </button>
               </div>
             </div>
@@ -165,7 +165,7 @@
             <!-- TRỤ CỘT 2: CẢNH BÁO TỨC THỜI TẠI CHỖ -->
             <div class="card core-pillar alert-pillar">
               <div class="pillar-header">
-                <span class="pillar-badge amber">BƯỚC 2: CẢNH BÁO TỨC THỜI</span>
+                <span class="pillar-badge amber">📢 2. CẢNH BÁO TẠI CHỖ</span>
                 <div class="status-pill" id="behavior-pill">
                   <span style="width: 8px; height: 8px; background: currentColor; border-radius: 50%;"></span>
                   <span id="behavior-text">Bình Thường</span>
@@ -174,12 +174,12 @@
               <div class="voice-box" style="margin-top: 8px;">
                 <div class="voice-icon">🔊</div>
                 <div class="voice-msg" id="voice-text">
-                  "Hành trình an toàn. Tốc độ ổn định dưới 25 km/h khi gần cổng trường."
+                  "Hành trình rất an toàn. Tốc độ ổn định dưới 25 km/h khi gần cổng trường."
                 </div>
               </div>
               <div style="display: flex; gap: 6px; margin-top: 6px; justify-content: flex-end;">
-                <button onclick="speakCurrentVoiceMsg()" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; border-radius: 6px; padding: 4px 10px; font-size: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                  <span>🔊</span> Nghe Cảnh Báo
+                <button onclick="speakCurrentVoiceMsg()" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; border-radius: 6px; padding: 5px 12px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                  <span>🔊</span> Nghe Giọng Đọc
                 </button>
               </div>
             </div>
@@ -187,37 +187,37 @@
             <!-- TRỤ CỘT 3: GỬI DỮ LIỆU VỀ TỔNG ĐÀI & CỨU HỘ -->
             <div class="card core-pillar dispatch-pillar">
               <div class="pillar-header">
-                <span class="pillar-badge green">BƯỚC 3: GỬI DỮ LIỆU VỀ TỔNG ĐÀI</span>
+                <span class="pillar-badge green">📡 3. KẾT NỐI TỔNG ĐÀI</span>
                 <span style="font-size: 10px; color: #4ade80; font-weight: 700;">🟢 ĐÃ KẾT NỐI</span>
               </div>
               <div class="dispatch-info-box">
                 <div class="d-row">
-                  <span>📡 Tổng Đài Tiếp Nhận:</span>
-                  <strong>Trung Tâm ATGT Cổng Trường & CSGT</strong>
+                  <span>🏛️ Tổng Đài:</span>
+                  <strong>Cổng Trường & CSGT Cần Thơ</strong>
                 </div>
                 <div class="d-row">
-                  <span>📍 Tọa Độ GPS Xe:</span>
-                  <strong style="color: #38bdf8;">10.0337° N, 105.7798° E (Cần Thơ)</strong>
+                  <span>📍 GPS Xe:</span>
+                  <strong style="color: #38bdf8;">10.0337, 105.7798 (Live)</strong>
                 </div>
                 <div class="d-row">
-                  <span>📞 Cứu Nạn Người Thân:</span>
+                  <span>👨‍👩‍👦 Người Thân:</span>
                   <strong id="display-saved-phone-ride" style="color: #facc15;">0912.345.678</strong>
                 </div>
               </div>
 
-              <!-- Push data button -->
+              <!-- Push data buttons -->
               <div style="display: flex; gap: 8px; margin-top: 10px;">
-                <button onclick="sendDataToDispatch('manual')" style="flex: 1; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                  <span>📡</span> Gửi Dữ Liệu Về Tổng Đài Ngay
+                <button onclick="sendDataToDispatch('manual')" style="flex: 1; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; border: none; padding: 9px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);">
+                  <span>🚀</span> Gửi Tín Hiệu Ngay
                 </button>
-                <button onclick="switchView('dashboard')" style="background: #1e293b; color: #38bdf8; border: 1px solid #334155; padding: 8px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer;">
+                <button onclick="switchView('dashboard')" style="background: #1e293b; color: #38bdf8; border: 1px solid #334155; padding: 9px 12px; border-radius: 8px; font-size: 10.5px; font-weight: 700; cursor: pointer;">
                   <span>👀</span> Xem Tổng Đài
                 </button>
               </div>
             </div>
 
             <!-- Toast Dispatch Notification Container -->
-            <div id="dispatch-toast" style="display: none; background: #064e3b; border: 1px solid #10b981; border-radius: 8px; padding: 8px 12px; margin-top: 10px; font-size: 11px; color: #a7f3d0; text-align: center; animation: fadeInToast 0.3s ease;">
+            <div id="dispatch-toast" style="display: none; background: #064e3b; border: 1px solid #10b981; border-radius: 8px; padding: 8px 12px; margin-top: 8px; font-size: 11px; color: #a7f3d0; text-align: center; animation: fadeInToast 0.3s ease;">
               <span>✅</span> <span id="dispatch-toast-text">Đã truyền gói tin vị trí & trạng thái về Tổng Đài Điều Hành!</span>
             </div>
 

@@ -246,7 +246,8 @@ body {
 .phone-wrapper {
   width: 100%;
   max-width: 412px;
-  height: 852px;
+  height: min(820px, calc(100vh - 110px));
+  min-height: 620px;
   background: var(--bg-phone);
   border-radius: 40px;
   border: 10px solid #1f2937;
@@ -317,10 +318,29 @@ body {
 .screen-content {
   flex: 1;
   overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
   padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 189, 248, 0.35) transparent;
+}
+
+.screen-content::-webkit-scrollbar {
+  width: 5px;
+}
+.screen-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.screen-content::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 10px;
+}
+.screen-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.7);
 }
 
 /* Phone Cards */
@@ -1184,11 +1204,14 @@ body {
    ========================================================== */
 @media (max-width: 768px), (display-mode: standalone) {
   html, body {
-    height: 100% !important;
-    height: 100dvh !important;
-    overflow: hidden !important;
-    position: fixed;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    position: relative !important;
     width: 100%;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
 
   .master-header {
@@ -1226,23 +1249,25 @@ body {
   }
 
   .main-content-area {
-    height: calc(100dvh - 56px) !important;
-    overflow: hidden !important;
-    padding: 0 !important;
+    height: auto !important;
+    min-height: calc(100vh - 56px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 0 0 30px 0 !important;
   }
 
   .view-pane {
-    height: 100% !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
-    padding: 0 !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-y: visible !important;
+    padding: 8px 10px 40px 10px !important;
   }
 
   .view-pane#view-mobile {
-    overflow: hidden !important;
+    overflow-y: visible !important;
     display: none;
     flex-direction: column;
-    height: 100% !important;
+    height: auto !important;
   }
 
   .view-pane#view-mobile.active {
@@ -1262,16 +1287,26 @@ body {
   .phone-wrapper {
     max-width: 100% !important;
     width: 100% !important;
-    height: 100% !important;
-    border: none !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
+    height: auto !important;
+    min-height: 600px !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    border-radius: 28px !important;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6) !important;
     background: var(--bg-phone) !important;
-    flex: 1 !important;
     display: flex !important;
     flex-direction: column !important;
     position: relative !important;
     overflow: hidden !important;
+    margin-bottom: 16px !important;
+  }
+
+  .screen-content {
+    flex: 1 1 auto !important;
+    max-height: 540px !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 12px !important;
   }
 
   /* HIDE FAKE NOTCH & STATIC STATUS BAR ON REAL PHONES */
@@ -2700,4 +2735,73 @@ body.is-standalone .master-header {
   color: #38bdf8;
   font-weight: bold;
   font-size: 14px;
+}
+
+
+/* ==========================================================
+   SHARP, BEAUTIFULLY HARMONIZED CARD & ICON COLOR STYLES
+   ========================================================== */
+.core-pillar {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.core-pillar:hover {
+  transform: translateY(-1px);
+}
+
+.sensor-pillar {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.9) 0%, rgba(14, 34, 61, 0.8) 100%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+}
+
+.alert-pillar {
+  background: linear-gradient(145deg, rgba(30, 27, 75, 0.8) 0%, rgba(49, 26, 68, 0.7) 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+}
+
+.dispatch-pillar {
+  background: linear-gradient(145deg, rgba(6, 78, 59, 0.4) 0%, rgba(6, 50, 40, 0.6) 100%) !important;
+  border: 1px solid rgba(16, 185, 129, 0.45) !important;
+}
+
+/* Sharp Metric Values */
+.telem-val {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.5px;
+}
+#val-speed { color: #38bdf8 !important; text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
+#val-tilt { color: #facc15 !important; text-shadow: 0 0 10px rgba(250, 204, 21, 0.4); }
+#val-shock { color: #34d399 !important; text-shadow: 0 0 10px rgba(52, 211, 153, 0.4); }
+
+/* Tactile Navigation Buttons */
+.nav-bottom {
+  background: rgba(9, 13, 22, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.nav-item {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item .icon {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.nav-item.active {
+  color: #38bdf8 !important;
+}
+
+.nav-item.active .icon {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.6));
+}
+
+.nav-item:active {
+  transform: scale(0.92);
 }
