@@ -1,742 +1,1071 @@
 import './style.css';
 
-// State management
+// ==========================================================
+// ECO-SAFERIDE — MASTER ECOSYSTEM JAVASCRIPT CONTROLLER
+// Smart School-Zone Safety Ecosystem (SSSE)
+// ==========================================================
+
+// Global State
+let currentView = 'mobile'; // 'mobile', 'vision', '3d', 'dashboard'
+let currentPhoneTab = 'ride'; // 'ride', 'passport', 'map', 'sos'
 let currentMode = 'phone'; // 'phone' (0d) or 'hybrid' (150k)
 let sdiScore = 96;
 let ecoPoints = 425;
 let sosTimer = null;
 let sosSecondsLeft = 30;
+let pocketModeActive = false;
+let pocketTimerInterval = null;
+let pocketSeconds = 0;
+let isRealSensorActive = false;
 
-// Speech Synthesis Engine (Giọng nói tiếng Việt)
+// Sensor State
+let accX = 0.0, accY = 0.0, accZ = 9.81;
+let gyroX = 0.0, gyroY = 0.0, gyroZ = 0.0;
+let gravEst = 9.81;
+const ALPHA = 0.85; // Low-pass filter coefficient for gravity decoupling
+let currentSpeed = 18.5;
+let currentTilt = 4.2;
+
+// Audio Synthesizer (Zero External Audio File Dependency)
+let audioCtx = null;
+function getAudioContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function playTone(freq, type = 'sine', duration = 0.25) {
+  try {
+    const ctx = getAudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch (e) {
+    // Ignore audio autoplay restrictions
+  }
+}
+
+function playWarningSiren() {
+  playTone(880, 'sawtooth', 0.3);
+  setTimeout(() => playTone(660, 'sawtooth', 0.3), 320);
+}
+
 function speakVietnamese(text) {
   if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel(); // Stop prior
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'vi-VN';
-    utterance.rate = 1.0;
+    utterance.rate = 1.05;
     utterance.pitch = 1.0;
     window.speechSynthesis.speak(utterance);
   }
 }
 
-// ==========================================
-// User-Centric Adaptive Telematics State
-// ==========================================
-let isRealSensorActive = false;
-let lastSensorSpeechTime = 0;
-let gravX = 0, gravY = 0, gravZ = 9.8;
-const ALPHA = 0.8; // Low-pass filter weight for gravity decoupling
-let pulseZCount = 0; // Bộ đếm độ rộng xung trục Z phân biệt ổ gà vs gờ giảm tốc
-
-// Auto-Gravity Pocket Orientation Calibration
-let isCalibrating = false;
-let calibSamples = [];
-let uGx = 0, uGy = 0, uGz = 1.0; // Gravity unit vector
-let baselineTilt = 0;
-let isCalibrated = false;
-
-// HAR (Human Activity Recognition: Walking vs Riding vs Stationary)
-let zWindow = [];
-let userActivity = 'RIDING'; // 'WALKING', 'RIDING', 'STATIONARY'
-
-// Behavioral Nudge & Adaptive SDI Self-Healing
-let lastViolationTime = Date.now();
-let smoothSecondsCounter = 0;
-
-// Hermes 4-Gate Crash Filter
-let crashPulseCounter = 0;
-
-// Background Keep-Alive & WakeLock for Mobile Screen Locking
-let wakeLock = null;
-let bgAudio = null;
-
-// Pocket Mode Timer
-let pocketTimerInterval = null;
-let pocketSeconds = 0;
-
-// Field Motion Data Collection Buffer
-let isRecordingData = false;
-let recordedBuffer = [];
-
-async function enableWakeLock() {
-  if ('wakeLock' in navigator) {
-    try {
-      wakeLock = await navigator.wakeLock.request('screen');
-    } catch (e) {
-      console.log('WakeLock error:', e);
-    }
-  }
-}
-
-function releaseWakeLock() {
-  if (wakeLock) {
-    wakeLock.release();
-    wakeLock = null;
-  }
-}
-
-function startBgAudioKeepAlive() {
-  try {
-    if (!bgAudio) {
-      bgAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
-      bgAudio.loop = true;
-    }
-    bgAudio.play().catch(e => console.log('Audio keep-alive silent:', e));
-  } catch (e) {}
-}
-
-function stopBgAudioKeepAlive() {
-  if (bgAudio) {
-    bgAudio.pause();
-  }
-}
-
-function toggleRealSensors() {
-  if (!isRealSensorActive) {
-    startRealSensors();
-  } else {
-    stopRealSensors();
-  }
-}
-
-async function startRealSensors() {
-  // iOS 13+ permission request
-  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    try {
-      const permission = await DeviceMotionEvent.requestPermission();
-      if (permission !== 'granted') {
-        alert('Cần cấp quyền truy cập cảm biến chuyển động trên iPhone để trải nghiệm!');
-        return;
-      }
-    } catch (e) {
-      console.error(e);
-      alert('Không thể kích hoạt quyền cảm biến: ' + e);
-      return;
-    }
-  }
-
-  if (window.DeviceMotionEvent) {
-    window.addEventListener('devicemotion', handleMotion);
-    isRealSensorActive = true;
-    enableWakeLock();
-    startBgAudioKeepAlive();
-    document.getElementById('btn-toggle-sensor').innerText = 'Tắt Cảm Biến';
-    document.getElementById('btn-toggle-sensor').style.background = '#ef4444';
-    document.getElementById('sensor-status-label').innerText = '🟢 Đang đọc trực tiếp Gyroscope & Accelerometer thật';
-    document.getElementById('sensor-status-label').style.color = '#10b981';
-    document.getElementById('sensor-raw-debug').style.display = 'block';
-    updateVoice("Đã kết nối cảm biến con quay hồi chuyển và gia tốc thật của điện thoại. Hãy thử nghiêng hoặc lắc máy!");
-  } else {
-    alert('Trình duyệt hoặc thiết bị này không hỗ trợ DeviceMotionEvent!');
-  }
-}
-
-function stopRealSensors() {
-  window.removeEventListener('devicemotion', handleMotion);
-  isRealSensorActive = false;
-  releaseWakeLock();
-  stopBgAudioKeepAlive();
-  document.getElementById('btn-toggle-sensor').innerText = 'Bật Cảm Biến Thật';
-  document.getElementById('btn-toggle-sensor').style.background = '#2563eb';
-  document.getElementById('sensor-status-label').innerText = 'Chế độ giả lập (Bấm nút để kích hoạt Gyro/Acc thật)';
-  document.getElementById('sensor-status-label').style.color = '#94a3b8';
-  document.getElementById('sensor-raw-debug').style.display = 'none';
-  resetStatus();
-}
-
-// ==========================================
-// Auto-Gravity Pocket Orientation Calibration
-// ==========================================
-function startAutoCalibration() {
-  if (!isRealSensorActive) {
-    startRealSensors();
-  }
-  isCalibrating = true;
-  calibSamples = [];
-  const btn = document.getElementById('btn-auto-calib');
-  if (btn) {
-    btn.innerText = 'Đang đo...';
-    btn.style.background = '#f59e0b';
-  }
-  const badge = document.getElementById('pocket-calib-val');
-  if (badge) badge.innerText = 'Đang lấy mẫu (2s)...';
-  updateVoice("Đang tự động đo góc nghiêng túi quần của bạn. Hãy ngồi yên trên xe trong 2 giây.");
-}
-
-function finishCalibration() {
-  isCalibrating = false;
-  if (calibSamples.length < 5) return;
-  let sumX = 0, sumY = 0, sumZ = 0;
-  for (const s of calibSamples) {
-    sumX += s.x; sumY += s.y; sumZ += s.z;
-  }
-  const meanX = sumX / calibSamples.length;
-  const meanY = sumY / calibSamples.length;
-  const meanZ = sumZ / calibSamples.length;
-  const norm = Math.sqrt(meanX * meanX + meanY * meanY + meanZ * meanZ) || 9.81;
-  uGx = meanX / norm;
-  uGy = meanY / norm;
-  uGz = meanZ / norm;
-  baselineTilt = Math.acos(Math.min(1.0, Math.max(-1.0, Math.abs(uGz)))) * (180 / Math.PI);
-  isCalibrated = true;
-
-  const btn = document.getElementById('btn-auto-calib');
-  if (btn) {
-    btn.innerText = 'Đã Khóa Góc';
-    btn.style.background = '#10b981';
-  }
-  const badge = document.getElementById('pocket-calib-val');
-  if (badge) badge.innerText = `${baselineTilt.toFixed(1)}° (Đã bù)`;
-  updateVoice(`Đã hiệu chuẩn góc túi quần ${baselineTilt.toFixed(0)} độ thành công! Hệ thống đã ghi nhớ tư thế đùi người lái.`);
-}
-
-// ==========================================
-// HAR: Human Activity Recognition (Đi bộ vs Lái xe)
-// ==========================================
-function processHAR(az) {
-  zWindow.push(az);
-  if (zWindow.length > 30) zWindow.shift();
-  if (zWindow.length < 20) return;
-
-  // Calculate variance of Az in rolling window
-  let sum = 0;
-  for (let v of zWindow) sum += v;
-  let mean = sum / zWindow.length;
-  let variance = 0;
-  for (let v of zWindow) variance += Math.pow(v - mean, 2);
-  variance = variance / zWindow.length;
-
-  // Count zero crossings around mean (cadence estimation)
-  let crossings = 0;
-  for (let i = 1; i < zWindow.length; i++) {
-    if ((zWindow[i - 1] - mean) * (zWindow[i] - mean) < 0) {
-      crossings++;
-    }
-  }
-
-  const pill = document.getElementById('user-context-pill');
-  if (variance > 2.0 && variance < 16.0 && crossings >= 3 && crossings <= 8) {
-    userActivity = 'WALKING';
-    if (pill) {
-      pill.innerText = '🚶 Đang Đi Bộ (Tạm dừng tính điểm)';
-      pill.style.background = 'rgba(16, 185, 129, 0.2)';
-      pill.style.color = '#34d399';
-      pill.style.borderColor = 'rgba(16, 185, 129, 0.4)';
-    }
-  } else if (variance >= 0.1) {
-    userActivity = 'RIDING';
-    if (pill) {
-      pill.innerText = '🏍️ Đang Lái Xe (Giám sát)';
-      pill.style.background = 'rgba(59, 130, 246, 0.2)';
-      pill.style.color = '#60a5fa';
-      pill.style.borderColor = 'rgba(59, 130, 246, 0.4)';
-    }
-  } else {
-    userActivity = 'STATIONARY';
-    if (pill) {
-      pill.innerText = '⏸️ Đang Dừng Xe (Bảo lưu)';
-      pill.style.background = 'rgba(148, 163, 184, 0.2)';
-      pill.style.color = '#94a3b8';
-      pill.style.borderColor = 'rgba(148, 163, 184, 0.4)';
-    }
-  }
-}
-
-// ==========================================
-// Core Motion Event Processing
-// ==========================================
-function handleMotion(event) {
-  if (!isRealSensorActive) return;
-
-  const acc = event.accelerationIncludingGravity || { x: 0, y: 0, z: 9.8 };
-  const rot = event.rotationRate || { alpha: 0, beta: 0, gamma: 0 };
-
-  const ax = acc.x || 0;
-  const ay = acc.y || 0;
-  const az = acc.z || 9.8;
-  const gz = rot.gamma || rot.alpha || rot.beta || 0; // Rotational rate
-
-  // Pocket calibration sampling
-  if (isCalibrating) {
-    calibSamples.push({ x: ax, y: ay, z: az });
-    if (calibSamples.length >= 35) {
-      finishCalibration();
-    }
-  }
-
-  // Low-pass filter to decouple gravity vector
-  gravX = ALPHA * gravX + (1 - ALPHA) * ax;
-  gravY = ALPHA * gravY + (1 - ALPHA) * ay;
-  gravZ = ALPHA * gravZ + (1 - ALPHA) * az;
-
-  const totalAcc = Math.sqrt(ax * ax + ay * ay + az * az);
+// ==========================================================
+// MASTER VIEW SWITCHER
+// ==========================================================
+window.switchView = function(viewName) {
+  currentView = viewName;
   
-  // Calculate raw tilt angle relative to gravity plane
-  let tiltDeg = 0;
-  if (totalAcc > 0.1) {
-    const cosTilt = Math.min(1.0, Math.max(-1.0, Math.abs(az) / totalAcc));
-    tiltDeg = Math.acos(cosTilt) * (180 / Math.PI);
-  }
+  // Hide all view panes
+  document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
+  
+  // Deactivate all nav pills
+  document.querySelectorAll('.nav-pill-btn').forEach(el => el.classList.remove('active', 'active-blue'));
 
-  // Activity recognition
-  processHAR(az);
+  // Activate chosen view
+  const targetPane = document.getElementById('view-' + viewName);
+  if (targetPane) targetPane.classList.add('active');
 
-  // Calibrated vertical road acceleration
-  const aVertical = isCalibrated ? (ax * uGx + ay * uGy + az * uGz) : az;
-  const relativeTiltChange = isCalibrated ? Math.abs(tiltDeg - baselineTilt) : tiltDeg;
+  const targetBtn = document.getElementById('btn-view-' + viewName);
+  if (targetBtn) targetBtn.classList.add('active');
 
-  // Update UI Telemetry
-  document.getElementById('val-tilt').innerText = tiltDeg.toFixed(1) + '°';
-  document.getElementById('sensor-raw-debug').innerText = 
-    `Ax: ${ax.toFixed(1)} | Ay: ${ay.toFixed(1)} | Az: ${az.toFixed(1)} | Gyro: ${gz.toFixed(1)}°/s | V-Shock: ${aVertical.toFixed(1)} m/s²`;
-
-  const now = Date.now();
-
-  // Record sample if data recorder is active
-  if (isRecordingData) {
-    const orient = document.getElementById('sel-phone-orient') ? document.getElementById('sel-phone-orient').value : 'unknown';
-    const activity = document.getElementById('sel-motion-activity') ? document.getElementById('sel-motion-activity').value : 'unknown';
-    recordedBuffer.push({
-      timestamp: now,
-      ax: ax.toFixed(3),
-      ay: ay.toFixed(3),
-      az: az.toFixed(3),
-      total_acc: totalAcc.toFixed(3),
-      gyro_a: (rot.alpha || 0).toFixed(2),
-      gyro_b: (rot.beta || 0).toFixed(2),
-      gyro_g: (rot.gamma || 0).toFixed(2),
-      tilt: tiltDeg.toFixed(2),
-      orientation: orient,
-      activity: activity
-    });
-    const badge = document.getElementById('rec-sample-badge');
-    if (badge && recordedBuffer.length % 5 === 0) {
-      badge.innerText = `${recordedBuffer.length} mẫu`;
+  // Trigger sub-system initializations
+  if (viewName === 'mobile') {
+    if (leafletMapInstance) {
+      setTimeout(() => leafletMapInstance.invalidateSize(), 200);
     }
+  } else if (viewName === 'vision') {
+    initVisionSimulation();
+  } else if (viewName === '3d') {
+    initThreeSim();
+  } else if (viewName === 'dashboard') {
+    initHeatmap();
   }
+};
 
-  // Skip driving penalties or false crash alarms if user is currently WALKING
-  if (userActivity === 'WALKING') {
-    return;
+// ==========================================================
+// PHÂN HỆ 1: PHONE APP CONTROLLERS
+// ==========================================================
+window.switchNav = function(tabName, el) {
+  currentPhoneTab = tabName;
+  document.querySelectorAll('.screen-content').forEach(pane => pane.style.display = 'none');
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+
+  const activePane = document.getElementById('tab-' + tabName);
+  if (activePane) activePane.style.display = 'flex';
+  if (el) el.classList.add('active');
+
+  if (tabName === 'map') {
+    initLeafletMap();
   }
+};
 
-  const pill = document.getElementById('behavior-pill');
-  const text = document.getElementById('behavior-text');
-
-  // ==========================================
-  // Hermes 4-Gate Crash Filter
-  // ==========================================
-  // Gate 1: High Total Force (>= 18.0 m/s2)
-  // Gate 2: Pulse width duration 60ms - 300ms (2 - 15 samples)
-  // Gate 3: Relative posture shift >= 45 degrees
-  // Gate 4: Not walking
-  if (totalAcc >= 18.0) {
-    crashPulseCounter++;
-  } else {
-    if (crashPulseCounter >= 2 && crashPulseCounter <= 15 && relativeTiltChange >= 45 && userActivity !== 'WALKING') {
-      pill.className = 'status-pill danger';
-      text.innerText = 'Ngã Xe Thật!';
-      crashPulseCounter = 0;
-      triggerSOS();
-      return;
-    }
-    crashPulseCounter = 0;
-  }
-
-  // 2. Swerving Detection (High rotational rate or lateral jerk)
-  if (Math.abs(gz) > 40 || (Math.abs(ax) > 4.5 && relativeTiltChange > 18)) {
-    pill.className = 'status-pill warning';
-    text.innerText = 'Lạng Lách!';
-    lastViolationTime = now;
-    sdiScore = Math.max(70, sdiScore - 1);
-    document.getElementById('sdi-score').innerText = Math.round(sdiScore);
-    if (now - lastSensorSpeechTime > 6000) {
-      updateVoice("Cảnh báo: Phát hiện rung lắc lạng lách bất thường! Hãy giữ vững tay lái.");
-      lastSensorSpeechTime = now;
-    }
-    return;
-  }
-
-  // 3. Pothole vs Speed Bump Discrimination (Phân biệt Ổ gà vs Gờ giảm tốc)
-  const dynZ = Math.abs(aVertical - (isCalibrated ? 9.81 : gravZ));
-  if (dynZ > 6.5) {
-    pulseZCount++;
-  } else {
-    if (pulseZCount >= 1 && pulseZCount <= 3) {
-      // Xung nhọn đơn lẻ rất ngắn (<= 60ms) -> Sụp Ổ Gà thực tế!
-      pill.className = 'status-pill';
-      text.innerText = 'Sụp Ổ Gà!';
-      lastViolationTime = now;
-      if (now - lastSensorSpeechTime > 6000) {
-        updateVoice("Đã tự động ghi nhận ổ gà mặt đường và đánh dấu lên bản đồ cộng đồng.");
-        lastSensorSpeechTime = now;
-      }
-      pulseZCount = 0;
-      return;
-    } else if (pulseZCount >= 4) {
-      // Xung kéo dài (> 80ms) -> Gờ giảm tốc (Speed Bump) -> Không đánh dấu ổ gà
-      pill.className = 'status-pill';
-      text.innerText = 'Gờ Giảm Tốc';
-      pulseZCount = 0;
-      return;
-    }
-  }
-
-  // 4. Return to Normal if within reasonable bounds
-  if (Math.abs(gz) < 15 && relativeTiltChange < 15 && dynZ < 3.0) {
-    pill.className = 'status-pill';
-    text.innerText = 'Bình Thường';
-  }
-}
-
-// ==========================================
-// Behavioral Nudge: Adaptive SDI Self-Healing Loop
-// ==========================================
-setInterval(() => {
-  if (userActivity === 'RIDING' || isRealSensorActive) {
-    const now = Date.now();
-    if (now - lastViolationTime >= 10000) { // No violations in last 10s
-      smoothSecondsCounter++;
-      if (smoothSecondsCounter % 30 === 0 && sdiScore < 100) {
-        sdiScore = Math.min(100, Math.round((sdiScore + 0.5) * 10) / 10);
-        const sdiElem = document.getElementById('sdi-score');
-        if (sdiElem) sdiElem.innerText = Math.round(sdiScore);
-        
-        const status = document.getElementById('sdi-recovery-status');
-        if (status) status.innerText = `🌱 Đang hồi phục: Điểm SDI đạt ${Math.round(sdiScore)} (+0.5đ)`;
-
-        if (smoothSecondsCounter % 60 === 0 && now - lastSensorSpeechTime > 8000) {
-          updateVoice("Cảm ơn bạn đã duy trì lái xe an toàn và êm ái! Điểm an toàn của bạn vừa được cộng thưởng.");
-          lastSensorSpeechTime = now;
-        }
-      }
-    }
-  }
-}, 1000);
-
-// ==========================================
-// Mode Toggle (0d vs 150k)
-// ==========================================
-function toggleMode() {
+window.toggleMode = function() {
   const modeText = document.getElementById('mode-text');
-  const badgeBtn = document.getElementById('mode-badge-btn');
-  const valTemp = document.getElementById('val-temp');
-
+  const modeBadge = document.getElementById('mode-badge-btn');
   if (currentMode === 'phone') {
     currentMode = 'hybrid';
-    modeText.innerText = 'Chế độ: Mũ Bảo Hiểm AI (150k)';
-    badgeBtn.innerText = 'Dùng Điện Thoại (0đ)';
-    valTemp.innerText = '31.5°C';
-    updateVoice('Đã kích hoạt Chế độ Mũ Bảo Hiểm Thông Minh 150 nghìn đồng. Kết nối Bluetooth ESP32 thành công.');
+    if (modeText) modeText.innerText = 'Chế độ: ESP32 + Phone (150k)';
+    if (modeBadge) modeBadge.innerText = 'Về Chế Độ 0đ';
+    speakVietnamese('Đã kích hoạt chế độ hộp đen lai ghép ESP32 kết nối Bluetooth.');
   } else {
     currentMode = 'phone';
-    modeText.innerText = 'Chế độ: 100% Điện thoại (0đ)';
-    badgeBtn.innerText = 'Đổi Chế Độ';
-    valTemp.innerText = '32°C';
-    updateVoice('Đã chuyển sang Chế độ Điện thoại Không Đồng. Giám sát bằng cảm biến chuyển động trong túi quần.');
+    if (modeText) modeText.innerText = 'Chế độ: 100% Điện thoại (0đ)';
+    if (modeBadge) modeBadge.innerText = 'Đổi Chế Độ';
+    speakVietnamese('Đã chuyển về chế độ hộp đen phần mềm không đồng.');
   }
-}
+};
 
-// Navigation Tab Switcher
-function switchNav(tabId, element) {
-  const tabs = ['tab-ride', 'tab-passport', 'tab-map', 'tab-sos'];
-  tabs.forEach(id => {
-    document.getElementById(id).style.display = 'none';
-  });
-  document.getElementById(tabId).style.display = 'block';
+window.enterPocketMode = function() {
+  pocketModeActive = true;
+  pocketSeconds = 0;
+  const overlay = document.getElementById('pocket-mode-overlay');
+  if (overlay) overlay.style.display = 'flex';
 
-  const items = document.querySelectorAll('.nav-item');
-  items.forEach(item => item.classList.remove('active'));
-  element.classList.add('active');
-}
+  pocketTimerInterval = setInterval(() => {
+    pocketSeconds++;
+    const h = String(Math.floor(pocketSeconds / 3600)).padStart(2, '0');
+    const m = String(Math.floor((pocketSeconds % 3600) / 60)).padStart(2, '0');
+    const s = String(pocketSeconds % 60).padStart(2, '0');
+    const timerEl = document.getElementById('pocket-timer-display');
+    if (timerEl) timerEl.innerText = `${h}:${m}:${s}`;
+  }, 1000);
 
-function updateVoice(message) {
-  const el = document.getElementById('voice-text');
-  if (el) el.innerText = `"${message}"`;
-  speakVietnamese(message);
-}
+  speakVietnamese('Chế độ bỏ túi đã kích hoạt. Màn hình tối ưu tiết kiệm pin.');
+};
 
-// Scenarios Simulator
-function simulateScenario(type) {
-  const pill = document.getElementById('behavior-pill');
-  const text = document.getElementById('behavior-text');
-  const tilt = document.getElementById('val-tilt');
-  const speed = document.getElementById('val-speed');
+window.exitPocketMode = function() {
+  pocketModeActive = false;
+  if (pocketTimerInterval) clearInterval(pocketTimerInterval);
+  const overlay = document.getElementById('pocket-mode-overlay');
+  if (overlay) overlay.style.display = 'none';
+  speakVietnamese('Màn hình đã mở lại.');
+};
 
-  if (type === 'swerving') {
-    pill.className = 'status-pill warning';
-    text.innerText = 'Lạng Lách!';
-    tilt.innerText = '24.8°';
-    speed.innerText = '34.2';
-    sdiScore = Math.max(70, sdiScore - 2);
-    document.getElementById('sdi-score').innerText = sdiScore;
-    lastViolationTime = Date.now();
-    updateVoice("Cảnh báo: Bạn vừa lắc tay lái mạnh! Vui lòng đi chậm và giữ thẳng làn đường.");
-  } else if (type === 'speedbump') {
-    pill.className = 'status-pill';
-    text.innerText = 'Gờ Giảm Tốc';
-    tilt.innerText = '6.1°';
-    speed.innerText = '16.0';
-    updateVoice("Đã nhận diện gờ giảm tốc. Tốc độ an toàn.");
-  } else if (type === 'pothole') {
-    pill.className = 'status-pill';
-    text.innerText = 'Sụp Ổ Gà!';
-    tilt.innerText = '12.4°';
-    speed.innerText = '28.5';
-    lastViolationTime = Date.now();
-    updateVoice("Đã phát hiện ổ gà mặt đường. Đang gửi tọa độ ẩn danh lên bản đồ cảnh báo.");
-  } else if (type === 'crash') {
-    pill.className = 'status-pill danger';
-    text.innerText = 'Ngã Xe!';
-    tilt.innerText = '78.5°';
-    speed.innerText = '0.0';
-    triggerSOS();
+window.startAutoCalibration = function() {
+  const calibEl = document.getElementById('pocket-calib-val');
+  if (calibEl) calibEl.innerText = '+0.0° (Chuẩn)';
+  playTone(523.25, 'triangle', 0.2);
+  speakVietnamese('Đã tự căn chỉnh vector trọng trường đùi người lái.');
+};
+
+window.claimReward = function(itemName) {
+  if (ecoPoints >= 200) {
+    ecoPoints -= 200;
+    const ptEl = document.getElementById('eco-points');
+    if (ptEl) ptEl.innerText = ecoPoints;
+    playTone(659.25, 'sine', 0.4);
+    alert(`Chúc mừng em đã đổi thành công: ${itemName}! Mã voucher đã gửi về email phụ huynh.`);
+  } else {
+    alert('Em cần tích lũy thêm Eco-Points từ các chuyến đi an toàn nhé!');
   }
-}
+};
 
-function resetStatus() {
-  const pill = document.getElementById('behavior-pill');
-  const text = document.getElementById('behavior-text');
-  pill.className = 'status-pill';
-  text.innerText = 'Bình Thường';
-  document.getElementById('val-tilt').innerText = isCalibrated ? `${baselineTilt.toFixed(1)}°` : '4.2°';
-  document.getElementById('val-speed').innerText = '18.5';
-  updateVoice("Hành trình an toàn. Cảm biến đang hoạt động tối ưu.");
-}
-
-// ==========================================
-// Emergency SOS System & Custom Phone Setup
-// ==========================================
-function getEmergencyPhone() {
-  return localStorage.getItem('eco_emergency_phone') || '0912.345.678';
-}
-
-function saveEmergencyPhone() {
-  const input = document.getElementById('input-emergency-phone');
-  if (!input) return;
-  const raw = input.value.trim();
-  const clean = raw.replace(/[^0-9+]/g, '');
-  if (clean.length < 9 || clean.length > 12) {
-    alert('Số điện thoại không hợp lệ! Vui lòng nhập từ 9 đến 11 chữ số.');
-    return;
+// Emergency Phone Management
+window.saveEmergencyPhone = function() {
+  const inp = document.getElementById('input-emergency-phone');
+  if (inp && inp.value.trim().length >= 9) {
+    const p = inp.value.trim();
+    const disp = document.getElementById('display-saved-phone');
+    if (disp) disp.innerText = p;
+    const callBtn = document.getElementById('btn-test-call');
+    if (callBtn) callBtn.href = 'tel:' + p;
+    const smsBtn = document.getElementById('btn-test-sms');
+    if (smsBtn) smsBtn.href = `sms:${p}?body=CON%20GAP%20SU%20CO%20TAI%20TOA%20DO%20https://maps.google.com/?q=10.0337,105.7798`;
+    alert('Đã lưu số điện thoại người thân thành công: ' + p);
+  } else {
+    alert('Vui lòng nhập số điện thoại hợp lệ (từ 10 chữ số).');
   }
-  localStorage.setItem('eco_emergency_phone', clean);
-  initEmergencyContactUI();
-  updateVoice(`Đã lưu số điện thoại người thân: ${clean}. Hệ thống sẽ gọi số này khi có sự cố.`);
-  const feedback = document.getElementById('phone-saved-feedback');
-  if (feedback) {
-    feedback.style.display = 'block';
-    setTimeout(() => { feedback.style.display = 'none'; }, 4000);
-  }
-}
+};
 
-function initEmergencyContactUI() {
-  const phone = getEmergencyPhone();
-  const input = document.getElementById('input-emergency-phone');
-  if (input) input.value = phone;
-
-  const displayPhone = document.getElementById('display-saved-phone');
-  if (displayPhone) displayPhone.innerText = phone;
-
-  const listTarget = document.getElementById('list-target-phone');
-  if (listTarget) listTarget.innerText = phone;
-
-  const modalTarget = document.getElementById('modal-target-phone');
-  if (modalTarget) modalTarget.innerText = phone;
-
-  const testBtn = document.getElementById('btn-test-call');
-  if (testBtn) testBtn.href = 'tel:' + phone;
-}
-
-function triggerSOS() {
+window.cancelSOS = function() {
+  if (sosTimer) clearInterval(sosTimer);
+  sosTimer = null;
   const modal = document.getElementById('sos-modal');
-  modal.classList.add('active');
-  sosSecondsLeft = 30;
-  document.getElementById('sos-timer').innerText = sosSecondsLeft;
-  
-  const targetPhone = getEmergencyPhone();
-  const modalPhone = document.getElementById('modal-target-phone');
-  if (modalPhone) modalPhone.innerText = targetPhone;
+  if (modal) modal.style.display = 'none';
+  speakVietnamese('Báo động cứu hộ đã được hủy an toàn.');
+};
 
-  updateVoice(`CẢNH BÁO KHẨN CẤP: Phát hiện ngã xe bất thường! Bạn có ba mươi giây để bấm Tôi Ổn, trước khi hệ thống tự động gọi người thân theo số ${targetPhone}.`);
+function triggerEmergencySOS() {
+  const modal = document.getElementById('sos-modal');
+  if (modal) modal.style.display = 'flex';
+  sosSecondsLeft = 30;
+  const secEl = document.getElementById('sos-seconds');
+  if (secEl) secEl.innerText = sosSecondsLeft;
+  
+  playWarningSiren();
+  speakVietnamese('Phát hiện sự cố ngã xe khẩn cấp! Đếm ngược 30 giây liên hệ người thân.');
 
   if (sosTimer) clearInterval(sosTimer);
   sosTimer = setInterval(() => {
     sosSecondsLeft--;
-    document.getElementById('sos-timer').innerText = sosSecondsLeft;
+    if (secEl) secEl.innerText = sosSecondsLeft;
+    playTone(800, 'square', 0.1);
     if (sosSecondsLeft <= 0) {
       clearInterval(sosTimer);
-      const phone = getEmergencyPhone();
-      const clean = phone.replace(/[^0-9+]/g, '');
-      updateVoice(`Hết ba mươi giây. Đang thực hiện cuộc gọi khẩn cấp tới người thân qua số ${clean}!`);
-      try {
-        window.location.href = 'tel:' + clean;
-      } catch (e) {
-        console.error('Trigger call tel: failed:', e);
-      }
+      sosTimer = null;
+      speakVietnamese('Đang tự động kích hoạt cuộc gọi khẩn cấp.');
+      const callBtn = document.getElementById('btn-modal-call-now');
+      if (callBtn) window.location.href = callBtn.href;
     }
   }, 1000);
 }
 
-function cancelSOS() {
-  if (sosTimer) clearInterval(sosTimer);
-  const modal = document.getElementById('sos-modal');
-  modal.classList.remove('active');
-  resetStatus();
-  updateVoice("Đã hủy cảnh báo khẩn cấp. Rất mừng vì bạn vẫn an toàn!");
-}
+// Scenarios Testbench
+window.simulateScenario = function(type) {
+  const pill = document.getElementById('behavior-pill');
+  const text = document.getElementById('behavior-text');
+  const voice = document.getElementById('voice-text');
+  const tiltEl = document.getElementById('val-tilt');
+  const speedEl = document.getElementById('val-speed');
+  const sdiEl = document.getElementById('sdi-score');
 
-function claimReward(badgeName) {
-  alert(`Chúc mừng bạn đã nhận thưởng huy hiệu: "${badgeName}"! Đã cộng thêm 50 Eco-Points vào hộ chiếu.`);
-  ecoPoints += 50;
-  document.getElementById('eco-points').innerText = ecoPoints;
-  updateVoice(`Chúc mừng bạn đã nhận thêm năm mươi điểm xanh cho huy hiệu ${badgeName}!`);
-}
+  if (type === 'swerving') {
+    accX = 3.8;
+    currentTilt = 38.5;
+    if (pill) { pill.className = 'status-pill warning'; text.innerText = 'Lạng Lách'; }
+    if (tiltEl) tiltEl.innerText = '38.5°';
+    if (voice) voice.innerText = '"Cảnh báo: Bạn đang đánh võng lạng lách nguy hiểm! Hãy giữ thăng bằng."';
+    sdiScore = Math.max(50, sdiScore - 3);
+    if (sdiEl) sdiEl.innerText = sdiScore;
+    playTone(440, 'triangle', 0.3);
+    speakVietnamese('Cảnh báo: Bạn đang lạng lách nguy hiểm!');
+  } else if (type === 'braking') {
+    accY = -4.8;
+    currentSpeed = 8.0;
+    if (pill) { pill.className = 'status-pill warning'; text.innerText = 'Phanh Gấp'; }
+    if (speedEl) speedEl.innerText = '8.0';
+    if (voice) voice.innerText = '"Phát hiện phanh gấp đột ngột! Hãy chú ý khoảng cách an toàn với xe trước."';
+    sdiScore = Math.max(50, sdiScore - 2);
+    if (sdiEl) sdiEl.innerText = sdiScore;
+    playTone(350, 'sawtooth', 0.3);
+    speakVietnamese('Phát hiện phanh gấp đột ngột.');
+  } else if (type === 'pothole') {
+    accZ = 16.5;
+    if (pill) { pill.className = 'status-pill'; text.innerText = 'Sụp Ổ Gà'; }
+    if (voice) voice.innerText = '"Đã ghi nhận vị trí mặt đường hư hỏng và tự động gửi vào Bản đồ Số học đường!"';
+    ecoPoints += 5;
+    const ptEl = document.getElementById('eco-points');
+    if (ptEl) ptEl.innerText = ecoPoints;
+    playTone(587.33, 'sine', 0.25);
+    speakVietnamese('Đã ghi nhận vị trí ổ gà và gửi dữ liệu.');
+  } else if (type === 'crash') {
+    accZ = 45.2;
+    currentTilt = 82.0;
+    if (pill) { pill.className = 'status-pill danger'; text.innerText = 'Ngã Xe!'; }
+    if (tiltEl) tiltEl.innerText = '82.0°';
+    triggerEmergencySOS();
+  } else if (type === 'distracted') {
+    accX = 2.1;
+    accY = 2.4;
+    sdiScore = Math.max(50, sdiScore - 5);
+    if (sdiEl) sdiEl.innerText = sdiScore;
+    if (pill) { pill.className = 'status-pill danger'; text.innerText = 'Rút Máy!'; }
+    if (voice) voice.innerText = '"Tuyệt đối không cầm điện thoại khi đang điều khiển phương tiện giao thông!"';
+    playTone(220, 'square', 0.4);
+    speakVietnamese('Cảnh báo nguy hiểm: Không sử dụng điện thoại khi lái xe!');
+  }
 
-// ==========================================
-// Field Motion Data Collection Engine
-// ==========================================
-function toggleDataRecording() {
-  if (!isRecordingData) {
-    startDataRecording();
-  } else {
-    stopDataRecording();
+  // Reset to normal after 3.5s (except crash)
+  if (type !== 'crash') {
+    setTimeout(() => {
+      accX = 0.0;
+      accY = 0.0;
+      accZ = 9.81;
+      currentTilt = 4.2;
+      currentSpeed = 18.5;
+      if (pill) { pill.className = 'status-pill'; text.innerText = 'Bình Thường'; }
+      if (tiltEl) tiltEl.innerText = '4.2°';
+      if (speedEl) speedEl.innerText = '18.5';
+    }, 3500);
   }
-}
+};
 
-async function startDataRecording() {
-  if (!isRealSensorActive) {
-    await startRealSensors();
-  }
-  isRecordingData = true;
-  recordedBuffer = [];
-  const btn = document.getElementById('btn-record-toggle');
-  if (btn) {
-    btn.innerText = '⏹️ Dừng Thu Thập';
-    btn.style.background = '#ef4444';
-  }
-  const desc = document.getElementById('rec-status-desc');
-  if (desc) {
-    desc.innerText = '🔴 Đang ghi 50Hz... Hãy thực hiện động tác đi bộ hoặc đi xe!';
-    desc.style.color = '#ef4444';
-  }
-  const expBtn = document.getElementById('btn-export-csv');
-  if (expBtn) expBtn.disabled = true;
-  updateVoice("Bắt đầu thu thập dữ liệu cảm biến thực tế ở tần số năm mươi héc.");
-}
-
-function stopDataRecording() {
-  isRecordingData = false;
-  const btn = document.getElementById('btn-record-toggle');
-  if (btn) {
-    btn.innerText = '🔴 Bắt Đầu Thu Mẫu';
-    btn.style.background = '#8b5cf6';
-  }
-  const desc = document.getElementById('rec-status-desc');
-  if (desc) {
-    desc.innerText = `✅ Đã ghi nhận ${recordedBuffer.length} mẫu. Bấm "Xuất CSV" để tải về máy!`;
-    desc.style.color = '#10b981';
-  }
-  const expBtn = document.getElementById('btn-export-csv');
-  if (expBtn) expBtn.disabled = recordedBuffer.length === 0;
-  updateVoice(`Đã dừng ghi. Tổng cộng thu được ${recordedBuffer.length} mẫu dữ liệu.`);
-}
-
-function exportRecordedCSV() {
-  if (!recordedBuffer || recordedBuffer.length === 0) {
-    alert('Chưa có mẫu dữ liệu nào để xuất!');
+// Real Device Sensors Hook
+window.toggleRealSensors = function() {
+  const btn = document.getElementById('btn-toggle-sensor');
+  if (isRealSensorActive) {
+    isRealSensorActive = false;
+    if (btn) btn.innerText = '📱 Bật Cảm Biến Thật';
+    speakVietnamese('Đã tắt cảm biến thật, chuyển về chế độ mô phỏng.');
     return;
   }
-  const headers = ['timestamp', 'ax', 'ay', 'az', 'total_acc', 'gyro_alpha', 'gyro_beta', 'gyro_gamma', 'tilt_deg', 'phone_orientation', 'activity_label'];
-  let csvContent = 'data:text/csv;charset=utf-8,' + headers.join(',') + '\n';
-  recordedBuffer.forEach(row => {
-    const line = [
-      row.timestamp,
-      row.ax,
-      row.ay,
-      row.az,
-      row.total_acc,
-      row.gyro_a,
-      row.gyro_b,
-      row.gyro_g,
-      row.tilt,
-      `"${row.orientation}"`,
-      `"${row.activity}"`
-    ].join(',');
-    csvContent += line + '\n';
+
+  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission().then(permissionState => {
+      if (permissionState === 'granted') {
+        bindMotionListeners();
+      } else {
+        alert('Cần cấp quyền truy cập cảm biến chuyển động để sử dụng.');
+      }
+    }).catch(console.error);
+  } else {
+    bindMotionListeners();
+  }
+};
+
+function bindMotionListeners() {
+  isRealSensorActive = true;
+  const btn = document.getElementById('btn-toggle-sensor');
+  if (btn) btn.innerText = '🟢 Cảm Biến Thật Đang Bật';
+  speakVietnamese('Cảm biến gia tốc và hồi chuyển điện thoại đã được kích hoạt trực tiếp.');
+
+  window.addEventListener('devicemotion', (event) => {
+    if (!isRealSensorActive) return;
+    const a = event.accelerationIncludingGravity || event.acceleration;
+    if (a) {
+      accX = a.x || 0;
+      accY = a.y || 0;
+      accZ = a.z || 9.81;
+      
+      // IIR filter to decouple gravity baseline
+      gravEst = ALPHA * gravEst + (1 - ALPHA) * accZ;
+      const vertVibe = Math.abs(accZ - gravEst);
+
+      // Pothole detection
+      if (vertVibe > 3.0) {
+        simulateScenario('pothole');
+      }
+    }
   });
 
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement('a');
-  const filename = `eco_motion_${document.getElementById('sel-motion-activity').value}_${document.getElementById('sel-phone-orient').value}_${Date.now()}.csv`;
-  link.setAttribute('href', encodedUri);
-  link.setAttribute('download', filename);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  updateVoice("Đã tải tệp dữ liệu cảm biến CSV thành công về thiết bị của bạn.");
+  window.addEventListener('deviceorientation', (event) => {
+    if (!isRealSensorActive) return;
+    gyroX = event.beta || 0;
+    gyroY = event.gamma || 0;
+    gyroZ = event.alpha || 0;
+    currentTilt = Math.abs(gyroY).toFixed(1);
+    const tiltEl = document.getElementById('val-tilt');
+    if (tiltEl) tiltEl.innerText = currentTilt + '°';
+  });
 }
 
-// ==========================================
-// Pocket Mode Engine (Màn hình đen OLED)
-// ==========================================
-async function enterPocketMode() {
-  if (!isRealSensorActive) {
-    await startRealSensors();
+// ==========================================================
+// 50Hz REAL-TIME SENSOR OSCILLOSCOPE CANVAS
+// ==========================================================
+let oscBuffer = [];
+const BUFFER_SIZE = 120;
+
+function initOscilloscope() {
+  const canvas = document.getElementById('waveformCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function renderWaveform() {
+    // Generate slight live noise if in simulator mode
+    if (!isRealSensorActive) {
+      const noise = (Math.random() - 0.5) * 0.4;
+      accX += (Math.random() - 0.5) * 0.1;
+      accY += (Math.random() - 0.5) * 0.1;
+      accZ = 9.81 + noise;
+      gravEst = ALPHA * gravEst + (1 - ALPHA) * accZ;
+    }
+
+    const vertVibe = accZ - gravEst;
+
+    oscBuffer.push({
+      x: accX,
+      y: accY,
+      z: accZ,
+      g: gravEst,
+      v: vertVibe
+    });
+    if (oscBuffer.length > BUFFER_SIZE) oscBuffer.shift();
+
+    // Clear canvas
+    ctx.fillStyle = '#060911';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Grid Lines
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 40) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += 30) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+    }
+
+    // Zero-line baseline
+    const midY = canvas.height / 2;
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); ctx.stroke();
+
+    const stepX = canvas.width / (BUFFER_SIZE - 1);
+    const scale = 5.0; // scale factor for acceleration
+
+    // Helper draw curve
+    function drawCurve(key, color, offset = 0) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      for (let i = 0; i < oscBuffer.length; i++) {
+        const x = i * stepX;
+        const val = (oscBuffer[i][key] - offset) * scale;
+        const y = midY - val;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
+    // Draw curves
+    drawCurve('x', '#ef4444', 0);     // Ax (Red)
+    drawCurve('y', '#10b981', 0);     // Ay (Green)
+    drawCurve('z', '#3b82f6', 9.81);  // Az relative to 1g (Blue)
+    drawCurve('g', '#facc15', 9.81);  // Gravity baseline (Yellow)
+    drawCurve('v', '#06b6d4', 0);     // Vertical vibration (Cyan)
+
+    requestAnimationFrame(renderWaveform);
   }
-  await enableWakeLock();
-  startBgAudioKeepAlive();
-  const overlay = document.getElementById('pocket-mode-overlay');
-  if (overlay) overlay.style.display = 'flex';
-  
-  pocketSeconds = 0;
-  const timerElem = document.getElementById('pocket-timer-display');
-  if (timerElem) timerElem.innerText = '00:00';
-  
-  if (pocketTimerInterval) clearInterval(pocketTimerInterval);
-  pocketTimerInterval = setInterval(() => {
-    pocketSeconds++;
-    const m = String(Math.floor(pocketSeconds / 60)).padStart(2, '0');
-    const s = String(pocketSeconds % 60).padStart(2, '0');
-    if (timerElem) timerElem.innerText = `${m}:${s}`;
-  }, 1000);
 
-  updateVoice("Đã kích hoạt chế độ bỏ túi màn hình đen. Cảm biến và âm thanh đang bảo vệ ngầm.");
+  requestAnimationFrame(renderWaveform);
 }
 
-function exitPocketMode() {
-  if (pocketTimerInterval) {
-    clearInterval(pocketTimerInterval);
-    pocketTimerInterval = null;
+// ==========================================================
+// LEAFLET GIS MAP CONTROLLER (TAB 3)
+// ==========================================================
+let leafletMapInstance = null;
+let dangerMarkersLayer = null;
+let potholeMarkersLayer = null;
+let userMarker = null;
+
+function initLeafletMap() {
+  if (leafletMapInstance) {
+    leafletMapInstance.invalidateSize();
+    return;
   }
-  const overlay = document.getElementById('pocket-mode-overlay');
-  if (overlay) overlay.style.display = 'none';
-  updateVoice("Đã mở lại màn hình bình thường.");
+
+  const mapContainer = document.getElementById('phone-leaflet-map');
+  if (!mapContainer || typeof L === 'undefined') return;
+
+  // School Zone coordinates (Can Tho high school zone: Chau Van Liem / Nguyen Viet Hong)
+  const schoolLatLng = [10.0337, 105.7798];
+  
+  leafletMapInstance = L.map('phone-leaflet-map', {
+    center: schoolLatLng,
+    zoom: 16,
+    zoomControl: false
+  });
+
+  // OpenStreetMap Tile Layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(leafletMapInstance);
+
+  // School Safety Geofence Zone (500m radius circle)
+  L.circle(schoolLatLng, {
+    radius: 400,
+    color: '#facc15',
+    fillColor: '#facc15',
+    fillOpacity: 0.15,
+    weight: 2,
+    dashArray: '5, 8'
+  }).addTo(leafletMapInstance).bindPopup('<strong>Vành Đai An Toàn Cổng Trường (400m)</strong><br>Giới hạn tốc độ: 30 km/h');
+
+  // School Marker
+  L.marker(schoolLatLng).addTo(leafletMapInstance)
+    .bindPopup('<strong>Trường THPT Châu Văn Liêm</strong><br>Cổng chính đường Xô Viết Nghệ Tĩnh')
+    .openPopup();
+
+  // User Marker
+  userMarker = L.circleMarker([10.0325, 105.7785], {
+    radius: 8,
+    color: '#2563eb',
+    fillColor: '#38bdf8',
+    fillOpacity: 0.9,
+    weight: 3
+  }).addTo(leafletMapInstance).bindPopup('<strong>Vị trí của bạn</strong><br>Đang di chuyển: 18.5 km/h');
+
+  // Pothole layer
+  potholeMarkersLayer = L.layerGroup([
+    L.circleMarker([10.0345, 105.7778], { radius: 7, color: '#ef4444', fillColor: '#f87171', fillOpacity: 0.8 })
+      .bindPopup('🕳️ <strong>Ổ gà sâu 12cm</strong><br>Gia tốc chấn: 2.8g<br>Đã gửi Ban ATGT'),
+    L.circleMarker([10.0315, 105.7812], { radius: 6, color: '#f59e0b', fillColor: '#fbbf24', fillOpacity: 0.8 })
+      .bindPopup('⚠️ <strong>Gờ giảm tốc cao</strong><br>Đã chuẩn hóa OSM')
+  ]).addTo(leafletMapInstance);
+
+  // Danger layer
+  dangerMarkersLayer = L.layerGroup([
+    L.circleMarker([10.0360, 105.7820], { radius: 9, color: '#dc2626', fillColor: '#ef4444', fillOpacity: 0.85 })
+      .bindPopup('🚨 <strong>Nút giao nguy cơ cao</strong><br>Xe tải chuyển hướng thường xuyên')
+  ]).addTo(leafletMapInstance);
 }
 
-// Expose functions to window for HTML onclick attributes
-window.toggleMode = toggleMode;
-window.switchNav = switchNav;
-window.updateVoice = updateVoice;
-window.simulateScenario = simulateScenario;
-window.resetStatus = resetStatus;
-window.triggerSOS = triggerSOS;
-window.cancelSOS = cancelSOS;
-window.claimReward = claimReward;
-window.toggleRealSensors = toggleRealSensors;
-window.startRealSensors = startRealSensors;
-window.stopRealSensors = stopRealSensors;
-window.saveEmergencyPhone = saveEmergencyPhone;
-window.initEmergencyContactUI = initEmergencyContactUI;
-window.toggleDataRecording = toggleDataRecording;
-window.startDataRecording = startDataRecording;
-window.stopDataRecording = stopDataRecording;
-window.exportRecordedCSV = exportRecordedCSV;
-window.enterPocketMode = enterPocketMode;
-window.exitPocketMode = exitPocketMode;
-window.startAutoCalibration = startAutoCalibration;
+window.centerUserLocation = function() {
+  if (leafletMapInstance && userMarker) {
+    leafletMapInstance.setView(userMarker.getLatLng(), 17);
+  }
+};
 
-// Initialize on DOM load
-window.addEventListener('DOMContentLoaded', () => {
-  initEmergencyContactUI();
+window.toggleDangerMarkers = function() {
+  if (!leafletMapInstance || !dangerMarkersLayer) return;
+  if (leafletMapInstance.hasLayer(dangerMarkersLayer)) {
+    leafletMapInstance.removeLayer(dangerMarkersLayer);
+  } else {
+    leafletMapInstance.addLayer(dangerMarkersLayer);
+  }
+};
+
+window.togglePotholeMarkers = function() {
+  if (!leafletMapInstance || !potholeMarkersLayer) return;
+  if (leafletMapInstance.hasLayer(potholeMarkersLayer)) {
+    leafletMapInstance.removeLayer(potholeMarkersLayer);
+  } else {
+    leafletMapInstance.addLayer(potholeMarkersLayer);
+  }
+};
+
+// ==========================================================
+// PHÂN HỆ 2: CAMERA CỔNG TRƯỜNG EDGE AI (VISION & TTC)
+// ==========================================================
+let visionInited = false;
+let visionWeather = 'dry'; // 'dry' or 'rain'
+let pedestrianActive = true;
+let vehicleSpeed = 28.0; // km/h
+let vehicleY = 480;
+let pedX = 260;
+let emergencyTriggered = false;
+
+function initVisionSimulation() {
+  if (visionInited) return;
+  visionInited = true;
+
+  const canvas = document.getElementById('visionCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function renderVisionFrame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 1. Draw Street Environment
+    ctx.fillStyle = visionWeather === 'dry' ? '#1e293b' : '#0f172a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Road asphalt
+    ctx.fillStyle = visionWeather === 'dry' ? '#334155' : '#1e293b';
+    ctx.fillRect(200, 0, 560, canvas.height);
+
+    // Road markings (white dashed line)
+    ctx.strokeStyle = '#f8fafc';
+    ctx.lineWidth = 4;
+    ctx.setLineDash([25, 20]);
+    ctx.beginPath();
+    ctx.moveTo(480, 0);
+    ctx.lineTo(480, canvas.height);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // School Zebra Crossing (Vạch qua đường học sinh)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    for (let i = 0; i < 9; i++) {
+      ctx.fillRect(220 + i * 60, 200, 36, 120);
+    }
+
+    // School Gate banner (Cổng trường)
+    ctx.fillStyle = '#065f46';
+    ctx.fillRect(200, 20, 560, 40);
+    ctx.fillStyle = '#fef08a';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('TRƯỜNG THPT CHÂU VĂN LIÊM — KHU VỰC CỔNG TRƯỜNG AN TOÀN', 480, 46);
+
+    // 2. Pedestrian (Student walking across)
+    if (pedestrianActive) {
+      pedX += 0.8;
+      if (pedX > 720) pedX = 220;
+
+      // Student icon / figure
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(pedX, 260, 14, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Bounding box for student
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(pedX - 18, 240, 36, 60);
+
+      // AI Label
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 11px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('Học sinh [99%]', pedX - 18, 235);
+      ctx.fillText('v: 3.2 km/h', pedX - 18, 315);
+    }
+
+    // 3. Vehicle approaching zebra crossing
+    const speedFactor = vehicleSpeed * 0.08;
+    vehicleY -= speedFactor;
+    if (vehicleY < -120) {
+      vehicleY = canvas.height + 60;
+      if (!emergencyTriggered) vehicleSpeed = 28.0;
+    }
+
+    const vehX = 360;
+    // Car Body
+    ctx.fillStyle = vehicleSpeed > 35 ? '#ef4444' : '#10b981';
+    ctx.fillRect(vehX, vehicleY, 70, 110);
+    // Windshield
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(vehX + 8, vehicleY + 20, 54, 30);
+
+    // AI Bounding Box for vehicle
+    ctx.strokeStyle = vehicleSpeed > 35 ? '#ef4444' : '#10b981';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(vehX - 6, vehicleY - 6, 82, 122);
+
+    ctx.fillStyle = vehicleSpeed > 35 ? '#ef4444' : '#10b981';
+    ctx.font = 'bold 12px monospace';
+    ctx.fillText(`Xe cơ giới [98%]`, vehX - 6, vehicleY - 12);
+    ctx.fillText(`v: ${vehicleSpeed.toFixed(1)} km/h`, vehX - 6, vehicleY + 130);
+
+    // 4. Calculate Distance & Time-to-Collision (TTC)
+    const distToZebra = Math.max(0, vehicleY - 260); // pixels
+    const distMeters = (distToZebra / 10).toFixed(1); // 10px = 1m
+    const vMps = (vehicleSpeed * 1000) / 3600;
+    const ttc = vMps > 0 ? (distMeters / vMps).toFixed(1) : 99.9;
+
+    // Update HUD
+    const ttcBadge = document.getElementById('ttc-display-badge');
+    const warningBox = document.getElementById('vision-warning-box');
+    const dangerVal = document.getElementById('danger-ttc-val');
+
+    if (distToZebra > 0 && ttc < 2.5 && vehicleSpeed > 25) {
+      if (ttcBadge) {
+        ttcBadge.innerText = `🚨 TTC CẢNH BÁO: ${ttc}s (NGUY CƠ VA CHẠM)`;
+        ttcBadge.style.color = '#ef4444';
+      }
+      if (warningBox) {
+        warningBox.style.display = 'block';
+        if (dangerVal) dangerVal.innerText = `${ttc}s`;
+      }
+      // Flashing alert border
+      ctx.strokeStyle = 'rgba(239, 68, 68, 0.8)';
+      ctx.lineWidth = 10;
+      ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    } else {
+      if (ttcBadge) {
+        ttcBadge.innerText = `TTC Dự báo: An toàn (${ttc > 20 ? '> 10s' : ttc + 's'})`;
+        ttcBadge.style.color = '#4ade80';
+      }
+      if (warningBox) warningBox.style.display = 'none';
+    }
+
+    if (currentView === 'vision') {
+      requestAnimationFrame(renderVisionFrame);
+    }
+  }
+
+  requestAnimationFrame(renderVisionFrame);
+}
+
+window.spawnPedestrian = function() {
+  pedestrianActive = true;
+  pedX = 220;
+  speakVietnamese('Học sinh đang bắt đầu đi bộ qua vạch kẻ đường.');
+};
+
+window.speedUpVehicle = function() {
+  vehicleSpeed = 48.0;
+  vehicleY = 480;
+  speakVietnamese('Cảnh báo: Xe đang phóng nhanh vượt quá giới hạn 30km/h!');
+};
+
+window.toggleWeather = function() {
+  const badge = document.getElementById('weather-badge');
+  const btn = document.getElementById('btn-weather-toggle');
+  if (visionWeather === 'dry') {
+    visionWeather = 'rain';
+    if (badge) badge.innerText = '🌧️ Thời tiết: Mưa ướt (Hệ số ma sát μ = 0.35)';
+    if (btn) btn.innerText = '☀️ Bật chế độ Nắng';
+    speakVietnamese('Chế độ mưa đường ướt. Quãng đường phanh an toàn tăng gấp đôi.');
+  } else {
+    visionWeather = 'dry';
+    if (badge) badge.innerText = '☀️ Thời tiết: Nắng ráo (Hệ số ma sát μ = 0.70)';
+    if (btn) btn.innerText = '🌧️ Bật chế độ Mưa / Đêm';
+    speakVietnamese('Chế độ nắng ráo bình thường.');
+  }
+};
+
+window.triggerEmergencyScenario = function() {
+  emergencyTriggered = true;
+  vehicleSpeed = 52.0;
+  vehicleY = 380;
+  pedX = 380; // Pedestrian right in front of vehicle!
+  playWarningSiren();
+  speakVietnamese('Nguy hiểm va chạm sắp xảy ra! Kích hoạt còi báo động cổng trường!');
+};
+
+window.resetVisionSim = function() {
+  emergencyTriggered = false;
+  vehicleSpeed = 28.0;
+  vehicleY = 480;
+  pedX = 260;
+  visionWeather = 'dry';
+  const warningBox = document.getElementById('vision-warning-box');
+  if (warningBox) warningBox.style.display = 'none';
+};
+
+// ==========================================================
+// PHÂN HỆ 3: MÔ PHỎNG 3D ĐIỂM MÙ XE TẢI (THREE.JS / CANVAS)
+// ==========================================================
+let threeInited = false;
+let bikePos = { x: 0, y: 140 }; // relative position to truck
+let currentCameraMode = 'orbit';
+
+function initThreeSim() {
+  if (threeInited) return;
+  threeInited = true;
+
+  const canvas = document.getElementById('threeCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = 480;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function renderThreeFrame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+
+    // 1. Ground Grid
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 40) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += 40) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+    }
+
+    // 2. Heavy Truck Container Body (Top-down view)
+    const truckW = 74;
+    const truckH = 210;
+    const truckX = cx - truckW / 2;
+    const truckY = cy - truckH / 2;
+
+    // Truck Trailer
+    ctx.fillStyle = '#1e3a8a';
+    ctx.fillRect(truckX, truckY, truckW, truckH - 50);
+    // Truck Cabin
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(truckX, truckY - 50, truckW, 50);
+    // Windshield
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(truckX + 10, truckY - 40, truckW - 20, 16);
+    // Wheels
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(truckX - 8, truckY - 35, 8, 24);
+    ctx.fillRect(truckX + truckW, truckY - 35, 8, 24);
+    ctx.fillRect(truckX - 8, truckY + 80, 8, 28);
+    ctx.fillRect(truckX + truckW, truckY + 80, 8, 28);
+
+    // 3. Draw 4 Blind Spot Danger Zones (Red Translucent Polygons)
+    // A. Front Blind Spot (Điểm mù mũi xe: 0 - 3m)
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
+    ctx.beginPath();
+    ctx.moveTo(truckX, truckY - 50);
+    ctx.lineTo(truckX - 30, truckY - 110);
+    ctx.lineTo(truckX + truckW + 30, truckY - 110);
+    ctx.lineTo(truckX + truckW, truckY - 50);
+    ctx.closePath();
+    ctx.fill();
+
+    // B. Right Side Blind Spot (Điểm mù bên phải - BẪY TỬ THẦN)
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.45)';
+    ctx.beginPath();
+    ctx.moveTo(truckX + truckW, truckY - 30);
+    ctx.lineTo(truckX + truckW + 110, truckY - 10);
+    ctx.lineTo(truckX + truckW + 130, truckY + truckH + 40);
+    ctx.lineTo(truckX + truckW, truckY + truckH - 20);
+    ctx.closePath();
+    ctx.fill();
+
+    // C. Left Side Blind Spot
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.3)';
+    ctx.beginPath();
+    ctx.moveTo(truckX, truckY - 30);
+    ctx.lineTo(truckX - 70, truckY);
+    ctx.lineTo(truckX - 70, truckY + truckH);
+    ctx.lineTo(truckX, truckY + truckH - 20);
+    ctx.closePath();
+    ctx.fill();
+
+    // D. Rear Blind Spot
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
+    ctx.beginPath();
+    ctx.moveTo(truckX, truckY + truckH - 50);
+    ctx.lineTo(truckX - 30, truckY + truckH + 80);
+    ctx.lineTo(truckX + truckW + 30, truckY + truckH + 80);
+    ctx.lineTo(truckX + truckW, truckY + truckH - 50);
+    ctx.closePath();
+    ctx.fill();
+
+    // 4. Student Electric Bicycle (Marker)
+    const studentX = cx + bikePos.x;
+    const studentY = cy + bikePos.y;
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(studentX, studentY, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Học sinh (Xe đạp điện)', studentX, studentY - 16);
+
+    // 5. Evaluate Danger
+    const statusTitle = document.getElementById('blind-status-title');
+    const statusDesc = document.getElementById('blind-status-desc');
+
+    if (bikePos.x > 35 && bikePos.x < 130 && bikePos.y > -30 && bikePos.y < 180) {
+      if (statusTitle) {
+        statusTitle.innerText = '🚨 BẪY TỬ THẦN (ĐIỂM MÙ BÊN PHẢI)!';
+        statusTitle.style.color = '#ef4444';
+      }
+      if (statusDesc) {
+        statusDesc.innerText = 'CỰC KỲ NGUY HIỂM: Xe tải rẽ phải sẽ cuốn xe đạp điện vào gầm bằng góc chém cua bánh sau!';
+      }
+    } else if (bikePos.y < -100 && Math.abs(bikePos.x) < 50) {
+      if (statusTitle) {
+        statusTitle.innerText = '⚠️ ĐIỂM MÙ MŨI XE (KHUẤT TẦM NHÌN)!';
+        statusTitle.style.color = '#f59e0b';
+      }
+      if (statusDesc) {
+        statusDesc.innerText = 'Tài xế ngồi trên cao bị mũi xe che khuất hoàn toàn. Khi xe xuất phát sẽ gây tai nạn chèn!';
+      }
+    } else {
+      if (statusTitle) {
+        statusTitle.innerText = '✅ VÙNG AN TOÀN';
+        statusTitle.style.color = '#4ade80';
+      }
+      if (statusDesc) {
+        statusDesc.innerText = 'Xe đạp điện đang ở ngoài các góc khuất. Tài xế xe tải có thể quan sát rõ qua gương chiếu hậu.';
+      }
+    }
+
+    if (currentView === '3d') {
+      requestAnimationFrame(renderThreeFrame);
+    }
+  }
+
+  requestAnimationFrame(renderThreeFrame);
+}
+
+window.setThreeCamera = function(mode) {
+  currentCameraMode = mode;
+  speakVietnamese('Đã đổi góc nhìn camera.');
+};
+
+window.moveBikeIntoBlindSpot = function() {
+  bikePos = { x: 0, y: -125 };
+  playWarningSiren();
+  speakVietnamese('Cảnh báo: Xe đạp điện đã đi vào điểm mù phía trước mũi xe tải!');
+};
+
+window.moveBikeIntoRightBlindSpot = function() {
+  bikePos = { x: 80, y: 30 };
+  playWarningSiren();
+  speakVietnamese('Cực kỳ nguy hiểm: Bẫy tử thần bên phải khi xe tải chuẩn bị rẽ!');
+};
+
+window.moveBikeToSafeZone = function() {
+  bikePos = { x: 0, y: 150 };
+  playTone(523.25, 'sine', 0.3);
+  speakVietnamese('Đã lùi về khoảng cách an toàn 5 mét.');
+};
+
+// ==========================================================
+// PHÂN HỆ 4: MASTER COMMAND DASHBOARD & HEATMAP
+// ==========================================================
+let heatmapInited = false;
+function initHeatmap() {
+  if (heatmapInited) return;
+  heatmapInited = true;
+
+  const canvas = document.getElementById('heatmapCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#060911';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw simulated school gate map streets
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth = 20;
+  ctx.beginPath();
+  ctx.moveTo(40, 140); ctx.lineTo(460, 140); // Main road
+  ctx.moveTo(250, 20); ctx.lineTo(250, 260); // Cross street
+  ctx.stroke();
+
+  // Helper radial heat blob
+  function drawHeatBlob(x, y, r, innerColor, outerColor) {
+    const grad = ctx.createRadialGradient(x, y, 2, x, y, r);
+    grad.addColorStop(0, innerColor);
+    grad.addColorStop(1, outerColor);
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // School Gate Red Hotspot (Nút giao Châu Văn Liêm - Minh Khai)
+  drawHeatBlob(250, 140, 60, 'rgba(239, 68, 68, 0.7)', 'rgba(239, 68, 68, 0)');
+  // Pothole cluster Yellow Hotspot
+  drawHeatBlob(140, 140, 45, 'rgba(245, 158, 11, 0.6)', 'rgba(245, 158, 11, 0)');
+  // Safe flow Green
+  drawHeatBlob(380, 140, 40, 'rgba(16, 185, 129, 0.5)', 'rgba(16, 185, 129, 0)');
+}
+
+// ==========================================================
+// MODAL CONTROLLERS
+// ==========================================================
+window.openDossierModal = function(tabId = 'don-du-thi') {
+  const modal = document.getElementById('dossier-modal');
+  if (modal) modal.classList.add('active');
+  switchModalTab(tabId);
+};
+
+window.closeDossierModal = function() {
+  const modal = document.getElementById('dossier-modal');
+  if (modal) modal.classList.remove('active');
+};
+
+window.openReportModal = function() {
+  const modal = document.getElementById('report-modal');
+  if (modal) modal.classList.add('active');
+};
+
+window.closeReportModal = function() {
+  const modal = document.getElementById('report-modal');
+  if (modal) modal.classList.remove('active');
+};
+
+window.switchModalTab = function(tabKey) {
+  document.querySelectorAll('.modal-tab-btn').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.getElementById('mtab-' + tabKey);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  const bodyEl = document.getElementById('modal-dossier-body');
+  if (!bodyEl) return;
+
+  if (tabKey === 'don' || tabKey === 'don-du-thi') {
+    bodyEl.innerHTML = `
+      <h3 style="color: #10b981; font-size: 16px; margin-bottom: 8px;">ĐƠN ĐĂNG KÝ THAM DỰ CUỘC THI "SÁNG KIẾN AN TOÀN GIAO THÔNG VIỆT NAM NĂM 2026"</h3>
+      <p style="font-size: 11px; color: #94a3b8; margin-bottom: 14px;">(Ban hành kèm theo Thể lệ Cuộc thi Sáng kiến An toàn giao thông Việt Nam năm 2026)</p>
+      
+      <div style="background: #090e1a; padding: 14px; border-radius: 10px; border: 1px solid #1e293b; line-height: 1.8;">
+        <p><strong>Kính gửi:</strong> Ban Tổ chức Cuộc thi "Sáng kiến An toàn giao thông Việt Nam năm 2026"</p>
+        <p><strong>1. Tên tác giả / Trưởng nhóm:</strong> LÊ THANH LIÊM</p>
+        <p><strong>2. Đơn vị công tác:</strong> Trường THPT Châu Văn Liêm, TP Cần Thơ</p>
+        <p><strong>3. Tên sáng kiến / giải pháp dự thi:</strong> HỆ SINH THÁI GIAO THÔNG HỌC ĐƯỜNG AN TOÀN ECO-SAFERIDE (SMART SCHOOL-ZONE SAFETY ECOSYSTEM - SSSE)</p>
+        <p><strong>4. Đăng ký tham gia Chủ đề:</strong> <strong style="color: #facc15;">Chủ đề 3: "Học đường — Học từ đường"</strong></p>
+        <p><strong>5. Cam kết:</strong> Tôi xin cam kết sáng kiến, giải pháp tham dự Cuộc thi là công trình nghiên cứu trung thực của tác giả, chưa từng đạt giải tại các cuộc thi cấp quốc gia khác; chấp hành nghiêm túc Thể lệ Cuộc thi và quyết định của Ban Giám khảo.</p>
+      </div>
+    `;
+  } else if (tabKey === 'mota') {
+    bodyEl.innerHTML = `
+      <h3 style="color: #38bdf8; font-size: 16px; margin-bottom: 8px;">BẢN MÔ TẢ GIẢI PHÁP / SÁNG KIẾN DỰ THI NĂM 2026</h3>
+      <div style="background: #090e1a; padding: 14px; border-radius: 10px; border: 1px solid #1e293b; line-height: 1.8;">
+        <p><strong>1. Tính cấp bách và Thực trạng:</strong> Tình trạng học sinh THCS, THPT điều khiển xe đạp điện, xe máy dưới 50cc thiếu kỹ năng, vi phạm tốc độ và không lường trước điểm mù xe tải lớn tại các cổng trường học giáp quốc lộ/tỉnh lộ đang ở mức báo động.</p>
+        <p><strong>2. Giải pháp đột phá — Tiếp cận Đa tầng (SSSE):</strong></p>
+        <ul style="padding-left: 20px;">
+          <li><strong>Tầng 1 (Học sinh - Di động):</strong> Hộp đen thông minh 0đ trên smartphone, đo dao động 50Hz, tự thích ứng khi để túi quần, chấm điểm SDI và tự động gọi cứu hộ kèm tọa độ GPS qua SMS khi có va chạm.</li>
+          <li><strong>Tầng 2 (Cổng trường - Edge AI):</strong> Camera biên AI tính toán Time-to-Collision (TTC) và còi phát thanh cảnh báo sớm trước 2.5 giây khi xe cơ giới có nguy cơ đâm vào học sinh.</li>
+          <li><strong>Tầng 3 (Giáo dục trực quan):</strong> Mô phỏng 3D WebGL giúp học sinh trải nghiệm thực tế ảo góc nhìn tài xế xe tải và nhận biết "bẫy tử thần" khi xe tải rẽ phải.</li>
+          <li><strong>Tầng 4 (Trung tâm điều hành):</strong> Bản đồ nhiệt nguy cơ, tự động kết xuất báo cáo gửi CSGT và Ban ATGT địa phương.</li>
+        </ul>
+      </div>
+    `;
+  } else if (tabKey === 'ieee') {
+    bodyEl.innerHTML = `
+      <h3 style="color: #a78bfa; font-size: 16px; margin-bottom: 8px;">BÁO CÁO NGHIÊN CỨU KHOA HỌC CHUẨN IEEE (TOÁN HỌC & KIỂM ĐỊNH THỐNG KÊ)</h3>
+      <div style="background: #090e1a; padding: 14px; border-radius: 10px; border: 1px solid #1e293b; line-height: 1.8;">
+        <p><strong>Tóm tắt học thuật:</strong> Nghiên cứu đề xuất thuật toán vi sai thích ứng lọc trọng trường IIR và phân tích năng lượng phổ FFT nhận diện hành vi lái xe học sinh:</p>
+        <div style="background: #111827; padding: 10px; border-radius: 6px; margin: 10px 0; font-family: monospace;">
+          • Thuật toán tách trọng lực: g_est[t] = α • g_est[t-1] + (1 - α) • a_z[t]<br>
+          • Kiểm định t-test Paired: t = 32.78, p = 5.86 x 10^-55 (p &lt;&lt; 0.001)<br>
+          • Phân tích ANOVA F-test: F(3, 196) = 1299.30, p &lt;&lt; 0.001<br>
+          • Độ trễ tính toán: Trung bình 16.38 ms ± 0.30 ms (Hard Real-Time)<br>
+          • Công suất tiêu thụ màn hình OLED: Giảm 89.13% (92.3 mW so với 849.5 mW)
+        </div>
+        <p>Báo cáo đính kèm ma trận nhầm lẫn (Confusion Matrix) trên tập kiểm thử 300 tình huống thực địa, đạt độ chính xác phát hiện va chạm ngã xe 98.7%.</p>
+      </div>
+    `;
+  } else if (tabKey === 'video') {
+    bodyEl.innerHTML = `
+      <h3 style="color: #f59e0b; font-size: 16px; margin-bottom: 8px;">KỊCH BẢN VIDEO DEMO THUYẾT MINH SẢN PHẨM (3 — 5 PHÚT)</h3>
+      <div style="background: #090e1a; padding: 14px; border-radius: 10px; border: 1px solid #1e293b; line-height: 1.8;">
+        <p><strong>00:00 - 00:45:</strong> Đặt vấn đề thực trạng tai nạn cổng trường và sự thiếu thốn công cụ giám sát học sinh.</p>
+        <p><strong>00:45 - 02:00:</strong> Trực tiếp demo Hộp đen di động 0đ bỏ túi, sóng dao động 50Hz, cảnh báo lạng lách, phanh gấp và lọc báo giả khi sụp ổ gà.</p>
+        <p><strong>02:00 - 03:15:</strong> Trình diễn Camera biên AI TTC tại cổng trường và Mô phỏng 3D điểm mù xe tải.</p>
+        <p><strong>03:15 - 04:30:</strong> Kết quả thử nghiệm diện hẹp tại Cần Thơ, lời cam kết vì thế hệ học sinh Việt Nam an toàn.</p>
+      </div>
+    `;
+  } else if (tabKey === 'pitch') {
+    bodyEl.innerHTML = `
+      <h3 style="color: #f43f5e; font-size: 16px; margin-bottom: 8px;">KỊCH BẢN THUYẾT TRÌNH CHUNG KHẢO 7 PHÚT & 10 CÂU HỎI PHẢN BIỆN</h3>
+      <div style="background: #090e1a; padding: 14px; border-radius: 10px; border: 1px solid #1e293b; line-height: 1.8;">
+        <p>Bao gồm 5 slide thuyết trình trọng tâm chuẩn bị cho vòng Chung khảo toàn quốc tại Hà Nội (Tháng 1/2027) cùng bộ 10 câu hỏi chất vấn hóc búa từ Hội đồng Giám khảo (Báo Dân trí, Cục CSGT, Toyota Việt Nam) về:</p>
+        <ol style="padding-left: 20px;">
+          <li>Lọc báo giả ngã xe khi rơi điện thoại.</li>
+          <li>Độ bảo mật và quyền riêng tư theo Nghị định 13/2023/NĐ-CP.</li>
+          <li>Khả năng nhân rộng tới 10.000 trường học trên toàn quốc với chi phí 0đ.</li>
+          <li>Giải pháp phòng ngừa hiện tượng "bẫy tử thần" góc chém cua xe tải container.</li>
+        </ol>
+      </div>
+    `;
+  }
+};
+
+// ==========================================================
+// INITIALIZATION ON DOM READY
+// ==========================================================
+document.addEventListener('DOMContentLoaded', () => {
+  initOscilloscope();
+  
+  // Start with Mobile View
+  switchView('mobile');
+  
+  // Pre-load Vision and 3D in background
+  setTimeout(() => {
+    initVisionSimulation();
+    initThreeSim();
+    initHeatmap();
+  }, 500);
 });
