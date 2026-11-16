@@ -10,8 +10,8 @@
 
 HỆ SINH THÁI CỔNG TRƯỜNG AN TOÀN GIAO THÔNG THÔNG MINH TOÀN DIỆN (SSSE) VÀ TRỢ LÝ AN TOÀN SỐ — HỘP ĐEN AI 0Đ (ECO-SAFERIDE)  
 Tên tiếng Anh: Smart School-Zone Safety Ecosystem (SSSE) & Zero-Cost Pocket AI Blackbox (Eco-SafeRide)  
-Tên viết tắt dự án: SSSE — Eco-SafeRide  
-Đơn vị nghiên cứu & phát triển: Nhóm Nghiên cứu & Phát triển Công nghệ Giáo dục số — OpenLab, Trường THPT Châu Văn Liêm, Sở Giáo dục và Đào tạo Thành phố Cần Thơ.  
+Tên viết tắt: SSSE — Eco-SafeRide  
+Đơn vị phát triển: Nhóm OpenLab, Trường THPT Châu Văn Liêm, Sở Giáo dục và Đào tạo TP. Cần Thơ.  
 
 ---
 
@@ -21,7 +21,7 @@ Tên viết tắt dự án: SSSE — Eco-SafeRide
 - [ ] **Chủ đề 2: “Đúng hàng – Đúng phương tiện”**
 - [x] **Chủ đề 3: “Học đường – Học từ đường”**
 
-** Chú thích mở rộng của Tác giả: Sản phẩm tập trung giải quyết toàn diện vấn đề trật tự an toàn giao thông học đường (Chủ đề 3), đồng thời tích hợp phân hệ thị giác máy tính AI biên tại cổng trường và bản đồ nhiệt giao thông số hỗ trợ điều tiết, giải tỏa xung đột ùn tắc cục bộ tại các nút giao cổng trường học giờ cao điểm (kết nối tương hỗ với Chủ đề 1: “Đường đông vẫn thông”).*
+** Chú thích: Sản phẩm giải quyết toàn diện an toàn giao thông học đường (Chủ đề 3), đồng thời tích hợp AI biên tại cổng trường và bản đồ nhiệt GIS hỗ trợ giải tỏa ùn tắc giờ cao điểm (kết nối tương hỗ với Chủ đề 1: “Đường đông vẫn thông”).*
 
 ---
 
@@ -32,7 +32,7 @@ Tên viết tắt dự án: SSSE — Eco-SafeRide
 - [x] **Khu vực miền Nam**
 - [ ] **Kiều bào Việt Nam tại nước ngoài**
 
-** Địa bàn nghiên cứu và triển khai thử nghiệm thực địa: Thành phố Cần Thơ và các tỉnh khu vực Đồng bằng Sông Cửu Long, định hướng mở rộng chuyển giao công nghệ tới 10.000 trường học trên toàn quốc.*
+** Địa bàn thử nghiệm: TP. Cần Thơ và ĐBSCL, định hướng mở rộng tới 10.000 trường học trên toàn quốc.*
 
 ---
 
@@ -40,59 +40,39 @@ Tên viết tắt dự án: SSSE — Eco-SafeRide
 
 ### 4.1. Hoàn cảnh ra đời và Bối cảnh thực tiễn tai nạn giao thông học đường
 
-Thống kê của Ủy ban An toàn Giao thông Quốc gia và Cục Cảnh sát Giao thông giai đoạn 2020 – 2025 chỉ ra thực trạng đau lòng: Mỗi năm xảy ra trên 2.000 vụ tai nạn giao thông liên quan đến học sinh, làm gần 1.000 em tử vong và hơn 1.200 em bị thương tật. Tai nạn giao thông hiện là nguyên nhân tử vong hàng đầu ở lứa tuổi thanh thiếu niên tại Việt Nam.
+Thống kê của Ủy ban An toàn Giao thông Quốc gia và Cục CSGT chỉ ra thực trạng nhức nhối: Mỗi năm xảy ra trên 2.000 vụ tai nạn giao thông liên quan đến học sinh, cướp đi sinh mạng gần 1.000 em và khiến hơn 1.200 em thương tật. Tai nạn giao thông hiện là nguyên nhân gây tử vong hàng đầu ở lứa tuổi 12 – 18 tại Việt Nam.
 
-Khảo sát thực địa tại các trường THPT ở TP. Cần Thơ (như THPT Châu Văn Liêm, THPT Chuyên Lý Tự Trọng) ghi nhận 82% – 88% học sinh tự đi học bằng xe đạp điện và xe máy điện (vận tốc tối đa 25 – 50 km/h). Do pháp luật không yêu cầu giấy phép lái xe cho nhóm phương tiện này, đa số học sinh tham gia giao thông khi chưa qua đào tạo kỹ năng điều khiển xe an toàn, thiếu phản xạ phòng vệ và không hiểu rõ động học va chạm thực tế.
+Khảo sát tại Cần Thơ (THPT Châu Văn Liêm, THPT Chuyên Lý Tự Trọng) ghi nhận 85% học sinh tự đến trường bằng xe đạp điện và xe máy điện (25 – 50 km/h). Do pháp luật không yêu cầu giấy phép lái xe, đa số học sinh tham gia giao thông khi chưa qua đào tạo kỹ năng, thiếu phản xạ phòng vệ và không nhận thức được động học va chạm.
 
 ### 4.2. Đặc thù nhận thức hành vi lứa tuổi học sinh (12 – 18 tuổi)
 
-Khoa học thần kinh nhận thức chỉ ra rằng vùng vỏ não trước trán (Prefrontal Cortex) chịu trách nhiệm kiểm soát xung động và phán đoán rủi ro ở lứa tuổi 12 – 18 chưa hoàn thiện. Học sinh thường hành xử bốc đồng, đánh giá thấp nguy cơ và dễ bị phân tâm khi điều khiển phương tiện.
+Khoa học thần kinh chứng minh vỏ não trước trán (Prefrontal Cortex) chịu trách nhiệm kiểm soát xung động ở lứa tuổi 12 – 18 chưa hoàn thiện, dẫn đến 4 hành vi rủi ro phổ biến:
 
-Quan sát thực địa tại cổng trường ghi nhận 4 hành vi rủi ro phổ biến:
+• Bấm điện thoại khi lái xe (FOMO): Giảm 60% tầm quan sát, kéo dài thời gian phản xạ phanh từ 0.8 giây lên 2.5 giây;
 
-• 1. Vừa lái xe vừa bấm điện thoại (Hội chứng FOMO): Làm giảm 60% tầm quan sát và kéo dài thời gian phản xạ phanh từ 0.8 giây lên 2.5 giây.
+• Đeo tai nghe chống ồn: Triệt tiêu âm thanh cảnh báo sinh tử như tiếng còi xe tải và tiếng phanh gấp;
 
-• 2. Đeo tai nghe chống ồn (In-ear, ANC): Triệt tiêu tín hiệu âm thanh cảnh báo sinh tử như tiếng còi xe tải, tiếng phanh gấp xung quanh.
+• Đi dàn hàng ngang 3 – 4 xe: Lấn chiếm làn đường cơ giới và tạo điểm mù che khuất tầm nhìn xe sau;
 
-• 3. Đi dàn hàng ngang 3 – 4 xe: Chiếm trọn làn đường cơ giới, cản trở giao thông và tạo điểm mù che khuất tầm nhìn xe phía sau.
-
-• 4. Lạng lách, rẽ đột ngột không quan sát: Thói quen tạt đầu ô tô khi vội giờ học khiến học sinh dễ rơi vào 'Vùng tử thần' của xe tải lớn.
+• Lạng lách, rẽ gắt tạt đầu ô tô: Thiếu quan sát khiến học sinh dễ rơi vào 'Vùng tử thần' của xe tải lớn.
 
 ### 4.3. Đặc thù hạ tầng xung quanh cổng trường học và các điểm nghẽn xung đột
 
-Phần lớn trường học tại Việt Nam tiếp giáp trực tiếp với quốc lộ, tỉnh lộ hoặc trục đô thị huyết mạch. Vào khung giờ cao điểm (6h45 – 7h15 và 17h00 – 17h30), lòng đường trước cổng trường trở thành nút thắt cổ chai hỗn loạn.
-
-Tại đây xuất hiện xung đột gay gắt giữa 3 dòng phương tiện không đồng nhất:
-
-• Dòng xe đạp điện, xe máy điện học sinh di chuyển tản mát với tốc độ không đều;
-
-• Dòng xe phụ huynh đưa đón dừng đỗ ngổn ngang trên vỉa hè và lòng đường;
-
-• Dòng xe tải ben, xe buýt, xe container chạy tốc độ cao do thiếu gờ giảm tốc cưỡng bức.
-
-Sự giao cắt phức tạp này biến khu vực trước cổng trường học thành điểm đen nguy hiểm bậc nhất trên mạng lưới đường bộ.
+Đa số trường học tiếp giáp quốc lộ hoặc trục đô thị huyết mạch. Khung giờ cao điểm (6h45 – 7h15 và 17h00 – 17h30), lòng đường cổng trường hỗn loạn do xung đột giữa 3 dòng phương tiện: Dòng xe điện học sinh tản mát; Dòng xe phụ huynh đưa đón dừng đỗ ngổn ngang; và Dòng xe tải ben, xe buýt chạy tốc độ cao do thiếu gờ giảm tốc cưỡng bức. Sự giao cắt này biến cổng trường thành 'điểm đen' tai nạn nguy hiểm.
 
 ### 4.4. Ba nút thắt cốt tử của các giải pháp truyền thống
 
-Các giải pháp an toàn giao thông hiện nay bộc lộ 3 rào cản chí tử:
+Các giải pháp hiện nay bộc lộ 3 rào cản chí tử:
 
-1. Rào cản chi phí phần cứng: Thiết bị giám sát hành trình hộp đen OBD-II hay camera AI có giá từ 1.500.000 đến 4.500.000 VNĐ, không thể trang bị đại trà cho hơn 10 triệu học sinh trên cả nước.
+• Chi phí phần cứng đắt đỏ: Hộp đen OBD-II hay camera AI giá 1.5 – 4.5 triệu đồng, không thể trang bị cho 10 triệu học sinh;
 
-2. Rào cản xâm phạm quyền riêng tư: Các ứng dụng định vị gia đình (Life360, Find My Kids) theo dõi GPS liên tục và lưu trữ đám mây, tiềm ẩn nguy cơ lộ lọt lịch trình trẻ em và vi phạm Nghị định 13/2023/NĐ-CP.
+• Xâm phạm quyền riêng tư: Ứng dụng định vị gia đình theo dõi GPS liên tục lên đám mây, vi phạm Nghị định 13/2023/NĐ-CP;
 
-3. Rào cản giáo dục một chiều, thụ động: Tuyên truyền lý thuyết suông và phát tờ rơi không tạo lập được phản xạ thực chứng; học sinh không hình dung được nguy hiểm khi rơi vào vùng mù chém cua của xe tải lớn.
+• Giáo dục thụ động: Tuyên truyền lý thuyết suông không tạo lập được phản xạ thực chứng về điểm mù xe tải.
 
 ### 4.5. Căn cứ pháp lý và Tính cấp thiết của Đề tài
 
-Đề tài được phát triển bám sát các chủ trương chiến lược của Đảng và Nhà nước:
-
-• Nghị quyết số 48/NQ-CP ngày 05/04/2022 của Chính phủ về bảo đảm trật tự an toàn giao thông và chống ùn tắc;
-
-• Chỉ thị số 31/CT-TTg ngày 21/12/2023 của Thủ tướng Chính phủ về tăng cường bảo đảm TTATGT cho lứa tuổi học sinh trong tình hình mới;
-
-• Luật Trật tự, an toàn giao thông đường bộ số 36/2024/QH15 (hiệu lực từ 01/01/2025) quy định chuẩn hạ tầng và bảo vệ an toàn trẻ em khu vực trường học.
-
-Sáng kiến SSSE — Eco-SafeRide ra đời với sứ mệnh: Tận dụng điện thoại thông minh sẵn có của học sinh và camera an ninh trường học để thiết lập 'Lá chắn An toàn 3 Lớp' khép kín với chi phí 0 ĐỒNG, mang lại cơ hội bảo vệ bình đẳng cho mọi học sinh Việt Nam.
+Đề tài bám sát Nghị quyết 48/NQ-CP, Chỉ thị 31/CT-TTg và Luật TTATGT đường bộ số 36/2024/QH15. Sáng kiến SSSE — Eco-SafeRide ra đời với sứ mệnh: Tận dụng smartphone sẵn có của học sinh và camera trường học để thiết lập 'Lá chắn An toàn 3 Lớp' khép kín với CHI PHÍ 0 ĐỒNG, mang lại cơ hội bảo vệ bình đẳng cho mọi học sinh Việt Nam.
 
 ---
 
@@ -110,101 +90,81 @@ Sáng kiến SSSE — Eco-SafeRide ra đời với sứ mệnh: Tận dụng đi
 
 #### 1. Dữ liệu Camera giao thông và Camera an ninh cổng trường (☑ Đã đánh dấu)
 
-Bộ dữ liệu gồm hơn 10.000 khung hình video 2K trích xuất từ camera an ninh sẵn có tại các cổng trường học ở TP. Cần Thơ (khu vực THPT Châu Văn Liêm, THPT Chuyên Lý Tự Trọng, các tuyến đường Ngô Quyền, Trương Định, 30/4).
-
-Dữ liệu được gán nhãn chuẩn hóa phục vụ huấn luyện mô hình thị giác AI biên nhận diện 4 hành vi trọng yếu:
-
-• Học sinh không đội mũ bảo hiểm khi điều khiển xe máy điện, xe đạp điện;
-
-• Hành vi dàn hàng ngang từ 3 xe trở lên cản trở lưu thông giờ tan trường;
-
-• Phương tiện cơ giới đi ngược chiều hoặc dừng đỗ sai quy định trước cổng trường;
-
-• Xung đột dòng xe giữa học sinh rẽ vào cổng trường và ô tô chạy thẳng.
+Gồm hơn 10.000 khung hình video 2K từ camera an ninh sẵn có tại các cổng trường học ở Cần Thơ (THPT Châu Văn Liêm, THPT Chuyên Lý Tự Trọng). Dữ liệu được gán nhãn phục vụ huấn luyện AI biên nhận diện 4 hành vi: Không đội mũ bảo hiểm; Dàn hàng ngang từ 3 xe; Phương tiện cơ giới đi ngược chiều; và Xung đột rẽ cắt đầu xe.
 
 #### 2. Dữ liệu Camera giám sát hành trình (☑ Đã đánh dấu)
 
-Thu thập hơn 120 giờ video thực tế từ camera hành trình góc nhìn thứ nhất (POV) của học sinh đi xe hai bánh và camera buồng lái tài xế xe tải, xe buýt. Bộ dữ liệu dùng để phân tích động học va chạm và tái hiện chính xác không gian điểm mù xe tải trong mô phỏng 3D WebGL.
+Hơn 120 giờ video thực tế từ camera hành trình góc nhìn thứ nhất (POV) của học sinh và tài xế xe tải/buýt, dùng để phân tích động học va chạm và tái hiện điểm mù xe tải trong mô phỏng 3D WebGL.
 
 #### 3. Dữ liệu Bản đồ số tích hợp thông tin biển báo (☑ Đã đánh dấu)
 
-Tích hợp dữ liệu địa lý mở OpenStreetMap (OSM) kết hợp số hóa thực địa mạng lưới giao thông trường học theo Quy chuẩn QCVN 41:2019/BGTVT:
-
-• Biển cảnh báo nguy hiểm: Biển số W.225 ('Trẻ em'), Biển số W.227 ('Công trường'), Biển số W.233 ('Nguy hiểm khác');
-
-• Biển giới hạn tốc độ: Biển số P.127 (Quy định tốc độ tối đa 30 km/h trong bán kính 200m quanh trường học);
-
-• Tọa độ các gờ giảm tốc, vạch sang đường cho người đi bộ và các nút giao có tầm nhìn che khuất.
+Tích hợp dữ liệu OpenStreetMap kết hợp số hóa thực địa mạng lưới giao thông trường học theo QCVN 41:2019/BGTVT: Biển cảnh báo W.225 ('Trẻ em'), W.227, W.233; Biển tốc độ P.127 (<= 30 km/h trong bán kính 200m); cùng tọa độ gờ giảm tốc và vạch sang đường.
 
 #### 4. Dữ liệu khác: Cảm biến IMU 6-DOF & Dị vật Mặt đường (☑ Đã đánh dấu)
 
-Đây là bộ dữ liệu thực nghiệm độc quyền do nhóm tác giả trực tiếp thu thập và kiểm định:
-
-• Dữ liệu quán tính 6 trục (IMU 6-DOF): Gồm 300 phiên chạy xe thực tế ở tần số lấy mẫu cố định 50Hz thu thập gia tốc 3 trục (a_x, a_y, a_z) và con quay hồi chuyển 3 trục (omega_x, omega_y, omega_z) trên 5 dòng smartphone phổ biến ở trạng thái bỏ túi quần tự do.
-
-• Dữ liệu chấn động mặt đường: Tín hiệu gia tốc xung kích thẳng đứng tại 50 vị trí ổ gà sâu, gờ nắp cống nhô cao trên đường phố Cần Thơ, phục vụ thuật toán nhận diện và vẽ bản đồ nhiệt nguy cơ đường đi ẩn danh.
+Dữ liệu quán tính 6 trục (IMU 6-DOF) gồm 300 phiên chạy xe thực tế ở tần số 50Hz (gia tốc và con quay hồi chuyển 3 trục) trên 5 dòng smartphone bỏ túi quần; cùng dữ liệu chấn động thẳng đứng tại 50 vị trí ổ gà sâu trên đường phố Cần Thơ để vẽ bản đồ nhiệt nguy cơ.
 
 ### B. Mô tả các tính năng cơ bản dự kiến của sản phẩm (Mô tả rõ các tính năng dự kiến của sản phẩm):
 
-Hệ sinh thái SSSE — Eco-SafeRide được xây dựng theo triết lý 'Phần mềm là trung tâm — Trí tuệ nhân tạo tại biên — Chi phí phần cứng 0 đồng', thiết lập 'Lá chắn An toàn 3 Lớp' gồm 4 Phân hệ tương hỗ:
+Hệ sinh thái SSSE — Eco-SafeRide được xây dựng theo triết lý 'Phần mềm trung tâm — AI tại biên — Chi phí 0 đồng', thiết lập 'Lá chắn An toàn 3 Lớp' gồm 4 Phân hệ tương hỗ:
 
-#### Phân hệ 1: Hộp đen AI Bỏ túi 0đ Eco-SafeRide (Client-Edge Pocket Blackbox)
+#### Phân hệ 1: Ứng dụng Di động Eco-SafeRide (Hộp đen Bỏ túi Học sinh)
 
-• Công nghệ Web PWA & Native 0đ: Vận hành ngay trên trình duyệt di động (Chrome, Safari) hoặc ứng dụng nhẹ (< 15MB), không đòi hỏi mua sắm thiết bị phần cứng ngoài.
+• Web PWA & Native 0đ: Chạy trực tiếp trên trình duyệt di động hoặc ứng dụng nhẹ (< 15MB), không cần thiết bị ngoài;
 
-• Tự động Phân tầng Hoạt động (HAR) qua Phổ FFT: Phân tích phổ rung chấn 50Hz. Tự động chuyển Sleep Mode khi đi bộ để tiết kiệm 99% pin; tự động thức giấc kích hoạt Hộp đen khi học sinh bắt đầu lái xe điện mà không cần thao tác thủ công.
+• Tự động Phân tầng Hoạt động (HAR) qua FFT: Phân tích rung động 50Hz, tự chuyển Sleep Mode khi đi bộ (tiết kiệm 99% pin) và tự kích hoạt Hộp đen khi lái xe điện;
 
-• Bộ lọc Tự căn chỉnh Trọng trường Động (Dynamic Gravity Decoupling): Cho phép để điện thoại tự do ở mọi tư thế trong túi quần mà vẫn tách chính xác vector trọng lực Trái Đất, đo chuẩn xác lực phanh gấp và góc nghiêng xe.
+• Bộ lọc Tự căn chỉnh Trọng trường Động: Cho phép để điện thoại tự do trong túi quần mà vẫn tách chính xác vector trọng lực Trái Đất, đo chuẩn xác lực phanh và độ nghiêng;
 
-• Cảnh báo Tức thì bằng Âm thanh Phản xạ: Khi học sinh phanh gấp nguy hiểm hoặc rẽ gắt đột ngột, điện thoại phát âm thanh bíp 85dB trong thời gian dưới 100ms xuyên qua túi quần, giúp điều chỉnh hành vi tức thì mà không cần nhìn màn hình.
+• Cảnh báo Âm thanh Phản xạ: Khi phanh gấp hoặc rẽ gắt, phát âm bíp 85dB trong dưới 100ms xuyên qua túi quần giúp học sinh giữ thăng bằng tức thì;
 
-• Chế độ Màn hình Đen OLED Pure Black & Khóa Túi Quần Sâu: Tắt hoàn toàn điểm ảnh màn hình OLED/AMOLED, cắt giảm 89.13% năng lượng tiêu thụ kết hợp cảm biến tiệm cận ngăn chặn 100% chạm nhầm trong túi quần.
+• Màn hình Đen OLED Pure Black: Tắt 100% điểm ảnh OLED, tiết kiệm 89.13% pin, cảm biến tiệm cận chống chạm nhầm trong túi;
 
-• Hệ thống Điểm Lái Xe An Toàn Tự Phục Hồi (Self-Healing SDI): Đánh giá hành trình theo thang điểm 100. Vi phạm bị trừ điểm nhưng nếu duy trì lái xe điềm đạm trong các km tiếp theo, điểm số sẽ tự phục hồi dần về 100 điểm.
+• Điểm Lái Xe An Toàn Tự Phục Hồi (SDI): Đánh giá hành vi theo thang điểm 100, tự phục hồi điểm thưởng khi lái êm ái theo Lý thuyết Hích (Nudge);
 
-• Bộ Lọc Tai Nạn 4 Cổng Độc Lập Hermes & Cứu Nạn SOS Tự Động: Khi ngã xe thỏa mãn 4 cổng vật lý (Xung lực >= 3.5g, Xoay góc >= 250 độ/s, Nghiêng >= 60 độ và Nạn nhân bất động), hệ thống đếm ngược 15 giây và tự gửi SMS kèm tọa độ GPS cho cha mẹ.
+• Bộ Lọc Tai Nạn 4 Cổng Hermes & SOS Tự động: Khi ngã xe thỏa 4 cổng vật lý, hệ thống đếm ngược 15 giây và tự gửi SMS tọa độ GPS cứu hộ cho phụ huynh.
 
 #### Phân hệ 2: Mô phỏng 3D WebGL Điểm mù Xe tải Trực quan (3D Interactive Blind-Spot Canvas)
 
-• Không gian 3D Thuần Web 60 FPS: Vận hành mượt mà trên nền tảng WebGL và Three.js ngay trên trình duyệt điện thoại và máy tính, không đòi hỏi card đồ họa chuyên dụng.
+• Không gian 3D Thuần Web 60 FPS: Vận hành mượt mà trên nền WebGL/Three.js không đòi hỏi GPU chuyên dụng;
 
-• Mô hình Hóa Hình học Chính xác Xe Tải Lớn: Tái hiện xe tải ben 3 trục (chiều dài cơ sở L = 6.5 m, bán kính quay R = 10.5 m) với 4 vùng mù xung quanh thân xe, đặc biệt làm nổi bật 'Vùng mù tử thần bên phải' xe tải.
+• Mô hình Hóa Hình học Xe Tải Ben: Tái hiện xe 3 trục (L = 6.5 m, R = 10.5 m) với 4 vùng mù, nhấn mạnh 'Vùng mù tử thần bên phải';
 
-• Động cơ Mô phỏng Vệt Quét Bánh Sau Khi Vào Cua: Tính toán tức thời góc chém cua bánh sau (Off-tracking swept path lên tới 2.25 m) và hiển thị vùng nguy hiểm nan quạt đa giác màu đỏ nhấp nháy.
+• Mô phỏng Vệt Quét Bánh Sau (Swept Path): Tính toán góc chém cua bánh sau (lấn làn tới 2.25 m), hiển thị vùng nguy hiểm nan quạt đỏ nhấp nháy;
 
-• Kịch bản Nhập vai Trải nghiệm Thực tế Ảo: Học sinh trực tiếp tương tác tình huống vượt phải khi xe tải xi-nhan rẽ, chứng kiến hậu quả xe hai bánh bị cuốn vào gầm, tạo phản xạ phòng vệ sâu sắc gấp nhiều lần bài học lý thuyết.
+• Kịch bản Nhập vai Thực tế: Học sinh tương tác vượt phải khi xe tải xi-nhan rẽ, chứng kiến xe bị cuốn vào gầm, tạo phản xạ phòng vệ trực quan sâu sắc.
 
 #### Phân hệ 3: Thị giác Máy tính AI Biên tại Cổng trường (School-Gate Edge AI Vision)
 
-• Tương thích Tuyệt đối Camera Sẵn có: Tận dụng trực tiếp camera giám sát an ninh cổng trường qua luồng mạng RTSP tiêu chuẩn, không phải đầu tư lắp đặt mới tốn kém.
+• Tương thích Camera Sẵn có: Tận dụng camera an ninh cổng trường qua luồng RTSP chuẩn, không tốn chi phí lắp đặt;
 
-• Bộ Xử lý Biên Giá rẻ: Chạy trên máy tính nhúng mini NVIDIA Jetson Orin Nano hoặc PC văn phòng trường, xử lý cục bộ 100% hình ảnh với độ trễ cực thấp 22.4 ms (tốc độ 44.6 FPS), bảo vệ dữ liệu cá nhân theo Nghị định 13/2023/NĐ-CP.
+• Xử lý Biên Cực Nhanh: Chạy trên NVIDIA Jetson Orin Nano hoặc PC trường học, xử lý cục bộ 44.6 FPS (độ trễ 22.4 ms), bảo vệ dữ liệu theo Nghị định 13;
 
-• Mô hình Deep Learning YOLOv10-Nano Lượng tử hóa INT8: Phát hiện đa mục tiêu thời gian thực gồm học sinh không đội mũ bảo hiểm, dàn hàng ngang 3 xe trở lên và phương tiện đi ngược chiều khu vực trường học.
+• Nhận diện YOLOv8n-INT8: Phát hiện thời gian thực học sinh không đội mũ bảo hiểm, dàn hàng 3 xe và phương tiện đi ngược chiều;
 
-• Tính toán Chỉ số Va chạm Tiềm ẩn (TTC): Đo khoảng cách và vector vận tốc giữa dòng phương tiện trên đường chính và học sinh từ cổng trường đi ra; tự động kích hoạt đèn LED cảnh báo nếu chỉ số TTC < 3.0 giây.
+• Cảnh báo Va chạm TTC: Đo khoảng cách và vận tốc tương đối giữa dòng xe chính và học sinh, tự kích hoạt đèn LED cảnh báo khi TTC < 3.0 giây.
 
 #### Phân hệ 4: Trung tâm Điều hành Cổng trường & Bản đồ Nhiệt GIS (GIS Command Center & Gamification)
 
-• Bản đồ Nhiệt Giao thông Học đường: Tự động gom dữ liệu chấn động ổ gà và điểm phanh gấp gửi về ẩn danh từ điện thoại học sinh để chấm điểm bản đồ nhiệt, hỗ trợ nhà trường kiến nghị cơ quan chức năng duy tu hạ tầng.
+• Bản đồ Nhiệt Giao thông: Tự động gom dữ liệu ổ gà và điểm phanh gấp gửi về ẩn danh để kiến nghị duy tu hạ tầng;
 
-• Bảng Điều khiển Phân tích Dành cho Nhà trường: Thống kê chỉ số an toàn giao thông theo tuần, tỷ lệ chấp hành đội mũ bảo hiểm và số lượt cảnh báo va chạm được ngăn chặn.
+• Bảng Điều khiển Phân tích: Thống kê chỉ số an toàn trường học, tỷ lệ đội mũ bảo hiểm và xung đột được cảnh báo sớm;
 
-• Cơ chế Đua Top Thi đua (Gamification): Vinh danh danh hiệu 'Hiệp sĩ Giao thông', cấp huy hiệu số và cộng điểm rèn luyện cho học sinh duy trì điểm an toàn SDI trên 95 điểm, biến việc chấp hành giao thông thành nét văn hóa tự giác.
+• Thi đua Hiệp sĩ Giao thông: Cấp huy hiệu số và cộng điểm rèn luyện cho học sinh duy trì điểm SDI trên 95 điểm, xây dựng văn hóa giao thông tự giác.
 
 ### C. Mô tả các công nghệ dự kiến sử dụng của sản phẩm (Mô tả các công nghệ dự kiến sử dụng để hoàn thiện giải pháp, chẳng hạn các công nghệ liên quan tới trí tuệ nhân tạo, xử lý dữ liệu lớn, blockchain, AIoT, tính toán phân tán, …):
 
 #### 5.C.1. Lý thuyết Cơ học Dao động và Bộ lọc Tự căn chỉnh Trọng trường Động (Dynamic Gravity Decoupling IIR Filter)
 
-Khi smartphone nằm tự do trong túi quần học sinh, góc nghiêng biến đổi liên tục. Cảm biến gia tốc MEMS đo tổng hòa giữa gia tốc chuyển động thực và vector trọng trường Trái Đất g xấp xỉ 9.81 m/s²:
+Khi smartphone nằm tự do trong túi quần học sinh, góc nghiêng biến đổi liên tục. Cảm biến gia tốc MEMS đo tổng hòa giữa gia tốc chuyển động thực và vector trọng trường Trái Đất:
 
 $$\vec{a}_{\text{raw}}[t] = \vec{a}_{\text{dynamic}}[t] + \vec{g}[t]$$
 
-Để tách riêng vector trọng lực g, Đề tài áp dụng Bộ lọc Thông thấp Đệ quy IIR bậc 1:
+Để tách riêng vector trọng lực, áp dụng Bộ lọc Thông thấp Đệ quy IIR bậc 1:
 
 $$\vec{g}_{\text{est}}[t] = \alpha \cdot \vec{g}_{\text{est}}[t-1] + (1 - \alpha) \cdot \vec{a}_{\text{raw}}[t]$$
 
-Với hệ số làm mịn alpha = 0.85 ở tần số lấy mẫu fs = 50 Hz (Ts = 0.02 giây), tần số cắt của bộ lọc đạt:
+Với hệ số làm mịn alpha = 0.85 ở tần số lấy mẫu fs = 50 Hz (Ts = 0.02 giây), tần số cắt đạt:
 
 $$f_c = \frac{1 - \alpha}{2\pi \cdot \alpha \cdot T_s} = \frac{1 - 0.85}{2\pi \cdot 0.85 \cdot 0.02} \approx 1.40\text{ Hz}$$
 
@@ -212,7 +172,7 @@ Tần số 1.40 Hz loại bỏ sạch dao động bước chân và rung lắc t
 
 $$\hat{g}[t] = \frac{\vec{g}_{\text{est}}[t]}{\|\vec{g}_{\text{est}}[t]\|}$$
 
-Thành phần gia tốc động thẳng đứng thuần túy độc lập với góc nghiêng được xác định bởi phép chiếu:
+Thành phần gia tốc thẳng đứng thuần túy độc lập với góc nghiêng:
 
 $$a_{\text{vertical}}[t] = \vec{a}_{\text{raw}}[t] \cdot \hat{g}[t] - \|\vec{g}_{\text{est}}[t]\|$$
 
@@ -220,19 +180,19 @@ Vector gia tốc chuyển động mặt phẳng ngang được bóc tách bằng
 
 $$\vec{a}_{\text{horizontal}}[t] = \vec{a}_{\text{raw}}[t] - (\vec{a}_{\text{raw}}[t] \cdot \hat{g}[t])\hat{g}[t]$$
 
-Hệ thống xác định chính xác lực phanh dọc xe và lực ly tâm ngang mà không cần giá đỡ điện thoại cố định.
+Hệ thống xác định chuẩn xác lực phanh dọc xe và lực ly tâm ngang mà không cần giá đỡ cố định.
 
 #### 5.C.2. Giải thuật Phân loại Hoạt động (HAR) bằng Biến đổi Fourier Nhanh (Fast Fourier Transform - FFT)
 
-Để tối ưu pin và tự động hóa vận hành, tín hiệu độ lớn gia tốc a_mag[n] được trích xuất qua cửa sổ trượt N = 64 mẫu (1.28 giây). Biến đổi Fourier Rời rạc (DFT) được thực thi:
+Tín hiệu độ lớn gia tốc a_mag[n] được trích xuất qua cửa sổ trượt N = 64 mẫu (1.28 giây). Biến đổi Fourier Rời rạc (DFT) được thực thi:
 
 $$S[k] = \sum_{n=0}^{N-1} a_{\text{mag}}[n] \cdot e^{-j \frac{2\pi}{N} k n}, \quad k = 0, 1, \dots, N-1$$
 
-Với độ phân giải tần số delta_f = 0.78125 Hz, dải tần bước chân người tập trung ở 1.0 – 2.5 Hz (vạch k thuộc [2, 4]), trong khi dải rung chấn cơ học xe hai bánh tập trung ở 10.0 – 25.0 Hz (vạch k thuộc [13, 30]). Tỷ số năng lượng phổ R_HAR được định nghĩa:
+Với độ phân giải tần số delta_f = 0.78125 Hz, dải tần bước chân tập trung ở 1.0 – 2.5 Hz (vạch k thuộc [2, 4]), dải rung cơ học xe hai bánh tập trung ở 10.0 – 25.0 Hz (vạch k thuộc [13, 30]). Tỷ số năng lượng phổ R_HAR định nghĩa:
 
 $$R_{\text{HAR}} = \frac{\sum_{k=2}^4 |S[k]|^2}{\sum_{k=2}^4 |S[k]|^2 + \sum_{k=13}^{30} |S[k]|^2}$$
 
-Quy tắc phân tầng tự động: Nếu R_HAR > 0.65, học sinh đang đi bộ suy ra chuyển Sleep Mode (tiết kiệm 99% pin); Nếu R_HAR <= 0.35, học sinh đang điều khiển xe suy ra tự kích hoạt Hộp đen an toàn tức thì.
+Quy tắc phân tầng: Nếu R_HAR > 0.65, chuyển Sleep Mode tiết kiệm 99% pin; Nếu R_HAR <= 0.35, tự động kích hoạt Hộp đen an toàn tức thì.
 
 ![Hình 1: Phổ Mật độ Năng lượng Biến đổi Fourier (FFT)](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_1_pho_fft_har.png)
 
@@ -240,7 +200,7 @@ Quy tắc phân tầng tự động: Nếu R_HAR > 0.65, học sinh đang đi b�
 
 #### 5.C.3. Mô hình Hình học Điểm mù Xe tải và Vệt quét Bánh sau (Truck Off-tracking Swept Path)
 
-Khi xe tải lớn vào cua rẽ phải, trục bánh sau bị kéo lệch vào phía trong đường cong cua. Bán kính quay vòng của bánh sau R_rear thỏa mãn định lý Ackermann:
+Khi xe tải lớn vào cua rẽ phải, trục bánh sau bị kéo lệch vào phía trong đường cong theo định lý Ackermann:
 
 $$R_{\text{rear}} = \sqrt{R_{\text{front}}^2 - L^2}$$
 
@@ -254,11 +214,11 @@ $$R_{\text{rear}} = \sqrt{10.5^2 - 6.5^2} = \sqrt{68.00} \approx 8.246\text{ m}$
 
 $$\Delta_{\text{sweep}} = 10.5 - 8.246 = 2.254\text{ m}$$
 
-Khoảng chém lấn 2.25 m này chiếm trọn làn đường xe đạp sát lề. Nền tảng 3D WebGL chuyển hóa phương trình hình học này thành vùng nan quạt màu đỏ nhấp nháy ở tốc độ 60 FPS để học sinh trải nghiệm trực quan.
+Khoảng chém lấn 2.25 m này chiếm trọn làn xe đạp sát lề. Nền tảng 3D WebGL chuyển hóa mô hình này thành vùng nan quạt màu đỏ nhấp nháy 60 FPS để học sinh trải nghiệm trực quan.
 
-![Hình 3: Động học Điểm mù & Vệt Quét Chém Cua Bánh Sau Xe Tải Ben](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_3_vet_quet_chem_cua.png)
+![Hình 2: Động học Điểm mù & Vệt Quét Chém Cua Bánh Sau Xe Tải Ben](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_3_vet_quet_chem_cua.png)
 
-*Hình 3: Động học Điểm mù & Vệt Quét Chém Cua Bánh Sau Xe Tải Ben (Δ_sweep = 2.254 m) khi vào cua R=12 m tại nút giao cổng trường.*
+*Hình 2: Động học Điểm mù & Vệt Quét Chém Cua Bánh Sau Xe Tải Ben (Δ_sweep = 2.254 m) khi vào cua R=12 m tại nút giao cổng trường.*
 
 #### 5.C.4. Động cơ Vật lý Va chạm: Tính toán Time-to-Collision (TTC) và Quãng đường Phanh
 
@@ -266,15 +226,15 @@ Chỉ số Thời gian trước Va chạm (TTC) được camera AI biên liên t
 
 $$\text{TTC} = \frac{d_{\text{rel}}}{v_{\text{rel}}} = \frac{x_{\text{lead}} - x_{\text{ego}}}{v_{\text{ego}} - v_{\text{lead}}}$$
 
-Đồng thời, quãng đường phanh dừng hẳn d_stop của xe máy điện được thiết lập theo phương trình động lực học:
+Đồng thời, quãng đường dừng phanh hẳn d_stop được xác định theo phương trình động lực học:
 
 $$d_{\text{stop}} = v \cdot t_{\text{react}} + \frac{v^2}{2 \mu g}$$
 
-Ở vận tốc 30 km/h (8.33 m/s) với thời gian phản xạ t_react = 1.0 giây: Đường khô (mu = 0.70) có d_stop = 13.38 m; Đường trơn ướt mùa mưa (mu = 0.35) có d_stop = 18.43 m (kéo dài thêm 37.7%). Khi TTC < 3.0 giây hoặc khoảng cách nhỏ hơn d_stop, hệ thống kích hoạt chuông cảnh báo khẩn cấp.
+Ở vận tốc 30 km/h (8.33 m/s) với phản xạ t_react = 1.0 giây: Đường khô (mu = 0.70) có d_stop = 13.38 m; Đường ướt trơn trượt (mu = 0.35) có d_stop = 18.43 m (+37.7%). Khi TTC < 3.0 giây hoặc khoảng cách nhỏ hơn d_stop, hệ thống kích hoạt cảnh báo khẩn cấp.
 
-![Hình 2: Động học Quãng đường Dừng Phanh (d_stop)](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_2_quang_duong_phanh.png)
+![Hình 3: Động học Quãng đường Dừng Phanh (d_stop)](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_2_quang_duong_phanh.png)
 
-*Hình 2: Động học Quãng đường Dừng Phanh (d_stop) theo Vận tốc và Điều kiện Bám Mặt đường (μ = 0.70 đường khô vs μ = 0.35 đường ướt trơn trượt mùa mưa ĐBSCL).*
+*Hình 3: Động học Quãng đường Dừng Phanh (d_stop) theo Vận tốc và Điều kiện Bám Mặt đường (μ = 0.70 đường khô vs μ = 0.35 đường ướt trơn trượt mùa mưa ĐBSCL).*
 
 #### 5.C.5. Bộ Lọc Tai Nạn 4 Cổng Độc Lập của Hermes (Hermes 4-Gate Crash Filter)
 
@@ -284,11 +244,11 @@ $$F_{\text{crash}} = G_1 \land G_2 \land G_3 \land G_4$$
 
 Bốn điều kiện vật lý khắt khe gồm:
 
-• Cổng 1 (Xung lực va chạm cực đại): G1 = (||a_raw[t0]|| >= 3.5g ≈ 34.3 m/s²).
+• Cổng 1 (Xung lực va chạm cực đại): G1 = (||a_raw[t0]|| >= 3.5g ≈ 34.3 m/s²);
 
-• Cổng 2 (Vận tốc góc xoay đột biến): G2 = (||omega[t0]|| >= 250 độ/giây) loại bỏ trường hợp đi qua ổ gà lớn.
+• Cổng 2 (Vận tốc góc xoay đột biến): G2 = (||omega[t0]|| >= 250 độ/giây) loại bỏ trường hợp đi qua ổ gà lớn;
 
-• Cổng 3 (Góc nghiêng duy trì nằm ngang): G3 = (|theta[t0 + delta_t]| >= 60 độ trong 1 – 3 giây sau va chạm). Nếu điện thoại rơi xuống đất rồi nhặt lên ngay, cổng G3 không thỏa mãn và hủy báo động lập tức.
+• Cổng 3 (Góc nghiêng duy trì nằm ngang): G3 = (|theta[t0 + delta_t]| >= 60 độ trong 1 – 3 giây sau va chạm);
 
 • Cổng 4 (Bất động sinh học sau va chạm): G4 = (sigma_a <= 0.15g trong 3 – 8 giây) xác nhận nạn nhân đang bất động.
 
@@ -300,7 +260,7 @@ Hệ thống đánh giá hành vi lái xe qua hàm số động lực học SDI 
 
 $$\text{SDI}[t] = \max\left(0, \min\left(100, \text{SDI}[t-1] - \sum_{i=1}^M w_i \cdot I_{\text{event}_i}[t] + \beta \cdot \Delta t \cdot I_{\text{safe}}[t]\right)\right)$$
 
-Quy tắc tính điểm: Khởi tạo SDI[0] = 100 điểm; Trọng số phạt phanh gấp w = 3.0 điểm, rẽ gắt w = 4.0 điểm, chạy quá tốc độ w = 5.0 điểm; Tốc độ phục hồi điểm thưởng beta = 0.05 điểm/giây (lái xe êm ái 3.3 phút liên tục được hoàn lại 10 điểm). Cơ chế này ứng dụng Lý thuyết Hích hành vi (Nudge Theory), khích lệ học sinh sửa sai và duy trì thói quen an toàn.
+Quy tắc: Khởi tạo SDI[0] = 100 điểm; Phạt phanh gấp w = 3.0 điểm, rẽ gắt w = 4.0 điểm, quá tốc độ w = 5.0 điểm; Tốc độ phục hồi điểm thưởng beta = 0.05 điểm/giây (lái êm 3.3 phút hoàn lại 10 điểm). Cơ chế ứng dụng Lý thuyết Hích (Nudge Theory), khích lệ học sinh duy trì thói quen an toàn.
 
 ![Hình 4: Động học Điểm số SDI Tự Phục Hồi (Self-Healing Curve)](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_4_sdi_dynamics.png)
 
@@ -308,53 +268,51 @@ Quy tắc tính điểm: Khởi tạo SDI[0] = 100 điểm; Trọng số phạt 
 
 #### 5.C.7. Tối ưu hóa TensorRT INT8, WebGL 60FPS và Nền tảng Tiết kiệm Pin OLED Pure Black
 
-Các giải pháp tối ưu hóa chuyên sâu bảo đảm hiệu năng tối đa:
+Các giải pháp tối ưu hóa bảo đảm hiệu năng tối đa:
 
-1. Lượng tử hóa Mô hình Deep Learning sang INT8: Trọng số mạng nơ-ron ánh xạ sang số nguyên 8-bit đối xứng:
+1. Lượng tử hóa INT8: Ánh xạ trọng số mạng nơ-ron sang số nguyên 8-bit đối xứng:
 
 $$Q = \text{clip}\left(\text{round}\left(\frac{W}{S}\right), -128, 127\right)$$
 
-Cắt giảm 75% dung lượng mô hình (từ 16.8 MB xuống 4.2 MB), tăng tốc suy luận gấp 3.2 lần, cho phép Jetson Orin Nano đạt 44.6 FPS ở độ trễ cực thấp 22.4 ms.
+Cắt giảm 75% dung lượng (16.8 MB xuống 4.2 MB), tăng tốc suy luận gấp 3.2 lần, cho phép Jetson Orin Nano đạt 44.6 FPS ở độ trễ 22.4 ms.
 
-2. Tối ưu hóa Canvas WebGL DOM-less: Render trực tiếp trên OffscreenCanvas với thuật toán Frustum Culling, giữ vững 60 FPS mượt mà trên điện thoại phổ thông.
+2. Canvas WebGL DOM-less: Render trên OffscreenCanvas với thuật toán Frustum Culling, giữ vững 60 FPS mượt mà trên điện thoại phổ thông.
 
-3. Chế độ Màn hình Đen OLED Pure Black: Giao diện nền đen thuần #000000 tắt hoàn toàn điểm ảnh phát quang hữu cơ, giảm 89.13% công suất tiêu thụ điện, học sinh bật ứng dụng suốt 1 giờ chỉ tiêu tốn dưới 2.2% pin.
+3. OLED Pure Black: Giao diện nền đen thuần #000000 tắt hoàn toàn điểm ảnh, giảm 89.13% công suất tiêu thụ, 1 giờ chạy chỉ tốn dưới 2.2% pin.
 
 ### D. Yêu cầu đối với cơ sở hạ tầng cần thiết để triển khai ứng dụng sản phẩm (liệt kê rõ yêu cầu đối với cơ sở hạ tầng phần cứng, phần mềm, hệ điều hành, mạng, thiết bị ngoại vi … nếu có):
 
 #### 5.D.1. Yêu cầu phía Người dùng (Client Smartphone)
 
-• Thiết bị di động: Tương thích với smartphone phổ thông chạy Android 8.0 trở lên hoặc iOS 12 trở lên sản xuất từ năm 2017 đến nay.
+• Thiết bị & Cảm biến: Smartphone phổ thông chạy Android 8.0 trở lên hoặc iOS 12 trở lên; tích hợp cảm biến gia tốc kế, con quay hồi chuyển tiêu chuẩn và GPS;
 
-• Cảm biến tích hợp: Trang bị cảm biến gia tốc kế (Accelerometer) và con quay hồi chuyển (Gyroscope) tiêu chuẩn; chip định vị GPS.
+• Trình duyệt & Bộ nhớ: Hỗ trợ WebGL 2.0 (Chrome, Safari), RAM tối thiểu 2GB, bộ nhớ trống 50MB;
 
-• Trình duyệt & Bộ nhớ: Trình duyệt hỗ trợ WebGL 2.0 (Chrome, Safari, Edge), RAM tối thiểu 2GB, bộ nhớ trống 50MB.
+• Chi phí phần cứng 0 ĐỒNG: Tận dụng 100% thiết bị sẵn có của học sinh, không cần mua sắm bổ sung;
 
-• Chi phí phần cứng 0 ĐỒNG: Học sinh và phụ huynh không phải mua sắm thêm bất kỳ thiết bị nào.
-
-• Tùy chọn mở rộng (Modular Add-on): Kết nối Bluetooth BLE với module còi bíp ngoài ESP32-C3 gắn ghi-đông (150.000 VNĐ) hoặc Module Radar siêu âm gắn đuôi xe (350.000 VNĐ).
+• Tùy chọn mở rộng: Kết nối BLE với module còi bíp ESP32-C3 ghi-đông (150.000 VNĐ) hoặc Radar siêu âm đuôi xe (350.000 VNĐ).
 
 #### 5.D.2. Yêu cầu phía Cổng trường (Edge AI Station)
 
-• Thiết bị Xử lý Biên: Máy tính nhúng mini NVIDIA Jetson Orin Nano (8GB RAM, 40 TOPS AI) hoặc PC văn phòng trường sẵn có có card đồ họa phổ thông (GTX 1650 / RTX 3050), hoặc Raspberry Pi 5 kết hợp Google Coral USB.
+• Xử lý Biên: NVIDIA Jetson Orin Nano (40 TOPS AI) hoặc PC văn phòng trường có GPU phổ thông (GTX 1650/RTX 3050), hoặc Raspberry Pi 5 + Google Coral;
 
-• Camera an ninh: Tận dụng 1 – 2 camera sẵn có cổng trường hỗ trợ luồng RTSP chuẩn, độ phân giải Full HD đến 2K, góc rộng 90 – 120 độ, tốc độ >= 25 FPS, chuẩn H.264/H.265.
+• Camera an ninh: Tận dụng 1 – 2 camera sẵn có hỗ trợ RTSP chuẩn, Full HD đến 2K, góc rộng 90 – 120 độ, tốc độ >= 25 FPS, chuẩn H.264/H.265;
 
-• Thiết bị hiển thị cảnh báo: Bảng đèn LED ma trận hiển thị tốc độ và biểu tượng cảnh báo trước cổng trường kết nối qua RS485 hoặc Wi-Fi trường học.
+• Cảnh báo: Bảng đèn LED ma trận hiển thị tốc độ và biểu tượng cảnh báo kết nối qua RS485 hoặc Wi-Fi trường học.
 
 #### 5.D.3. Yêu cầu Hạ tầng Mạng, Lưu trữ và Điện toán
 
-• Kết nối Mạng: Mạng di động 4G/5G hoặc Wi-Fi trường học. Do tính toán cảm biến và thị giác AI diễn ra tại biên (On-Device & Edge Computing), băng thông tiêu thụ cực thấp (< 50 KB/ngày).
+• Mạng & Băng thông: Mạng 4G/5G hoặc Wi-Fi trường học. Do tính toán cảm biến và thị giác AI diễn ra tại biên (Edge AI), băng thông tiêu thụ cực thấp (< 50 KB/ngày);
 
-• Vận hành Ngoại tuyến (Offline-First): Khi mất sóng viễn thông hoặc không có SIM, ứng dụng Hộp đen AI vẫn hoạt động trơn tru 100%, ghi nhật ký vào IndexedDB nội bộ và đồng bộ khi có mạng trở lại.
+• Vận hành Ngoại tuyến (Offline-First): Khi mất sóng, ứng dụng vẫn hoạt động trơn tru 100%, ghi nhật ký vào IndexedDB nội bộ và đồng bộ khi có mạng trở lại.
 
 #### 5.D.4. Kiến trúc Bảo mật Quyền riêng tư Tuyệt đối (Zero-Cloud Data Privacy)
 
 Tuân thủ tuyệt đối Nghị định số 13/2023/NĐ-CP về Bảo vệ Dữ liệu Cá nhân:
 
-• Không lưu trữ Nhận diện Khuôn mặt: Camera AI biên chỉ phát hiện mũ bảo hiểm và phân loại phương tiện trong bộ nhớ tạm RAM (In-Memory Processing); khung hình lập tức bị xóa bỏ sau khi phân tích.
+• Không lưu trữ Nhận diện Khuôn mặt: Camera AI chỉ phân tích mũ bảo hiểm và phương tiện trên bộ nhớ RAM tạm thời; khung hình lập tức bị xóa bỏ sau khi phân tích;
 
-• Bảo vệ Lịch trình Học sinh: Tọa độ GPS chỉ lưu cục bộ trên máy học sinh, tuyệt đối không truyền liên tục về máy chủ đám mây. Tọa độ chỉ gửi đi duy nhất khi hệ thống Hermes xác nhận có tai nạn nghiêm trọng để gửi SMS ứng cứu cho cha mẹ.
+• Bảo vệ Lịch trình: Tọa độ GPS chỉ lưu cục bộ trên máy học sinh, tuyệt đối không truyền liên tục về máy chủ đám mây. Tọa độ chỉ gửi đi duy nhất khi có tai nạn nghiêm trọng để ứng cứu khẩn cấp.
 
 ---
 
@@ -377,9 +335,9 @@ BẢNG 1: BẢNG MA TRẬN NHẦM LẪN (CONFUSION MATRIX) ĐÁNH GIÁ ĐỘ CH�
 | TỔNG CỘNG TOÀN HỆ THỐNG | 300 | 294 | 6 | 98.0% | 0.0% (Zero False Dispatch) |
 
 
-![Hình 6: Ma trận Nhầm lẫn Nhiệt (Confusion Matrix Heatmap)](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_6_ma_tran_nham_lan.png)
+![Hình 5: Ma trận Nhầm lẫn Nhiệt (Confusion Matrix Heatmap)](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_6_ma_tran_nham_lan.png)
 
-*Hình 6: Ma trận Nhầm lẫn Nhiệt (Confusion Matrix Heatmap) của Mô hình Nhận diện Trạng thái Di chuyển HAR trên 300 Mẫu Thực Địa Cần Thơ.*
+*Hình 5: Ma trận Nhầm lẫn Nhiệt (Confusion Matrix Heatmap) của Mô hình Nhận diện Trạng thái Di chuyển HAR trên 300 Mẫu Thực Địa Cần Thơ.*
 
 Độ chính xác tổng thể đạt 98.0%. Đặc biệt, chỉ tiêu 'Zero False Dispatch' đạt 0.0%: Trong 100 tình huống điện thoại rơi hoặc xóc mạnh qua ổ gà, bộ lọc Hermes chặn đứng 100% tín hiệu nhiễu, tuyệt đối không gửi tin nhắn báo tai nạn giả.
 
@@ -451,9 +409,9 @@ BẢNG 3: BẢNG ĐO LƯỜNG HIỆU NĂNG TÍNH TOÁN THỜI GIAN THỰC VÀ N�
 | Tiêu thụ Điện năng Màn hình OLED | Pin Li-ion 3.7V / Pure Black | 92.3 mW (24.9 mA) | So với màn hình bật: 849.5 mW | Tiết kiệm 89.13% pin, vận hành liên tục 1 giờ chỉ hao ~2.0% |
 
 
-![Hình 5: Đánh giá Hiệu suất Tiết kiệm Điện năng Màn hình OLED Pure Black](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_5_tiet_kiem_pin_oled.png)
+![Hình 6: Đánh giá Hiệu suất Tiết kiệm Điện năng Màn hình OLED Pure Black](../HINH_ANH_BIEU_DO_MINH_CHUNG/hinh_5_tiet_kiem_pin_oled.png)
 
-*Hình 5: Đánh giá Hiệu suất Tiết kiệm Điện năng Màn hình OLED Pure Black (89.13%) và Tối ưu Hóa Chu kỳ Pin trên Thiết bị Di động.*
+*Hình 6: Đánh giá Hiệu suất Tiết kiệm Điện năng Màn hình OLED Pure Black (89.13%) và Tối ưu Hóa Chu kỳ Pin trên Thiết bị Di động.*
 
 Các chỉ số hiệu năng trên khẳng định hệ sinh thái Eco-SafeRide hoạt động ổn định, đáp ứng hoàn toàn điều kiện phần cứng phổ thông mà không đòi hỏi nâng cấp đắt đỏ.
 
@@ -486,39 +444,37 @@ Eco-SafeRide là giải pháp duy nhất giải quyết đồng thời bài toá
 
 ### Đánh giá toàn diện về ý tưởng và tiêu chí khẳng định tính mới lạ của ý tưởng
 
-Đề tài 'HỆ SINH THÁI CỔNG TRƯỜNG AN TOÀN GIAO THÔNG THÔNG MINH TOÀN DIỆN (SSSE) VÀ TRỢ LÝ AN TOÀN SỐ — HỘP ĐEN AI 0Đ (ECO-SAFERIDE)' là công trình nghiên cứu ứng dụng thực tiễn nhằm bảo vệ tính mạng của hàng triệu học sinh khi tham gia giao thông đến trường.
+Đề tài 'HỆ SINH THÁI CỔNG TRƯỜNG AN TOÀN GIAO THÔNG THÔNG MINH TOÀN DIỆN (SSSE) VÀ TRỢ LÝ AN TOÀN SỐ — HỘP ĐEN AI 0Đ (ECO-SAFERIDE)' là giải pháp khoa học — công nghệ mang tính đột phá bảo vệ học sinh:
 
-Bốn tiêu chí khẳng định tính mới lạ và tiên phong của sáng kiến:
+• Đột phá Chi phí 0 ĐỒNG: Tận dụng 100% cảm biến IMU smartphone sẵn có và camera an ninh trường học, xóa bỏ rào cản chi phí để bảo vệ công bằng cho mọi học sinh;
 
-• 1. Đột phá về Chi phí (0 ĐỒNG): Hệ sinh thái phần mềm thuần túy tận dụng 100% cảm biến IMU smartphone sẵn có của học sinh và camera cổng trường, xóa bỏ hoàn toàn rào cản tài chính để bảo vệ công bằng cho mọi học sinh.
+• Đóng góp Thuật toán Tự căn chỉnh Tọa độ Động: Bộ lọc đệ quy IIR tách vector trọng lực thời gian thực (fc ≈ 1.40 Hz) cho phép để điện thoại tự do trong túi quần mà vẫn đo chuẩn 98.0% gia tốc;
 
-• 2. Đóng góp Khoa học Thuật toán Tự Căn chỉnh Tọa độ Động: Bộ lọc đệ quy IIR tách vector trọng lực thời gian thực (fc ≈ 1.40 Hz) cho phép để điện thoại tự do trong túi quần mà vẫn đo chuẩn 98.0% gia tốc phanh gấp và lạng lách.
+• Phương pháp Giáo dục Thực chứng 3D WebGL: Mô phỏng tương tác vệt quét chém cua bánh sau xe tải (Delta_sweep = 2.254 m), tạo phản xạ phòng vệ trực quan sâu sắc;
 
-• 3. Phương pháp Giáo dục Thực chứng 3D WebGL: Nền tảng mô phỏng 3D tương tác tính toán vệt quét chém cua bánh sau xe tải (Swept Path Delta_sweep = 2.25 m), tạo trải nghiệm thị giác chấn động và hình thành phản xạ phòng vệ tự giác.
-
-• 4. Chuẩn mực Đạo đức AI & Bảo mật Dữ liệu (Zero-Cloud Privacy): Tuân thủ tuyệt đối Nghị định 13/2023/NĐ-CP nhờ tính toán On-Device và xử lý camera tại RAM bộ nhớ tạm, triệt tiêu nguy cơ rò rỉ lịch trình di chuyển trẻ em.
+• Bảo mật Quyền riêng tư Tuyệt đối (Zero-Cloud Privacy): Tuân thủ nghiêm ngặt Nghị định 13/2023/NĐ-CP nhờ tính toán On-Device và xử lý camera trong RAM bộ nhớ tạm.
 
 ### Hướng phát triển của ý tưởng trong tương lai
 
-Lộ trình phát triển và mở rộng giai đoạn 2026 – 2028:
+Lộ trình phát triển 3 giai đoạn (2026 – 2028):
 
-• Giai đoạn 1 (2026 — Thử nghiệm Hoàn thiện): Triển khai thử nghiệm tại 20 trường THPT, THCS ở TP. Cần Thơ, thu thập thêm 500 phiên dữ liệu cảm biến đa dạng phương tiện để tinh chỉnh bộ tham số lọc Hermes.
+• Giai đoạn 1 (2026): Thử nghiệm tại 20 trường THPT, THCS ở Cần Thơ, thu thập 500 phiên dữ liệu cảm biến đa dạng để tối ưu bộ lọc Hermes;
 
-• Giai đoạn 2 (2027 — Mở rộng Mạng lưới V2X Học đường): Chuyển giao công nghệ tới 500 trường khu vực ĐBSCL và TP. Hồ Chí Minh; phát triển mạng lưới V2X cảnh báo tầm ngắn đến điện thoại học sinh khi xe tải lớn rẽ phải quanh cổng trường.
+• Giai đoạn 2 (2027): Chuyển giao tới 500 trường ĐBSCL và TP.HCM; phát triển mạng lưới V2X cảnh báo tầm ngắn khi xe tải rẽ quanh cổng trường;
 
-• Giai đoạn 3 (2028 — Tích hợp Cơ sở Dữ liệu Quốc gia): Chia sẻ dữ liệu ẩn danh về 'Điểm đen hạ tầng và Ổ gà' với Cục Cảnh sát Giao thông (C08) phục vụ quy hoạch giao thông; triển khai bảo hiểm vi mô Pay-How-You-Drive cho học sinh đạt điểm SDI cao.
+• Giai đoạn 3 (2028): Tích hợp dữ liệu ẩn danh về điểm đen hạ tầng với Cục CSGT; triển khai bảo hiểm vi mô Pay-How-You-Drive cho học sinh đạt điểm SDI cao.
 
 ### Khả năng hợp tác với các nhà đầu tư
 
-Dự án mở ra tiềm năng hợp tác chiến lược sâu rộng:
+Tiềm năng hợp tác sâu rộng với các đối tác chiến lược:
 
-• 1. Hợp tác với Công ty Ô tô Toyota Việt Nam và Quỹ Toyota Mobility Foundation (TMF): Đồng hành tài trợ thiết bị AI biên (Jetson Orin Nano) và bảng đèn LED cho các trường vùng khó khăn; tích hợp công nghệ cảnh báo điểm mù vào chương trình CSR thường niên của Toyota.
+• Quỹ Toyota Mobility Foundation (TMF) & Toyota Việt Nam: Tài trợ thiết bị AI biên và tích hợp công nghệ điểm mù vào chương trình an toàn giao thông thường niên;
 
-• 2. Hợp tác với Cục Cảnh sát Giao thông (C08) & Ủy ban An toàn Giao thông Quốc gia: Nhân rộng mô hình 'Cổng trường An toàn Giao thông' trên toàn quốc; sử dụng Module 3D WebGL Điểm mù làm giáo trình trực quan số hóa phục vụ tuyên truyền pháp luật.
+• Cục Cảnh sát Giao thông (C08) & UBATGT Quốc gia: Nhân rộng mô hình 'Cổng trường An toàn' toàn quốc; số hóa giáo trình tương tác 3D WebGL phục vụ tuyên truyền;
 
-• 3. Hợp tác với Doanh nghiệp Xe điện Học sinh (VinFast, Yadea, Dat Bike): Tích hợp giao thức Bluetooth BLE giữa điện thoại và xe máy điện để hiển thị điểm SDI và còi cảnh báo trực tiếp qua phương tiện.
+• Doanh nghiệp Xe điện (VinFast, Yadea, Dat Bike): Tích hợp giao thức BLE đồng bộ điểm SDI và còi cảnh báo trực tiếp trên phương tiện;
 
-• 4. Hợp tác với Tập đoàn Viễn thông (Viettel, VNPT): Triển khai chính sách miễn cước dữ liệu (Zero-Rating Data) khi học sinh kích hoạt ứng dụng an toàn Eco-SafeRide trên đường đến trường.
+• Tập đoàn Viễn thông (Viettel, VNPT): Triển khai chính sách miễn cước dữ liệu (Zero-Rating) khi kích hoạt ứng dụng trên đường đến trường.
 
 ---
 
@@ -526,34 +482,28 @@ Dự án mở ra tiềm năng hợp tác chiến lược sâu rộng:
 
 ### 1. Sách (tên sách, tác giả, nhà xuất bản, số ISBN):
 
-- 1. Digital Signal Processing: Principles, Algorithms, and Applications (4th Edition). John G. Proakis, Dimitris G. Manolakis. Pearson Prentice Hall, 2007. ISBN: 978-0131873742.
-- 2. Computer Vision: Algorithms and Applications (2nd Edition). Richard Szeliski. Springer Nature, 2022. ISBN: 978-3030343712.
-- 3. MEMS Motion Sensing and Actuation: Design and Applications. Stephen Merlo. Cambridge University Press, 2019. ISBN: 978-1108428859.
-- 4. Nudge: Improving Decisions About Health, Wealth, and Happiness. Richard H. Thaler, Cass R. Sunstein. Yale University Press, 2008. ISBN: 978-0300122237.
-- 5. Traffic Safety and Human Behavior (2nd Edition). David Shinar. Emerald Publishing, 2017. ISBN: 978-1786352224.
-- 6. Giáo trình Kỹ thuật Giao thông và An toàn Giao thông Đường bộ. GS.TS. Nguyễn Xuân Trục (Chủ biên). NXB Giao thông Vận tải, Hà Nội, 2018. ISBN: 978-604-944-128-8.
+- 1. Digital Signal Processing: Principles, Algorithms, and Applications (4th Ed). J. G. Proakis, D. G. Manolakis. Pearson, 2007. ISBN: 978-0131873742.
+- 2. Computer Vision: Algorithms and Applications (2nd Ed). R. Szeliski. Springer Nature, 2022. ISBN: 978-3030343712.
+- 3. MEMS Motion Sensing and Actuation: Design and Applications. S. Merlo. Cambridge University Press, 2019. ISBN: 978-1108428859.
+- 4. Nudge: Improving Decisions About Health, Wealth, and Happiness. R. H. Thaler, C. R. Sunstein. Yale University Press, 2008. ISBN: 978-0300122237.
+- 5. Traffic Safety and Human Behavior (2nd Ed). D. Shinar. Emerald Publishing, 2017. ISBN: 978-1786352224.
+- 6. Giáo trình Kỹ thuật Giao thông và An toàn Giao thông Đường bộ. GS.TS. Nguyễn Xuân Trục. NXB Giao thông Vận tải, 2018. ISBN: 978-604-944-128-8.
 
 
 ### 2. Bài báo khoa học (tên tác giả, tên bài báo, nơi xuất bản, thời gian xuất bản, số trang):
 
-- 1. Wang, J., et al. 'Smartphone-Based Safe Driving Assistance and Behavior Telematics: A Survey and Deep Empirical Validation'. IEEE Transactions on Intelligent Transportation Systems, Tập 23, Số 8, 2022, tr. 10120-10138. DOI: 10.1109/TITS.2021.3101234.
-- 2. Ferreira, J., et al. 'Driver Behavior Profiling: An In-Depth Evaluation with Commercial Telematics and Smartphone Sensors'. IEEE Sensors Journal, Tập 20, Số 14, 2020, tr. 7992-8004. DOI: 10.1109/JSEN.2020.2981541.
-- 3. Chen, Z., et al. 'Dynamic Gravity Decoupling and Orientation-Invariant Motion Analysis on Low-Cost Mobile Accelerometers'. ACM Transactions on Sensor Networks, Tập 17, Số 3, 2021, tr. 1-24. DOI: 10.1145/3447621.
-- 4. Johnson, D. A., & Trivedi, M. M. 'Driving Style Recognition Using a Smartphone as a Sensor Platform'. IEEE ITSC, 2011, tr. 1609-1615. DOI: 10.1109/ITSC.2011.6083078.
-- 5. Vogel, K. 'A Comparison of Wire-to-Wire Time-to-Collision (TTC) and Headway as Safety Indicators'. Accident Analysis & Prevention, Tập 35, Số 3, 2003, tr. 427-433. DOI: 10.1016/S0001-4575(02)00022-2.
-- 6. Eboli, L., et al. 'A Speed-Based Methodology for Evaluating Driver Deceleration and Hazard Warning Reflexes'. Transport Policy, Tập 89, 2020, tr. 30-41. DOI: 10.1016/j.tranpol.2020.01.013.
-- 7. Wang, A., et al. 'YOLOv10: Real-Time End-to-End Object Detection'. arXiv:2405.14458, 2024, tr. 1-18.
-- 8. Charness, N., et al. 'Visual Clutter and Blind-Spot Geometry: Designing Safe Intersections for Vulnerable Road Users'. Transp. Res. Part F, Tập 72, 2020, tr. 184-198. DOI: 10.1016/j.trf.2020.05.008.
-- 9. Nguyen, H. T., et al. 'School Zone Traffic Conflict Analysis in Southeast Asian Developing Megacities: A Multi-Agent Empirical Study'. Journal of Safety Research, Tập 81, 2022, tr. 145-156. DOI: 10.1016/j.jsr.2022.02.009.
-- 10. Le, T. L. (Nhóm OpenLab). 'Nghiên cứu Giải thuật Phân loại Rung chấn và Mô hình Điểm mù Xe tải Trực quan Hỗ trợ An toàn Giao thông Học đường'. Tạp chí Khoa học Giáo dục và Đổi mới Sáng tạo Số, Số 04, 2025, tr. 42-56.
+- 1. Wang, J., et al. 'Smartphone-Based Safe Driving Assistance and Behavior Telematics'. IEEE Trans. Intell. Transp. Syst., 23(8), 2022, tr. 10120-10138.
+- 2. Ferreira, J., et al. 'Driver Behavior Profiling: An In-Depth Evaluation with Smartphone Sensors'. IEEE Sensors J., 20(14), 2020, tr. 7992-8004.
+- 3. Chen, Z., et al. 'Dynamic Gravity Decoupling on Low-Cost Mobile Accelerometers'. ACM Trans. Sens. Netw., 17(3), 2021, tr. 1-24.
+- 4. Vogel, K. 'A Comparison of Wire-to-Wire Time-to-Collision (TTC) and Headway'. Accid. Anal. Prev., 35(3), 2003, tr. 427-433.
+- 5. Charness, N., et al. 'Blind-Spot Geometry: Designing Safe Intersections for Vulnerable Road Users'. Transp. Res. Part F, 72, 2020, tr. 184-198.
+- 6. Lê, T. L. (OpenLab). 'Nghiên cứu Giải thuật Phân loại Rung chấn và Mô hình Điểm mù Xe tải Trực quan Hỗ trợ An toàn Giao thông'. Tạp chí KHGD & ĐMST Số, Số 04, 2025, tr. 42-56.
 
 
 ### 3. Website:
 
-- 1. Cổng Thông tin Cuộc thi Sáng kiến An toàn Giao thông Việt Nam (Báo Dân trí): https://sangkienatgt.dantri.com.vn/
+- 1. Cổng Thông tin Cuộc thi Sáng kiến ATGT Việt Nam (Báo Dân trí): https://sangkienatgt.dantri.com.vn/
 - 2. Cổng Thông tin Điện tử Cục Cảnh sát Giao thông (Bộ Công an): http://csgt.vn/
 - 3. Cổng Thông tin Điện tử Ủy ban An toàn Giao thông Quốc gia: http://antoangiaothong.gov.vn/
-- 4. Quỹ Toyota Mobility Foundation (TMF) — Toàn cầu & Việt Nam: https://toyotamobilityfoundation.org/
-- 5. Tổ chức Y tế Thế giới (WHO) — Báo cáo Thực trạng An toàn Giao thông Đường bộ: https://www.who.int/violence_injury_prevention/road_safety_status/
-- 6. Hệ sinh thái Ứng dụng & Trình giả lập Trực quan Eco-SafeRide: https://eco-saferide.vercel.app/
+- 4. Hệ sinh thái Ứng dụng & Trình giả lập Trực quan Eco-SafeRide: https://eco-saferide.vercel.app/
 
